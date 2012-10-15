@@ -21,7 +21,7 @@ public class SkillShockWave extends ActiveSkill {
 		setUsage("/skill shockwave");
 		setArgumentRange(0, 0);
 		setIdentifiers(new String[] { "skill shockwave" });
-		setDescription("A shockwave of radius $1 is created that converges upon the user, pushing anything in its path towards the user and applying damage equal to twice the distance pulled.");
+		setDescription("A shockwave of radius $1 is created that converges outwards from the user, pushing anything in its path explosively away from the player.");
 	}
 
 	public String getDescription(Hero hero) {
@@ -44,12 +44,10 @@ public class SkillShockWave extends ActiveSkill {
 		for (int x = 0; x < nearby.size(); x++) {
 			if ((nearby.get(x) instanceof LivingEntity)) {
 				if (damageCheck(p, (LivingEntity)nearby.get(x))) {
-					Vector v = p.getLocation().add(0.0D, 1.0D, 0.0D).toVector().subtract(((Entity)nearby.get(x)).getLocation().toVector()).normalize();
-					v = v.multiply(0.9D);
+					Vector v =((Entity)nearby.get(x)).getLocation().add(0, 2, 0).toVector().subtract(p.getLocation().toVector()).normalize();
+					v = v.multiply(1.2D);
 					((Entity)nearby.get(x)).setVelocity(v);
-					p.getWorld().playEffect(p.getLocation(), Effect.ZOMBIE_CHEW_WOODEN_DOOR, 1);
-					double dmg = p.getLocation().toVector().distance(((Entity)nearby.get(x)).getLocation().toVector()) * 2.0D;
-					damageEntity((LivingEntity)nearby.get(x), p, (int)dmg);
+					p.getWorld().playEffect(nearby.get(x).getLocation(), Effect.ZOMBIE_CHEW_WOODEN_DOOR, 1);
 				}
 			}
 		}
