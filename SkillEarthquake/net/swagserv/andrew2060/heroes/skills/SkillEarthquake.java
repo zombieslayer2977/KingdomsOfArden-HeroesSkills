@@ -67,7 +67,7 @@ public class SkillEarthquake extends ActiveSkill {
 				Vector to = e.getLocation().add(0, 1, 0).toVector();
 				Vector applied = to.subtract(original).normalize();
 				Random random = new Random();
-				applied = applied.multiply(random.nextInt(2)+2);
+				applied = applied.multiply(2);
 				if(e instanceof Player) {		
 					int roll = random.nextInt(100);
 					if(roll < 30) {
