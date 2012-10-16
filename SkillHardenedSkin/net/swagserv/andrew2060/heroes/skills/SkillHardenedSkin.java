@@ -32,7 +32,7 @@ public class SkillHardenedSkin extends PassiveSkill{
 			if(!(event.getEntity() instanceof Player)) {
 				return;
 			}
-			if(event.getCause() == DamageCause.FIRE_TICK || event.getCause() == DamageCause.LAVA) {
+			if(event.getCause() == DamageCause.FIRE_TICK || event.getCause() == DamageCause.LAVA || event.getCause() == DamageCause.FIRE) {
 				Player p = (Player)event.getEntity();
 				Hero h = SkillHardenedSkin.this.plugin.getCharacterManager().getHero(p);
 				if(h.hasEffect("HardenedSkin")) {
