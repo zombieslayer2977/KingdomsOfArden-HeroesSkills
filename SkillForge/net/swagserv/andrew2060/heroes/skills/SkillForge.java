@@ -47,7 +47,6 @@ public class SkillForge extends PassiveSkill {
 		return getDescription().replace("$1", cost+"");
 	}
 	public class BlockRightClickListener implements Listener {
-		public BlockRightClickListener() {}
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void onPlayerInteract(PlayerInteractEvent event) {
 			Action a = event.getAction();
@@ -68,157 +67,157 @@ public class SkillForge extends PassiveSkill {
 			ItemStack handItem = h.getPlayer().getItemInHand();
 			int t = 20;
 			switch (handItem.getTypeId()) {
-			case 146:
+			case 276:
 				maxDurability = 1562;
 				requiredImprove = Material.IRON_INGOT;
 				t = 1;
 				break;
-			case 137:
+			case 267:
 				maxDurability = 251;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 1;
 				break;
-			case 153:
+			case 283:
 				maxDurability = 33;
 				requiredImprove = Material.FLINT;
 				t = 1;
 				break;
-			case 142:
+			case 272:
 				maxDurability = 130;
 				requiredImprove = Material.LEATHER;
 				t = 1;
 				break;
-			case 138:
+			case 268:
 				maxDurability = 60;
 				requiredImprove = Material.FLINT;
 				t = 1;
 				break;
-			case 131:
+			case 261:
 				maxDurability = 385;
 				requiredImprove = Material.LEATHER;
 				t = 2;
 				break;
-			case 183:
+			case 313:
 				maxDurability = 430;
 				requiredImprove = Material.IRON_INGOT;
 				t = 3;
 				break;
-			case 179:
+			case 309:
 				maxDurability = 196;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 3;
 				break;
-			case 187:
+			case 317:
 				maxDurability = 92;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 175:
+			case 305:
 				maxDurability = 196;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 171:
+			case 301:
 				maxDurability = 66;
 				requiredImprove = Material.WOOD;
 				t = 3;
 				break;
-			case 182:
+			case 312:
 				maxDurability = 496;
 				requiredImprove = Material.IRON_INGOT;
 				t = 3;
 				break;
-			case 178:
+			case 308:
 				maxDurability = 226;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 3;
 				break;
-			case 186:
+			case 316:
 				maxDurability = 106;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 174:
+			case 304:
 				maxDurability = 226;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 170:
+			case 300:
 				maxDurability = 76;
 				requiredImprove = Material.WOOD;
 				t = 3;
 				break;
-			case 181:
+			case 311:
 				maxDurability = 529;
 				requiredImprove = Material.IRON_INGOT;
 				t = 3;
 				break;
-			case 177:
+			case 307:
 				maxDurability = 242;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 3;
 				break;
-			case 185:
+			case 315:
 				maxDurability = 114;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 173:
+			case 303:
 				maxDurability = 242;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 169:
+			case 299:
 				maxDurability = 82;
 				requiredImprove = Material.WOOD;
 				t = 3;
 				break;
-			case 180:
+			case 310:
 				maxDurability = 364;
 				requiredImprove = Material.IRON_INGOT;
 				t = 3;
 				break;
-			case 176:
+			case 306:
 				maxDurability = 166;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 3;
 				break;
-			case 184:
+			case 314:
 				maxDurability = 78;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 172:
+			case 302:
 				maxDurability = 166;
 				requiredImprove = Material.LEATHER;
 				t = 3;
 				break;
-			case 168:
+			case 298:
 				maxDurability = 56;
 				requiredImprove = Material.WOOD;
 				t = 3;
 				break;
-			case 148:
+			case 278:
 				maxDurability = 1562;
 				requiredImprove = Material.IRON_INGOT;
 				t = 4;
 				break;
-			case 127:
+			case 257:
 				maxDurability = 251;
 				requiredImprove = Material.GOLD_INGOT;
 				t = 4;
 				break;
-			case 155:
+			case 285:
 				maxDurability = 33;
 				requiredImprove = Material.FLINT;
 				t = 4;
 				break;
-			case 144:
+			case 274:
 				maxDurability = 132;
 				requiredImprove = Material.LEATHER;
 				t = 4;
 				break;
-			case 140:
+			case 270:
 				maxDurability = 60;
 				requiredImprove = Material.FLINT;
 				t = 4;
@@ -246,19 +245,19 @@ public class SkillForge extends PassiveSkill {
 			}
 			if (!h.getPlayer().getInventory().contains(requiredImprove)) {
 				switch (requiredImprove.getId()) {
-				case 135:
+				case 265:
 					commonName = "iron ingots";
 					break;
-				case 136:
+				case 266:
 					commonName = "gold ingots";
 					break;
-				case 188:
+				case 318:
 					commonName = "flint";
 					break;
-				case 6:
+				case 5:
 					commonName = "wood planks";
 					break;
-				case 204:
+				case 334:
 					commonName = "leather";
 					break;
 				default:
@@ -266,6 +265,7 @@ public class SkillForge extends PassiveSkill {
 				}
 
 				h.getPlayer().sendMessage(ChatColor.GRAY + "You need " + ChatColor.AQUA + commonName + ChatColor.GRAY + " to improve this item");
+				return;
 			}
 			Player p = event.getPlayer();
 			Inventory pInv = p.getInventory();
@@ -383,19 +383,19 @@ public class SkillForge extends PassiveSkill {
 			if (h.getLevel(h.getSecondClass()) <= 50) {
 				int exp = 0;
 				switch (requiredImprove.getId()) {
-				case 135:
+				case 265:
 					exp = 10;
 					break;
-				case 136:
+				case 266:
 					exp = 5;
 					break;
-				case 188:
+				case 318:
 					exp = 3;
 					break;
-				case 6:
+				case 5:
 					exp = 1;
 					break;
-				case 204:
+				case 334:
 					exp = 2;
 					break;
 				default:
