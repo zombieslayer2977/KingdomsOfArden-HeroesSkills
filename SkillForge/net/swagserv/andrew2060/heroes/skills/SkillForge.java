@@ -131,18 +131,22 @@ public class SkillForge extends PassiveSkill {
 				t = 3;
 				maxDurability = 166;
 				requiredImprove = Material.LEATHER;
+				break;
 			case CHAINMAIL_CHESTPLATE:
 				t = 3;
 				maxDurability = 242;
 				requiredImprove = Material.LEATHER;
+				break;
 			case CHAINMAIL_LEGGINGS:
 				t = 3;
 				maxDurability = 226;
 				requiredImprove = Material.LEATHER;
+				break;
 			case CHAINMAIL_BOOTS:
 				t = 3;
 				maxDurability = 196;
 				requiredImprove = Material.LEATHER;
+				break;
 			case GOLD_SWORD:	
 				t = 1;
 				maxDurability = 33;
@@ -267,6 +271,7 @@ public class SkillForge extends PassiveSkill {
 					break;
 				default:
 					commonName = "something broke here, go get andrew2060";
+					break;
 				}
 
 				h.getPlayer().sendMessage(ChatColor.GRAY + "You need " + ChatColor.AQUA + commonName + ChatColor.GRAY + " to improve this item");
