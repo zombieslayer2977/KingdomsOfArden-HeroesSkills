@@ -62,168 +62,173 @@ public class SkillForge extends PassiveSkill {
 				return;
 			}
 			int maxDurability = 0;
-			Material requiredImprove = Material.DIAMOND;
+			Material requiredImprove = Material.IRON_INGOT;
 			String commonName = null;
 			ItemStack handItem = h.getPlayer().getItemInHand();
 			int t = 20;
-			switch (handItem.getTypeId()) {
-			case 276:
+			switch(handItem.getType()) {
+			case DIAMOND_SWORD:
+				t = 1;
 				maxDurability = 1562;
-				requiredImprove = Material.IRON_INGOT;
-				t = 1;
 				break;
-			case 267:
-				maxDurability = 251;
-				requiredImprove = Material.GOLD_INGOT;
-				t = 1;
+			case DIAMOND_PICKAXE:
+			case DIAMOND_HOE:
+			case DIAMOND_AXE:
+			case DIAMOND_SPADE:
+				t = 4;
+				maxDurability = 1562;
 				break;
-			case 283:
-				maxDurability = 33;
-				requiredImprove = Material.FLINT;
-				t = 1;
-				break;
-			case 272:
-				maxDurability = 130;
-				requiredImprove = Material.LEATHER;
-				t = 1;
-				break;
-			case 268:
-				maxDurability = 60;
-				requiredImprove = Material.FLINT;
-				t = 1;
-				break;
-			case 261:
-				maxDurability = 385;
-				requiredImprove = Material.LEATHER;
-				t = 2;
-				break;
-			case 313:
-				maxDurability = 430;
-				requiredImprove = Material.IRON_INGOT;
+			case DIAMOND_HELMET:
 				t = 3;
-				break;
-			case 309:
-				maxDurability = 196;
-				requiredImprove = Material.GOLD_INGOT;
-				t = 3;
-				break;
-			case 317:
-				maxDurability = 92;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 305:
-				maxDurability = 196;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 301:
-				maxDurability = 66;
-				requiredImprove = Material.WOOD;
-				t = 3;
-				break;
-			case 312:
-				maxDurability = 496;
-				requiredImprove = Material.IRON_INGOT;
-				t = 3;
-				break;
-			case 308:
-				maxDurability = 226;
-				requiredImprove = Material.GOLD_INGOT;
-				t = 3;
-				break;
-			case 316:
-				maxDurability = 106;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 304:
-				maxDurability = 226;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 300:
-				maxDurability = 76;
-				requiredImprove = Material.WOOD;
-				t = 3;
-				break;
-			case 311:
-				maxDurability = 529;
-				requiredImprove = Material.IRON_INGOT;
-				t = 3;
-				break;
-			case 307:
-				maxDurability = 242;
-				requiredImprove = Material.GOLD_INGOT;
-				t = 3;
-				break;
-			case 315:
-				maxDurability = 114;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 303:
-				maxDurability = 242;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 299:
-				maxDurability = 82;
-				requiredImprove = Material.WOOD;
-				t = 3;
-				break;
-			case 310:
 				maxDurability = 364;
-				requiredImprove = Material.IRON_INGOT;
+				break;
+			case DIAMOND_CHESTPLATE:
 				t = 3;
+				maxDurability = 529;
 				break;
-			case 306:
-				maxDurability = 166;
-				requiredImprove = Material.GOLD_INGOT;
+			case DIAMOND_LEGGINGS:
 				t = 3;
+				maxDurability = 496;
 				break;
-			case 314:
-				maxDurability = 78;
-				requiredImprove = Material.LEATHER;
+			case DIAMOND_BOOTS:
 				t = 3;
+				maxDurability = 430;
 				break;
-			case 302:
-				maxDurability = 166;
-				requiredImprove = Material.LEATHER;
-				t = 3;
-				break;
-			case 298:
-				maxDurability = 56;
-				requiredImprove = Material.WOOD;
-				t = 3;
-				break;
-			case 278:
-				maxDurability = 1562;
-				requiredImprove = Material.IRON_INGOT;
-				t = 4;
-				break;
-			case 257:
+			case IRON_SWORD:
+				t = 1;
 				maxDurability = 251;
 				requiredImprove = Material.GOLD_INGOT;
-				t = 4;
 				break;
-			case 285:
+			case IRON_PICKAXE:
+			case IRON_HOE:
+			case IRON_AXE:
+			case IRON_SPADE:
+				t = 4;
+				maxDurability = 251;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
+			case IRON_HELMET:
+				t = 3;
+				maxDurability = 166;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
+			case IRON_CHESTPLATE:
+				t = 3;
+				maxDurability = 242;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
+			case IRON_LEGGINGS:
+				t = 3;
+				maxDurability = 226;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
+			case IRON_BOOTS:
+				t = 3;
+				maxDurability = 196;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
+			case CHAINMAIL_HELMET:
+				t = 3;
+				maxDurability = 166;
+				requiredImprove = Material.LEATHER;
+			case CHAINMAIL_CHESTPLATE:
+				t = 3;
+				maxDurability = 242;
+				requiredImprove = Material.LEATHER;
+			case CHAINMAIL_LEGGINGS:
+				t = 3;
+				maxDurability = 226;
+				requiredImprove = Material.LEATHER;
+			case CHAINMAIL_BOOTS:
+				t = 3;
+				maxDurability = 196;
+				requiredImprove = Material.LEATHER;
+			case GOLD_SWORD:	
+				t = 1;
 				maxDurability = 33;
 				requiredImprove = Material.FLINT;
-				t = 4;
 				break;
-			case 274:
+			case GOLD_PICKAXE:
+			case GOLD_HOE:
+			case GOLD_AXE:
+			case GOLD_SPADE:
+				t = 4;
+				maxDurability = 33;
+				requiredImprove = Material.FLINT;
+				break;
+			case GOLD_HELMET:
+				t = 3;
+				maxDurability = 78;
+				requiredImprove = Material.FLINT;
+				break;
+			case GOLD_CHESTPLATE:
+				t = 3;
+				maxDurability = 114;
+				requiredImprove = Material.FLINT;
+				break;
+			case GOLD_LEGGINGS:
+				t = 3;
+				maxDurability = 106;
+				requiredImprove = Material.FLINT;
+				break;
+			case GOLD_BOOTS:
+				t = 3;
+				maxDurability = 92;
+				requiredImprove = Material.FLINT;
+				break;
+			case STONE_SWORD:
+				t = 1;
 				maxDurability = 132;
 				requiredImprove = Material.LEATHER;
-				t = 4;
 				break;
-			case 270:
-				maxDurability = 60;
-				requiredImprove = Material.FLINT;
+			case STONE_PICKAXE:				
+			case STONE_HOE:
+			case STONE_AXE:
+			case STONE_SPADE:
 				t = 4;
+				maxDurability = 132;
+				requiredImprove = Material.LEATHER;
+				break;
+			case LEATHER_HELMET:
+				t = 3;
+				maxDurability = 56;
+				requiredImprove = Material.WOOD;
+				break;
+			case LEATHER_CHESTPLATE:
+				t = 3;
+				maxDurability = 82;
+				requiredImprove = Material.WOOD;
+				break;
+			case LEATHER_LEGGINGS:
+				t = 3;
+				maxDurability = 76;
+				requiredImprove = Material.WOOD;
+				break;
+			case LEATHER_BOOTS:
+				t = 3;
+				maxDurability = 66;
+				requiredImprove = Material.WOOD;
+				break;
+			case WOOD_SWORD:
+				t = 1;
+				maxDurability = 60;
+				requiredImprove = Material.LEATHER;
+				break;
+			case WOOD_PICKAXE:
+			case WOOD_HOE:
+			case WOOD_AXE:
+			case WOOD_SPADE:
+				t = 4;
+				maxDurability = 60;
+				requiredImprove = Material.WOOD;
+				break;
+			case BOW:
+				t = 2;
+				maxDurability = 385;
+				requiredImprove = Material.FLINT;
 				break;
 			default:
-				event.getPlayer().sendMessage(ChatColor.GRAY + "This is not a valid weapon or armor type to improve!");
+				event.getPlayer().sendMessage(ChatColor.GRAY + "This is not a valid tool or armor type to improve!");
 				return;
 			}
 			int level = h.getLevel(h.getSecondClass());
@@ -277,8 +282,7 @@ public class SkillForge extends PassiveSkill {
 			handItem.setDurability((short)(int)(handItem.getDurability() - durabilityRestored));
 			if (mat.getAmount() > 1) {
 				mat.setAmount(mat.getAmount() - 1);
-			}
-			else pInv.clear(pInv.first(requiredImprove));
+			} else pInv.remove(mat);
 			ItemStack i = handItem;
 			int durability = maxDurability - i.getDurability();
 			if (t == 1) {
@@ -382,20 +386,20 @@ public class SkillForge extends PassiveSkill {
 			p.sendMessage(ChatColor.AQUA + "Item Improvement Successful!");
 			if (h.getLevel(h.getSecondClass()) <= 50) {
 				int exp = 0;
-				switch (requiredImprove.getId()) {
-				case 265:
+				switch (requiredImprove) {
+				case IRON_INGOT:
 					exp = 10;
 					break;
-				case 266:
+				case GOLD_INGOT:
 					exp = 5;
 					break;
-				case 318:
+				case LEATHER:
 					exp = 3;
 					break;
-				case 5:
+				case WOOD:
 					exp = 1;
 					break;
-				case 334:
+				case FLINT:
 					exp = 2;
 					break;
 				default:
