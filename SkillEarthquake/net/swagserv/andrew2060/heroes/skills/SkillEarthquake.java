@@ -67,15 +67,14 @@ public class SkillEarthquake extends ActiveSkill {
 				Vector to = e.getLocation().add(0, 1, 0).toVector();
 				Vector applied = to.subtract(original).normalize();
 				Random random = new Random();
-				applied = applied.multiply(2);
 				if(e instanceof Player) {		
 					int roll = random.nextInt(100);
 					if(roll < 30) {
-						((Player)e).addPotionEffect(PotionEffectType.CONFUSION.createEffect(400,2));
+						((Player)e).addPotionEffect(PotionEffectType.CONFUSION.createEffect(400,10));
 					}
 				}
 				e.setVelocity(applied);
-				e.getWorld().createExplosion(e.getLocation().subtract(0, 4, 0), 0F);
+				e.getWorld().createExplosion(e.getLocation().subtract(0, 6, 0), 0F);
 				if(!SkillEarthquake.damageCheck(h.getPlayer(), e)) {
 					continue;
 				}
