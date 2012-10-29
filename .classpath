@@ -12,6 +12,7 @@
 	<classpathentry kind="src" path="SkillCompress"/>
 	<classpathentry kind="src" path="SkillEarthquake"/>
 	<classpathentry kind="src" path="SkillHardenedSkin"/>
+	<classpathentry kind="src" path="SkillBlacksmith"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Bukkit.jar">
 		<attributes>
