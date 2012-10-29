@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 public class SkillForge extends PassiveSkill {
 	public SkillForge(Heroes plugin) {
 		super(plugin, "Forge");
-		setDescription("Passive: Grants ability to use the forge to improve weapons/tools/armor: Current Cost: $1 of material per tier. (Right click Iron Block to use)");
+		setDescription("Passive: Grants ability to use the anvil to improve weapons/tools/armor: Current Cost: $1 of material per tier.");
 		setEffectTypes(new EffectType[] { EffectType.BENEFICIAL });
 		Bukkit.getServer().getPluginManager().registerEvents(new BlockRightClickListener(), plugin);
 	}
@@ -47,18 +47,21 @@ public class SkillForge extends PassiveSkill {
 		return getDescription().replace("$1", cost+"");
 	}
 	public class BlockRightClickListener implements Listener {
+		@SuppressWarnings("deprecation")
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void onPlayerInteract(PlayerInteractEvent event) {
 			Action a = event.getAction();
 			if (!a.equals(Action.RIGHT_CLICK_BLOCK)) {
 				return;
 			}
-			Hero h = SkillForge.this.plugin.getCharacterManager().getHero(event.getPlayer());
-			if (!h.hasEffect("Forge")) {
+			Block b = event.getClickedBlock();
+			if (!b.getType().equals(Material.ANVIL)) {
 				return;
 			}
-			Block b = event.getClickedBlock();
-			if (!b.getType().equals(Material.IRON_BLOCK)) {
+			event.setCancelled(true);
+			Hero h = SkillForge.this.plugin.getCharacterManager().getHero(event.getPlayer());
+			if (!h.hasEffect("Forge")) {
+				h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the training to improve items with an anvil!");
 				return;
 			}
 			int maxDurability = 0;
@@ -288,6 +291,7 @@ public class SkillForge extends PassiveSkill {
 			if (mat.getAmount() > 1) {
 				mat.setAmount(mat.getAmount() - 1);
 			} else pInv.remove(mat);
+			p.updateInventory();
 			ItemStack i = handItem;
 			int durability = maxDurability - i.getDurability();
 			if (t == 1) {
