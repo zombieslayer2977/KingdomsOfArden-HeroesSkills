@@ -2,10 +2,12 @@ package net.swagserv.andrew2060.heroes.skills;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.PeriodicExpirableEffect;
+import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
@@ -79,6 +81,9 @@ public class SkillEarthquake extends ActiveSkill {
 					continue;
 				}
 				SkillEarthquake.damageEntity(e, h.getEntity(), SkillConfigManager.getUseSetting(h, skill, "damage", 10, false), DamageCause.ENTITY_ATTACK);
+				SlowEffect slowEffect = new SlowEffect(this.skill, 20, 2, false, "", "", h);
+				CharacterTemplate character = this.plugin.getCharacterManager().getCharacter(e);
+				character.addEffect(slowEffect);
 			}
 		}
 

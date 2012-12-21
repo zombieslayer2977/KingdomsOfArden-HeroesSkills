@@ -174,26 +174,22 @@ public class SkillCompress extends ActiveSkill {
 
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void onWeaponDamage(WeaponDamageEvent event) {
-			LivingEntity entity = event.getDamager().getEntity();
 			if (event.isCancelled()) {
 				return;
 			}
 			if (event.getCause() != DamageCause.ENTITY_ATTACK) {
 				return;
 			}
-			if ((entity instanceof Player)) {
-				if(event.getDamager() instanceof Hero) {
-					Hero hero = (Hero)event.getDamager();
-					if (hero.hasEffect("Compress")) {
-						LivingEntity targetentity = (LivingEntity)event.getEntity();
-						Player player = (Player)event.getDamager();
-						SlowEffect effect = new SlowEffect(this.skill, 5000L, 3, false, SkillCompress.this.pvpapplyText, "$1 has regained their senses", hero);
-						SkillCompress.this.plugin.getCharacterManager().getCharacter(targetentity).addEffect(effect);
-						SkillCompress.this.broadcast(targetentity.getLocation(), SkillCompress.this.pvpapplyText, new Object[] { Messaging.getLivingEntityName(targetentity), player.getDisplayName() });
-					}
-					return;
+			if ((event.getDamager() instanceof Hero)) {
+				Hero hero = (Hero) event.getDamager();
+				if (hero.hasEffect("Compress")) {
+					LivingEntity targetentity = (LivingEntity)event.getEntity();
+					Player player = hero.getPlayer();
+					SlowEffect effect = new SlowEffect(this.skill, 5000L, 3, false, SkillCompress.this.pvpapplyText, "$1 has regained their senses", hero);
+					SkillCompress.this.plugin.getCharacterManager().getCharacter(targetentity).addEffect(effect);
+					SkillCompress.this.broadcast(targetentity.getLocation(), SkillCompress.this.pvpapplyText, new Object[] { Messaging.getLivingEntityName(targetentity), player.getDisplayName() });
 				}
-				if ((entity instanceof Monster));
+				return;
 			}
 		}
 	}

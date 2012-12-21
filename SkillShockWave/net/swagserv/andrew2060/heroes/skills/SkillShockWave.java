@@ -45,7 +45,8 @@ public class SkillShockWave extends ActiveSkill {
 			if ((nearby.get(x) instanceof LivingEntity)) {
 				if (damageCheck(p, (LivingEntity)nearby.get(x))) {
 					Vector v =((Entity)nearby.get(x)).getLocation().add(0, 2, 0).toVector().subtract(p.getLocation().toVector()).normalize();
-					v = v.multiply(2.5D);
+					v = v.multiply(4);
+					v = v.setY(0);
 					((Entity)nearby.get(x)).setVelocity(v);
 					p.getWorld().playEffect(nearby.get(x).getLocation(), Effect.ZOMBIE_CHEW_WOODEN_DOOR, 1);
 				}

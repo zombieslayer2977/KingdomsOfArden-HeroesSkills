@@ -13,6 +13,7 @@ import com.herocraftonline.heroes.util.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.entity.CraftOcelot;
@@ -128,6 +129,7 @@ public class SkillSapShot extends ActiveSkill {
 			o.remove();
 		}
 
+		@SuppressWarnings("deprecation")
 		@EventHandler(priority=EventPriority.HIGHEST)
 		public void onEntityDamagebyEntity(EntityDamageByEntityEvent event) {
 			if (event.isCancelled()) {
@@ -152,15 +154,18 @@ public class SkillSapShot extends ActiveSkill {
 				p.getWorld().dropItem(p.getLocation(), new ItemStack(Material.MONSTER_EGG, 1, event.getEntityType().getTypeId()));
 				p.getWorld().playEffect(event.getEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 5);
 				p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 1);
+				event.getEntity().playEffect(EntityEffect.DEATH);
 				event.getEntity().remove();
 				int stackID = p.getInventory().first(Material.EGG);
 				ItemStack eggStack = p.getInventory().getItem(stackID);
 				if (eggStack.getAmount() > 1) {
 					eggStack.setAmount(eggStack.getAmount() - 1);
+					p.updateInventory();
 					p.sendMessage(ChatColor.AQUA + "Monster Soul Captured");
 					return;
 				}
 				p.getInventory().remove(eggStack);
+				p.updateInventory();
 				p.sendMessage(ChatColor.AQUA + "Monster Soul Captured");
 				return;
 			}

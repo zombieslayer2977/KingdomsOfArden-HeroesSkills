@@ -1,18 +1,17 @@
 package net.swagserv.andrew2060.heroes.skills;
 
 import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.EffectType;
-import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -20,7 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class SkillRequiem extends PassiveSkill {
 	public SkillRequiem(Heroes plugin) {
@@ -39,10 +38,9 @@ public class SkillRequiem extends PassiveSkill {
 		return getDescription();
 	}
 
-	public class RequiemEffect extends ExpirableEffect {
-		public RequiemEffect(Skill skill, long duration) {
-			super(skill, "RequiemEffect", duration);
-			this.types.add(EffectType.INVULNERABILITY);
+	public class RequiemEffect extends com.herocraftonline.heroes.characters.effects.Effect {
+		public RequiemEffect(Skill skill) {
+			super(skill, "RequiemEffect");
 		}
 
 		public void applyToHero(Hero hero) {
@@ -69,16 +67,12 @@ public class SkillRequiem extends PassiveSkill {
 			if (!(event.getEntity() instanceof Player)) {
 				return;
 			}
-			if ((event.getDamager() instanceof Player)) {
-				Hero h2 = this.skill.plugin.getCharacterManager().getHero((Player)event.getDamager());
-				if (h2.hasEffectType(EffectType.INVULNERABILITY)) {
-					event.setCancelled(true);
-					h2.getPlayer().sendMessage(ChatColor.RED + "Cannot attack while charging up to self-destruct!");
-				}
-			}
 			final Player p = (Player)event.getEntity();
 			final Hero h = this.skill.plugin.getCharacterManager().getHero(p);
 			if (!h.hasEffect("Requiem")) {
+				return;
+			}
+			if(h.hasEffect("RequiemEffect")) {
 				return;
 			}
 			if (h.getHealth() - event.getDamage() > 1) {
@@ -86,60 +80,158 @@ public class SkillRequiem extends PassiveSkill {
 			}
 			LivingEntity finalHit = event.getDamager().getEntity();
 
-			if (h.hasEffectType(EffectType.INVULNERABILITY)) {
-				event.setDamage(0);
-				if ((event.getDamager() instanceof Player)) {
-					((Player)event.getDamager()).sendMessage(ChatColor.GRAY + "Invulnerable!");
-				}
+			final LivingEntity finalDamager = finalHit;
+			event.setDamage(0);
+			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
+			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
+			h.addEffect(reqEffect);
+			h.setHealth(h.getMaxHealth());
+			scheduleExplosion(h, p, skill, finalDamager, DamageCause.ENTITY_ATTACK);
+			return;
+		}
+		@EventHandler(priority = EventPriority.HIGH)
+		public void onSkillDamage(SkillDamageEvent event) {
+			if(event.isCancelled()) {
+				return;
+			}
+			if (!(event.getEntity() instanceof Player)) {
 				return;
 			}
 
-			final LivingEntity finalDamager = finalHit;
-			event.setCancelled(true);
-			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
-			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this, 10000L);
-			h.addEffect(reqEffect);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this.skill.plugin, new Runnable() {
-				public void run() {
-					h.removeEffect(h.getEffect("RequiemEffect"));
-					SkillRequiem.SkillListener.this.skill.damageEntity(h.getEntity(), finalDamager, 5000);
-					p.getWorld().createExplosion(p.getLocation(), 0.0F);
-					int dmg = h.getMana();
-					if (dmg < 20) {
-						dmg = 20;
-					}
-					List<Entity> nearby = p.getNearbyEntities(5.0D, 5.0D, 5.0D);
-					for (int x = 0; x < nearby.size(); x++) {
-						if (!(nearby.get(x) instanceof LivingEntity)) {
-							continue;
-						}
-						if (!Skill.damageCheck(h.getPlayer(), (LivingEntity)nearby.get(x))) {
-							continue;
-						}
-						SkillRequiem.SkillListener.this.skill.damageEntity((LivingEntity)nearby.get(x), h.getEntity(), dmg);
-					}
-				}
+			final Player p = (Player)event.getEntity();
+			final Hero h = this.skill.plugin.getCharacterManager().getHero(p);
+			if (!h.hasEffect("Requiem")) {
+				return;
 			}
-			, 100L);
+			if(h.hasEffect("RequiemEffect")) {
+				return;
+			}
+			if (h.getHealth() - event.getDamage() > 1) {
+				return;
+			}
+			LivingEntity finalHit = event.getDamager().getEntity();
+
+			final LivingEntity finalDamager = finalHit;
+			event.setDamage(0);
+			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
+			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
+			h.addEffect(reqEffect);
+			scheduleExplosion(h, p, skill, finalDamager, DamageCause.ENTITY_ATTACK);
+			return;
+		}
+		@EventHandler(priority = EventPriority.HIGHEST)
+		public void onEnvironmentalDamage(CharacterDamageEvent event) {
+			if(event.isCancelled()) {
+				return;
+			}
+			if (!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			final Player p = (Player)event.getEntity();
+			final Hero h = this.skill.plugin.getCharacterManager().getHero(p);
+			if (!h.hasEffect("Requiem")) {
+				return;
+			}
+			if(h.hasEffect("RequiemEffect")) {
+				return;
+			}
+			if (h.getHealth() - event.getDamage() > 1) {
+				return;
+			}
+			DamageCause cause = event.getCause();
+			event.setDamage(0);
+			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
+			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
+			h.addEffect(reqEffect);
+			scheduleExplosion(h, p, skill, (LivingEntity) event.getEntity(), cause);
+			return;
 		}
 		@EventHandler(priority=EventPriority.HIGHEST)
 		public void onSkillUse(SkillUseEvent event) {
 			if (event.getHero().hasEffect("RequiemEffect")) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.GRAY + "Cannot Use Skills While Charging Up To Self-Destruct!");
+				if(event.getPlayer() != null) {
+					event.getPlayer().sendMessage(ChatColor.GRAY + "Cannot Use Skills While Charging Up To Self-Destruct!");
+				}
+			}
+			return;
+		}
+		@EventHandler(priority=EventPriority.HIGHEST)
+		public void onWeaponDamageGiver(WeaponDamageEvent event) {
+			if (event.getDamager().hasEffect("RequiemEffect")) {
+				event.setCancelled(true);
+				if(event.getDamager() instanceof Hero) {
+					((Hero)event.getDamager()).getPlayer().sendMessage(ChatColor.GRAY + "Cannot attack While Charging Up To Self-Destruct!");
+				}
+			}
+			return;
+		}
+		@EventHandler(priority=EventPriority.HIGHEST)
+		public void onEnvironmentalDamageGiven(CharacterDamageEvent event) {
+			if (!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			if (this.skill.plugin.getCharacterManager().getHero((Player) event.getEntity()).hasEffect("RequiemEffect")) {
+				event.setCancelled(true);
+			}
+		}
+		@EventHandler(priority=EventPriority.HIGHEST)
+		public void onSkillDamageGiven(SkillDamageEvent event) {
+			if (!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			if (this.skill.plugin.getCharacterManager().getHero((Player) event.getEntity()).hasEffect("RequiemEffect")) {
+				event.setDamage(0);
+				if(event.getDamager() instanceof Hero) {
+					((Hero)event.getDamager()).getPlayer().sendMessage(ChatColor.GRAY + "Invulnerable!");
+				}
+			}
+		}
+		@EventHandler(priority=EventPriority.HIGHEST)
+		public void onWeaponDamageGiven(WeaponDamageEvent event) {
+			if (!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			if (this.skill.plugin.getCharacterManager().getHero((Player) event.getEntity()).hasEffect("RequiemEffect")) {
+				event.setDamage(0);
+				if(event.getDamager() instanceof Hero) {
+					((Hero)event.getDamager()).getPlayer().sendMessage(ChatColor.GRAY + "Invulnerable!");
+				}
 			}
 		}
 
-		@EventHandler(priority=EventPriority.MONITOR)
-		public void onPlayerMove(PlayerMoveEvent event) { 
-			if (event.isCancelled()) {
-				return;
-			}
-			Hero h = SkillRequiem.this.plugin.getCharacterManager().getHero(event.getPlayer());
-			if (h.hasEffect("RequiemEffect")) {
-				h.getPlayer().getWorld().playEffect(h.getPlayer().getLocation(), Effect.SMOKE, BlockFace.UP);
-				return;
+
+	}
+
+	public void scheduleExplosion(final Hero h, final Player p, Skill skill, final LivingEntity finalDamager, final DamageCause dmgCause) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(skill.plugin, new Runnable() {
+			public void run() {
+				h.removeEffect(h.getEffect("RequiemEffect"));
+				p.getWorld().createExplosion(p.getLocation(), 0.0F);
+				int dmg = h.getMana();
+				if (dmg < 20) {
+					dmg = 20;
+				}
+				List<Entity> nearby = p.getNearbyEntities(5.0D, 5.0D, 5.0D);
+				for (int x = 0; x < nearby.size(); x++) {
+					if (!(nearby.get(x) instanceof LivingEntity)) {
+						continue;
+					}
+					if (!Skill.damageCheck(h.getPlayer(), (LivingEntity)nearby.get(x))) {
+						continue;
+					}
+					Skill.damageEntity((LivingEntity)nearby.get(x), h.getEntity(), dmg, DamageCause.ENTITY_ATTACK);
+				}
+				if(finalDamager != null) {
+					Skill.damageEntity(h.getEntity(), finalDamager, 50000, dmgCause);
+				} else {
+					h.setHealth(0);
+					h.syncExperience();
+					h.syncHealth();
+				}
 			}
 		}
+		, 100L);
+		
 	}
 }
