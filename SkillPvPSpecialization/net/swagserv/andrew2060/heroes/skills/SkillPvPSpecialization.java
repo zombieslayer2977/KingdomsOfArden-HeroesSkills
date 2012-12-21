@@ -30,6 +30,9 @@ public class SkillPvPSpecialization extends PassiveSkill {
 			}
 			Hero h2 = (Hero)event.getDefender();
 			int level = h2.getLevel(h2.getHeroClass());
+			if(h2.getName().equals(h.getName())) {
+				return;
+			}
 			boolean spec = true;
 			if(h2.getHeroClass().hasNoParents()) {
 				spec = false;
