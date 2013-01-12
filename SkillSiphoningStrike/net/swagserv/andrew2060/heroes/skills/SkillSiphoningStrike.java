@@ -2,8 +2,8 @@ package net.swagserv.andrew2060.heroes.skills;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.entity.CraftOcelot;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftOcelot;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -1,6 +1,5 @@
 package net.swagserv.andrew2060.heroes.skills;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import org.bukkit.Bukkit;
@@ -21,7 +20,6 @@ import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
@@ -173,9 +171,12 @@ public class SkillSurge extends ActiveSkill{
 			 if(!h.hasAccessToSkill("Surge")) {
 				 return;
 			 }
+			 if(h.getCooldown("Surge") == null) {
+				 return;
+			 }
 			 long cd = h.getCooldown("Surge")-60000;
-			 if(cd <= 0) {
-				 h.setCooldown("Surge", 0);
+			 if(cd <= System.currentTimeMillis()) {
+				 h.setCooldown("Surge", System.currentTimeMillis());
 			 } else {
 				 h.setCooldown("Surge", cd);
 			 }

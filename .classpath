@@ -22,6 +22,15 @@
 	<classpathentry kind="src" path="SkillPlague"/>
 	<classpathentry kind="src" path="SkillGeyser"/>
 	<classpathentry kind="src" path="SkillFireball"/>
+	<classpathentry kind="src" path="SkillAquaBurst"/>
+	<classpathentry kind="src" path="SkillSurge"/>
+	<classpathentry kind="src" path="SkillCamouflage"/>
+	<classpathentry kind="src" path="SkillPurify"/>
+	<classpathentry kind="src" path="SkillEnchantmentBook"/>
+	<classpathentry kind="src" path="SkillMortarStrike"/>
+	<classpathentry kind="src" path="SkillAnvil"/>
+	<classpathentry kind="src" path="SkillEqualize"/>
+	<classpathentry kind="src" path="SkillFireworks"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Bukkit.jar">
 		<attributes>

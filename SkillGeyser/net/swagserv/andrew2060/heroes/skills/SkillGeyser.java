@@ -58,13 +58,13 @@ public class SkillGeyser extends ActiveSkill {
 		final double damage = SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE.node(), 30, false) +  +h.getLevel()*SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE_INCREASE.node(), 0.5, false);
 		final int slowStrength = SkillConfigManager.getUseSetting(h, this, "SlowAmount", 1, false);
 		final int slowDuration = (int) (SkillConfigManager.getUseSetting(h, this, "SlowDuration", 6000, false)*0.001*20);
-		this.broadcast(h.getPlayer().getLocation(), h.getName() + ChatColor.GRAY + " is channeling a heyser!");
+		this.broadcast(h.getPlayer().getLocation(), h.getName() + ChatColor.GRAY + " is channeling a geyser!");
 		h.getPlayer().getWorld().playEffect(h.getPlayer().getLocation(), Effect.ENDER_SIGNAL, 3);
+		h.getPlayer().getWorld().playSound(casterHero.getEntity().getLocation(), Sound.CREEPER_HISS, 100, 1);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
 			@Override
 			public void run() {
 				SkillGeyser.this.broadcast(casterHero.getPlayer().getLocation(), casterHero.getName() + " erupted a geyser!");
-				casterHero.getPlayer().getWorld().playSound(casterHero.getEntity().getLocation(), Sound.CREEPER_HISS, 100, 1);
 				Iterator<Entity> nearby = casterHero.getEntity().getNearbyEntities(5, 5, 5).iterator();
 				while(nearby.hasNext()) {
 					Entity e = nearby.next();
