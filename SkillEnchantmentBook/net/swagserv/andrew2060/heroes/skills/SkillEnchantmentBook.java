@@ -37,7 +37,7 @@ public class SkillEnchantmentBook extends ActiveSkill {
 		setUsage("/skill enchantmentbook");
 		setDescription("Consumes an enchantment book and applies it to an item upon second use.");
 		setArgumentRange(0,0);
-		executors = new LinkedHashMap<Player, PlayerExecuteData>(100);
+		executors = new LinkedHashMap<Player, PlayerExecuteData>();
 	}
 
 	@SuppressWarnings("deprecation")

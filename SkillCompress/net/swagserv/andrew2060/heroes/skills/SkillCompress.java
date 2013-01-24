@@ -1,5 +1,7 @@
 package net.swagserv.andrew2060.heroes.skills;
 
+import java.util.Map;
+
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
@@ -13,6 +15,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
+import com.herocraftonline.heroes.util.Properties;
 import com.herocraftonline.heroes.util.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,29 +36,29 @@ public class SkillCompress extends ActiveSkill {
 	private String pvpapplyText;
 
 	public SkillCompress(Heroes plugin) {
-	    super(plugin, "Compress");
-	    setDescription("Your tools compress materials as you gather them for $1 seconds (Requires Diamond Tools). PvP: Bashes target player into the ground every hit, applying a slow effect (stuns mobs)");
-	    setUsage("/skill compress");
-	    setArgumentRange(0, 0);
-	    setIdentifiers(new String[] { "skill compress" });
-	    setTypes(new SkillType[] { SkillType.FIRE, SkillType.EARTH, SkillType.BUFF, SkillType.SILENCABLE });
-	    Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListener(), plugin);
-	    Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListenerPvP(this), plugin);
+		super(plugin, "Compress");
+		setDescription("Your tools compress materials as you gather them for $1 seconds (Requires Diamond Tools). PvP: Bashes target player into the ground every hit, applying a slow effect (stuns mobs)");
+		setUsage("/skill compress");
+		setArgumentRange(0, 0);
+		setIdentifiers(new String[] { "skill compress" });
+		setTypes(new SkillType[] { SkillType.FIRE, SkillType.EARTH, SkillType.BUFF, SkillType.SILENCABLE });
+		Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListener(), plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListenerPvP(this), plugin);
 	}
 
 	public ConfigurationSection getDefaultConfig() {
-	    ConfigurationSection section = super.getDefaultConfig();
-	    section.set(Setting.DURATION.node(), Integer.valueOf(10000));
-	    section.set(Setting.APPLY_TEXT.node(), "%hero%'s tools now exert extreme pressure on anything they contact!");
-	    section.set(Setting.EXPIRE_TEXT.node(), "%hero%'s tools are no longer exerting pressure!");
-	    return section;
+		ConfigurationSection section = super.getDefaultConfig();
+		section.set(Setting.DURATION.node(), Integer.valueOf(10000));
+		section.set(Setting.APPLY_TEXT.node(), "%hero%'s tools now exert extreme pressure on anything they contact!");
+		section.set(Setting.EXPIRE_TEXT.node(), "%hero%'s tools are no longer exerting pressure!");
+		return section;
 	}
 
 	public void init() {
-	    super.init();
-	    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT, "%hero%'s tools now exert extreme pressure on anything they contact!").replace("%hero%", "$1");
-	    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT, "%hero%'s tools are no longer exerting pressure!").replace("%hero%", "$1");
-	    this.pvpapplyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%hero% bashed %target% into the Ground!").replace("%target%", "$1").replace("%hero%", "$2");
+		super.init();
+		this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT, "%hero%'s tools now exert extreme pressure on anything they contact!").replace("%hero%", "$1");
+		this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT, "%hero%'s tools are no longer exerting pressure!").replace("%hero%", "$1");
+		this.pvpapplyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%hero% bashed %target% into the Ground!").replace("%target%", "$1").replace("%hero%", "$2");
 	}
 
 	public SkillResult use(Hero hero, String[] args) {
@@ -68,8 +71,8 @@ public class SkillCompress extends ActiveSkill {
 	}
 
 	public String getDescription(Hero hero) {
-	    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 10000, false);
-	    return getDescription().replace("$1", duration / 1000 +"");
+		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 10000, false);
+		return getDescription().replace("$1", duration / 1000 +"");
 	}
 
 	public class CompressEffect extends ExpirableEffect {
@@ -105,50 +108,60 @@ public class SkillCompress extends ActiveSkill {
 			Hero hero = SkillCompress.this.plugin.getCharacterManager().getHero(event.getPlayer());
 			if (hero.hasEffect("Compress")) {
 				Block block = event.getBlock();
-				int tool = event.getPlayer().getItemInHand().getTypeId();
+				Material tool = event.getPlayer().getItemInHand().getType();
+				Material type = block.getType();
 				switch (tool) {
-				case 277:
-					switch (block.getTypeId()) {
-					case 2:
+				case DIAMOND_SPADE:
+					switch (type) {
+					case GRASS:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.COAL, 2));
 						break;
-					case 3:
+					case DIRT:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.COAL, 2));
 						break;
-					case 12:
+					case SAND:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.SANDSTONE, 1));
 						break;
+					case CLAY:
+						event.setCancelled(true);
+						block.setType(Material.AIR);
+						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.CLAY, 1));
 					default:
 						event.setCancelled(false);
 					}
 
 					break;
-				case 278:
-					switch (block.getTypeId()) {
-					case 1:
+				case DIAMOND_PICKAXE:
+					switch (type) {
+					case STONE:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.SMOOTH_BRICK, 1));
 						break;
-					case 87:
+					case NETHERRACK:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.NETHER_BRICK, 1));
+						break;
+					case GLOWSTONE:
+						event.setCancelled(true);
+						block.setType(Material.AIR);
+						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.GLOWSTONE_DUST, 8));
 						break;
 					default:
 						break;
 					}
 
 					break;
-				case 279:
-					switch (block.getTypeId()) {
-					case 17:
+				case DIAMOND_AXE:
+					switch (type) {
+					case LOG:
 						event.setCancelled(true);
 						block.setType(Material.AIR);
 						block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.COAL, 2));
@@ -156,14 +169,16 @@ public class SkillCompress extends ActiveSkill {
 					default:
 						break;
 					}
-
 					break;
-     	  default:
-     		  Player player = Bukkit.getPlayer(hero.getName());
-     		  player.sendMessage("Your tool is not strong enough to exert the pressure needed to compress materials");
-     		  break;
+				default:
+					Player player = Bukkit.getPlayer(hero.getName());
+					player.sendMessage("Your tool is not strong enough to exert the pressure needed to compress materials");
+					break;
 				}
+				Map<Material, Double> expValues = Heroes.properties.miningExp;
+				hero.addExp(expValues.get(type), hero.getHeroClass(), hero.getPlayer().getLocation());
 			}
+			
 		}
 	}
 

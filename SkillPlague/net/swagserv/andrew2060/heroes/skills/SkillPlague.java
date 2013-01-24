@@ -24,12 +24,26 @@ public class SkillPlague extends ActiveSkill {
 		setUsage("/skill plague");
 		setArgumentRange(0, 0);
 		setIdentifiers(new String[] { "skill plague" });
-		setDescription("On use, user infects all surrounding enemies with the plague, dealing 2% max health true damage every second for 30 seconds to all surrounding enemies");
+		setDescription("On use, user infects all surrounding enemies with the plague, dealing 4% max health true damage every 2 seconds for 30 seconds to all surrounding enemies");
 		}
 
 	@Override
 	public SkillResult use(Hero h, String[] args) {
-		h.addEffect(new PlagueEffect(this, this.plugin, 1000L, 30000L));
+		Iterator<Entity> near = h.getPlayer().getNearbyEntities(10, 10, 10).iterator();
+		while(near.hasNext()) {
+			Entity next = near.next();
+			if(!(next instanceof LivingEntity)) {
+				continue;
+			}
+			if(!Skill.damageCheck(h.getPlayer(), (LivingEntity)next)) {
+				continue;
+			}
+			CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter((LivingEntity)next);
+			if(cT.hasEffect("PlagueEffect")) {
+				continue;
+			}
+			cT.addEffect(new PlagueEffect(this, this.plugin, 2000L, 30000L, h));
+		}
 		this.broadcast(h.getPlayer().getLocation(), ChatColor.DARK_GRAY + h.getName() + " used Plague!");
 		return SkillResult.NORMAL;
 	}
@@ -39,15 +53,17 @@ public class SkillPlague extends ActiveSkill {
 		return getDescription();
 	}
 	public class PlagueEffect extends PeriodicExpirableEffect {
-
-		public PlagueEffect(Skill skill, Heroes plugin, long period, long duration) {
+		Hero attacker;
+		public PlagueEffect(Skill skill, Heroes plugin, long period, long duration, Hero attacker) {
 			super(skill, "PlagueEffect", period, duration);
 			this.types.add(EffectType.DISPELLABLE);
 			this.types.add(EffectType.BENEFICIAL);
+			this.attacker = attacker;
 		}
 
 		@Override
 		public void tickHero(Hero h) {
+			damageEntity(h.getEntity(), attacker.getEntity(), (int) (h.getMaxHealth()*0.02), DamageCause.MAGIC);
 			Iterator<Entity> near = h.getPlayer().getNearbyEntities(10, 10, 10).iterator();
 			while(near.hasNext()) {
 				Entity e = near.next();
@@ -59,14 +75,14 @@ public class SkillPlague extends ActiveSkill {
 					continue;
 				}
 				CharacterTemplate charTemp = this.plugin.getCharacterManager().getCharacter(le);
+				addSpellTarget(le, h);
 				Skill.damageEntity(le, h.getEntity(), (int) (charTemp.getMaxHealth()*0.02), DamageCause.CUSTOM);
 			}
 		}
 
 		@Override
-		public void tickMonster(Monster arg0) {
-			// TODO Auto-generated method stub
-			
+		public void tickMonster(Monster m) {
+			damageEntity(m.getEntity(), attacker.getEntity(), (int) (m.getMaxHealth()*0.02), DamageCause.MAGIC);
 		}
 
 

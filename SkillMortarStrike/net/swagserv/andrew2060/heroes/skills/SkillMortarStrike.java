@@ -1,6 +1,7 @@
 package net.swagserv.andrew2060.heroes.skills;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,7 +9,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -20,7 +20,7 @@ public class SkillMortarStrike extends ActiveSkill {
 
 	public SkillMortarStrike(Heroes plugin) {
 		super(plugin, "MortarStrike");
-		setDescription("Fires $1 mortars into the air that impact anywhere inside a $2 by $2 area $3 blocks in front of the shooter after $4 seconds");
+		setDescription("Fires $1 mortars into the air that impact anywhere inside a $2 by $2 area at the area under the shooter's cursor up to a distance of $3 blocks after $4 seconds");
 		setArgumentRange(0,0);
 		setIdentifiers("skill mortarstrike");
 		setUsage("/skill mortarstrike");
@@ -28,6 +28,7 @@ public class SkillMortarStrike extends ActiveSkill {
 
 	@Override
 	public SkillResult use(Hero h, String[] arg1) {
+		Bukkit.getServer().getLogger().log(Level.INFO, "Skill Used");
 		int mortars = SkillConfigManager.getUseSetting(h, this, "base-mortar-count", 0, false) + SkillConfigManager.getUseSetting(h, this, "mortars-per-level", 1, false)*h.getLevel();
 		if(SkillConfigManager.getUseSetting(h, this, "max-mortars", 50, false) > mortars) {
 			mortars = SkillConfigManager.getUseSetting(h, this, "max-mortars", 50, false);
@@ -36,14 +37,11 @@ public class SkillMortarStrike extends ActiveSkill {
 		int distance = SkillConfigManager.getUseSetting(h, this, "impactdistance", 30, false);
 		long delay = (long) (SkillConfigManager.getUseSetting(h, this, "impactdelay", 5000, false)*0.001);
 		long time = (long) (SkillConfigManager.getUseSetting(h, this, "time-between-mortars", 500, false)*0.001*20);
-		Vector v = h.getViewingLocation(160).toVector().setY(0);
-		Vector finalvec = v.subtract(h.getPlayer().getLocation().toVector().setY(0)).normalize().multiply(distance);
-		finalvec.add(h.getPlayer().getLocation().toVector().setY(0));
 		final Location fireloc = h.getPlayer().getLocation();
-		final Location loc = new Location(h.getPlayer().getWorld(), finalvec.getX(), 0, finalvec.getZ());
-		final Random randGen = new Random();
+		final Location loc = fireloc.getDirection().setY(0).normalize().multiply(distance).toLocation(fireloc.getWorld()).add(fireloc);
 		final long impacttime = delay*20;
 		final Hero hero = h;
+		Bukkit.getServer().getLogger().log(Level.INFO, "Point 1 reached " + mortars);
 		for(int i = 0;i<mortars;i++) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
 
@@ -53,6 +51,7 @@ public class SkillMortarStrike extends ActiveSkill {
 					FireworkMeta meta = firework.getFireworkMeta();
 					meta.setPower(64);
 					firework.setFireworkMeta(meta);
+					//Prevent Lag by removing firework after a second and a half of it flying
 					Bukkit.getScheduler().scheduleSyncDelayedTask(SkillMortarStrike.this.plugin, new Runnable() {
 
 						@Override
@@ -60,16 +59,17 @@ public class SkillMortarStrike extends ActiveSkill {
 							firework.remove();
 						}
 						
-					}, 100L);
+					}, 40L);
 					Bukkit.getScheduler().scheduleSyncDelayedTask(SkillMortarStrike.this.plugin, new Runnable() {
 
 						@Override
 						public void run() {
-							int disp1 = randGen.nextInt(dispersion);
-							int disp2 = randGen.nextInt(dispersion);
-							Location impactLoc = loc.add(disp1, 0 , disp2);
-							impactLoc = hero.getPlayer().getWorld().getHighestBlockAt(impactLoc).getLocation();
-							hero.getPlayer().getWorld().createExplosion(impactLoc, 0.8F);
+							Random randGen = new Random();
+							int disp1 = randGen.nextInt(dispersion*2)-dispersion;
+				 			int disp2 = randGen.nextInt(dispersion*2)-dispersion;
+							Location impactLoc = hero.getPlayer().getWorld().getHighestBlockAt(loc.getBlockX() + disp1, loc.getBlockZ() + disp2).getLocation();
+							hero.getPlayer().getWorld().createExplosion(impactLoc, 1.2F);
+							Bukkit.getServer().getLogger().log(Level.INFO, "Created explosion at " + impactLoc.toString());
 						}
 						
 					},impacttime);
