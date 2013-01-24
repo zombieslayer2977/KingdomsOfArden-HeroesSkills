@@ -31,6 +31,10 @@
 	<classpathentry kind="src" path="SkillAnvil"/>
 	<classpathentry kind="src" path="SkillEqualize"/>
 	<classpathentry kind="src" path="SkillFireworks"/>
+	<classpathentry kind="src" path="SkillCauldron"/>
+	<classpathentry kind="src" path="SkillArrowTurret"/>
+	<classpathentry kind="src" path="SkillDisenchant"/>
+	<classpathentry kind="src" path="SkillRejuvinate"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Bukkit.jar">
 		<attributes>
@@ -43,5 +47,6 @@
 			<attribute name="javadoc_location" value="http://ci.herocraftonline.com/job/Heroes/javadoc"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/Swagserv-ModularComponents"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -12,8 +12,6 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.Monster;
-import com.herocraftonline.heroes.characters.effects.Effect;
-import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
 import com.herocraftonline.heroes.characters.effects.PeriodicExpirableEffect;
 import com.herocraftonline.heroes.characters.party.HeroParty;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
@@ -46,19 +44,25 @@ public class SkillRejuvinate extends ActiveSkill {
 			case 0:
 				HeroRegainHealthEvent event = new HeroRegainHealthEvent(h, (int) amountHealed, skill);
 				Bukkit.getPluginManager().callEvent(event);
-				h.setHealth(h.getHealth() + event.getAmount());
+				if(!event.isCancelled()) {
+					h.setHealth(h.getHealth() + event.getAmount());
+				}
 				break;
 			case 1:
 				double multiplier = amountHealed*0.01;
 				HeroRegainHealthEvent event1 = new HeroRegainHealthEvent(h, (int) (h.getMaxHealth()*multiplier), skill);
 				Bukkit.getPluginManager().callEvent(event1);
-				h.setHealth(h.getHealth() + event1.getAmount());
+				if(!event1.isCancelled()) {
+					h.setHealth(h.getHealth() + event1.getAmount());
+				}
 				break;
 			case 2:
 				double multiplier1 = amountHealed*0.01;
 				HeroRegainHealthEvent event2 = new HeroRegainHealthEvent(h, (int) ((h.getMaxHealth()-h.getHealth())*multiplier1), skill);
 				Bukkit.getPluginManager().callEvent(event2);
-				h.setHealth(h.getHealth() + event2.getAmount());
+				if(!event2.isCancelled()) {
+					h.setHealth(h.getHealth() + event2.getAmount());
+				}
 				break;
 			}
 		}
