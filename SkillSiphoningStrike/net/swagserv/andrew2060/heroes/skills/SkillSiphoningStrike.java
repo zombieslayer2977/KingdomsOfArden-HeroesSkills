@@ -14,6 +14,7 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.Effect;
+import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
@@ -42,6 +43,8 @@ public class SkillSiphoningStrike extends ActiveSkill{
 
 		public SiphoningEffect(Skill skill) {
 			super(skill, "SiphoningEffect");
+			this.types.add(EffectType.BENEFICIAL);
+			this.types.add(EffectType.DISPELLABLE);
 		}
 		
 	}

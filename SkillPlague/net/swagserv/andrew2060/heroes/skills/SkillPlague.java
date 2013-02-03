@@ -57,7 +57,7 @@ public class SkillPlague extends ActiveSkill {
 		public PlagueEffect(Skill skill, Heroes plugin, long period, long duration, Hero attacker) {
 			super(skill, "PlagueEffect", period, duration);
 			this.types.add(EffectType.DISPELLABLE);
-			this.types.add(EffectType.BENEFICIAL);
+			this.types.add(EffectType.HARMFUL);
 			this.attacker = attacker;
 		}
 

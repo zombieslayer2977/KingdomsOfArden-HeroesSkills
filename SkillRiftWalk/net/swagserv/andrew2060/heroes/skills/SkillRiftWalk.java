@@ -19,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 public class SkillRiftWalk extends ActiveSkill {
@@ -111,7 +112,7 @@ public class SkillRiftWalk extends ActiveSkill {
 					}
 
 					pDelayed.playEffect(pDelayed.getLocation(), Effect.GHAST_SHRIEK, 1);
-					pDelayed.teleport(delayedLoc);
+					pDelayed.teleport(delayedLoc, TeleportCause.UNKNOWN);
 					pDelayed.getWorld().strikeLightningEffect(delayedLoc);
 					List<Entity> nearbyDel = pDelayed.getNearbyEntities(5.0D, 5.0D, 5.0D);
 					for (int x = 0; x < nearbyDel.size(); x++) {

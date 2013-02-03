@@ -186,8 +186,7 @@ public class SkillArrowTurret extends ActiveSkill {
 				Location lELoc = lE.getLocation();
 				Vector trajectory = new Vector(lELoc.getX() - l.getX(), lELoc.getY() - l.getY(), lELoc.getZ() - l.getZ());
 				//We create a new arrow, fired from the turret
-				Arrow arrow = w.spawnArrow(loc, trajectory, 1F, 1);
-				arrow.setVelocity(trajectory.multiply(1));
+				Arrow arrow = w.spawnArrow(loc, trajectory, 6, 1);
 			}
 		}
 	}
