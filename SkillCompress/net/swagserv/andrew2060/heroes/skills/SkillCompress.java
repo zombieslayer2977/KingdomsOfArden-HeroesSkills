@@ -6,7 +6,6 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
@@ -15,7 +14,6 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Properties;
 import com.herocraftonline.heroes.util.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -176,7 +174,11 @@ public class SkillCompress extends ActiveSkill {
 					break;
 				}
 				Map<Material, Double> expValues = Heroes.properties.miningExp;
-				hero.addExp(expValues.get(type), hero.getHeroClass(), hero.getPlayer().getLocation());
+				Double amount = expValues.get(type);
+				if(amount == null) {
+					amount = 0.00;
+				}
+				hero.addExp(amount , hero.getHeroClass(), hero.getPlayer().getLocation());
 			}
 			
 		}
