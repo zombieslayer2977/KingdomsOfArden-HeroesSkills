@@ -36,9 +36,7 @@ public class SkillCamouflage extends PassiveSkill {
 	//SkillCamouflage's Constructor: Note the lack of a return type! a constructor is called when a new instance of an object is created using the new keyword
 	public SkillCamouflage(Heroes plugin) {
 		super(plugin, "Camouflage");
-		setDescription("Passive: When within $1 blocks of a leaf block, becomes invisible to everyone. " +
-				"Attacking while camouflaged or up to 2 seconds after leaving camouflage will cause that attack to deal a bonus $2% true damage and uncamouflage the attacker" +
-				"for the duration of combat.");
+		setDescription("Passive: When within $1 blocks of a leaf block, becomes invisible to everyone. $2");
 		//Note the new className(this): this means I am calling upon the CONSTRUCTOR of an object (a special type of function with no return type)
 		Bukkit.getPluginManager().registerEvents(new CamouflageListener(this), this.plugin);
 		this.camouflaged = new HashMap<Player,Boolean>();
@@ -48,16 +46,26 @@ public class SkillCamouflage extends PassiveSkill {
 	public String getDescription(Hero h) {
 		int radius = SkillConfigManager.getUseSetting(h, this, "radius", 2, false);
 		int bonusdmg = SkillConfigManager.getUseSetting(h, this, "bonuspercent", 50, false);
+		boolean enhanced = h.getHeroClass().hasNoParents();
+		String enhancedtext;
+		if(!enhanced) {
+			enhancedtext = "Enhanced: Attacking while camouflaged or up to 2 seconds " +
+					"after leaving camouflage will cause that attack to" +
+					" deal a bonus $2% true damage and uncamouflage the attacker" +
+					"for the duration of combat.";
+			enhancedtext = enhancedtext.replace("$2",bonusdmg + "");
+		} else {
+			enhancedtext = "";
+		}
 		return getDescription()
 				.replace("$1", radius + "")
-				.replace("$2", bonusdmg + "");
+				.replace("$2", enhancedtext + "");
 	}
 	// So now let us create an "Effect" that we can apply to the player: we apply this while they are camouflaged, remove after the first attack.
 	private class CamouflageAttackBonusEffect extends Effect {
 		public CamouflageAttackBonusEffect(Skill skill) {
 			super(skill, "CamouflageDmg");
 			types.add(EffectType.BENEFICIAL);
-			types.add(EffectType.WOUNDING);
 		}		
 	}
 	//Now lets tell heroes to populate skills.yml with our default values if they do not exist:
@@ -66,6 +74,7 @@ public class SkillCamouflage extends PassiveSkill {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("radius", Integer.valueOf(2));
 		node.set("bonuspercent", Integer.valueOf(50));
+		node.set("enhanced", Integer.valueOf(0));
 		return node;
 	}
 	//"Listener" is an interface that was provided by the Bukkit API: We use this interface to register event listeners in a format that 
@@ -145,6 +154,9 @@ public class SkillCamouflage extends PassiveSkill {
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) 
 		public void onHeroEnterCombat(HeroEnterCombatEvent event) {
 			Player p = event.getHero().getPlayer();
+			if(!camouflaged.containsKey(p)) {
+				return;
+			}
 			if(camouflaged.get(p) == true) {
 				camouflaged.put(p, false);
 				for(Player online : Bukkit.getServer().getOnlinePlayers()) {
@@ -233,7 +245,9 @@ public class SkillCamouflage extends PassiveSkill {
 						online.hidePlayer(p);
 					}
 					//Add the bonus damage effect to our player.
-					h.addEffect(new CamouflageAttackBonusEffect(skill));
+					if(!h.getHeroClass().hasNoParents()) {
+						h.addEffect(new CamouflageAttackBonusEffect(skill));
+					}
 					return;
 				}
 			}
