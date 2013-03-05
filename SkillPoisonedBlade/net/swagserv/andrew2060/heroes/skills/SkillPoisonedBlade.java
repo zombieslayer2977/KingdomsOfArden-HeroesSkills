@@ -48,7 +48,7 @@ public class SkillPoisonedBlade extends ActiveSkill {
 		//-The following portion between these two comments is only important int his specific application
 		//Begin Heroes Specific Constructor Arguments
 		super(plugin, "PoisonedBlade");
-		setDescription("Poisons the blade, which applies a $1 second poison on next hit");
+		setDescription("Poisons the blade, which applies a $1 second poison on next hit.");
 		setUsage("/skill poisonedblade");
 		setIdentifiers("skill poisonedblade");
 		setArgumentRange(0,0);
