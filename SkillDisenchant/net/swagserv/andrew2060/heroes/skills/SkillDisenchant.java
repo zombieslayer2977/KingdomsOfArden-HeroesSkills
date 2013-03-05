@@ -1,6 +1,8 @@
 package net.swagserv.andrew2060.heroes.skills;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -8,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -47,7 +50,15 @@ public class SkillDisenchant extends ActiveSkill {
 			int level = next.getValue();
 			hand.removeEnchantment(ench);
 			//1 exp bottle/level of enchant removed
-			h.getPlayer().getWorld().dropItem(h.getPlayer().getLocation(), new ItemStack(Material.EXP_BOTTLE, level));
+			ItemStack expbottle = new ItemStack(Material.EXP_BOTTLE, level);
+			ItemMeta meta = expbottle.getItemMeta();
+			meta.setDisplayName("Essence of enchantment");
+			List<String> lore = new ArrayList<String>();
+			lore.add("Contains a fraction of extracted enchantment energy.");
+			lore.add("Can be used to recharge existing enchantments");
+			meta.setLore(lore);
+			expbottle.setItemMeta(meta);
+			h.getPlayer().getWorld().dropItem(h.getPlayer().getLocation(), expbottle);
 			//Handle breaking
 			if(randgen.nextInt(100) < Math.pow(h.getLevel(h.getSecondClass()),-1)*100) {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Oh no your item broke :("); //Like we actually give a fuck
