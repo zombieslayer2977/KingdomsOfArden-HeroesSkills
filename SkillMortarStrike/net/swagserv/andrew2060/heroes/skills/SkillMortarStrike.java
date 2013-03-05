@@ -41,7 +41,6 @@ public class SkillMortarStrike extends ActiveSkill {
 		final Location loc = fireloc.getDirection().setY(0).normalize().multiply(distance).toLocation(fireloc.getWorld()).add(fireloc);
 		final long impacttime = delay*20;
 		final Hero hero = h;
-		Bukkit.getServer().getLogger().log(Level.INFO, "Point 1 reached " + mortars);
 		for(int i = 0;i<mortars;i++) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
 
@@ -68,7 +67,7 @@ public class SkillMortarStrike extends ActiveSkill {
 							int disp1 = randGen.nextInt(dispersion*2)-dispersion;
 				 			int disp2 = randGen.nextInt(dispersion*2)-dispersion;
 							Location impactLoc = hero.getPlayer().getWorld().getHighestBlockAt(loc.getBlockX() + disp1, loc.getBlockZ() + disp2).getLocation();
-							hero.getPlayer().getWorld().createExplosion(impactLoc, 1.2F);
+							hero.getPlayer().getWorld().createExplosion(impactLoc, 0F);
 							Bukkit.getServer().getLogger().log(Level.INFO, "Created explosion at " + impactLoc.toString());
 						}
 						
