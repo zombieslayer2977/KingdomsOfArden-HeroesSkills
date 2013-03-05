@@ -1,6 +1,8 @@
 package net.swagserv.andrew2060.heroes.skills;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
@@ -49,17 +52,20 @@ public class SkillSoulSap extends PassiveSkill {
 			if(!h.hasEffect("SoulSap")) {
 				return;
 			}
-			k.sendMessage("Attempting Creation of New SoulGem");
 			PlayerInventory pI = k.getInventory();
 			if(!pI.contains(Material.EMERALD)) {
 				return;
 			}
+			k.sendMessage("DEBUG: Point 2 reached");
 			Iterator<Integer> emeralds = pI.all(Material.EMERALD).keySet().iterator();
 			while(emeralds.hasNext()) {
 				int next = emeralds.next();
 				ItemStack emerald = pI.getItem(next);
 				if(emerald.getAmount() > 1) {
-					if(!createSoulGem(pI,p,skill.plugin)) {
+					k.sendMessage("DEBUG: Point 4 reached");
+
+					boolean creategem = createSoulGem(pI,p,skill.plugin);
+					if(!creategem) {
 						k.sendMessage("Not enough space in your inventory for a new soul gem!");
 						return;
 					}
@@ -69,13 +75,14 @@ public class SkillSoulSap extends PassiveSkill {
 				if(emerald.getItemMeta().getDisplayName().toUpperCase().contains("GEM")) {
 					continue;
 				}
-				if(!createSoulGem(pI,p,skill.plugin)) {
+				k.sendMessage("DEBUG: Point 4 reached");
+				boolean creategem = createSoulGem(pI,p,skill.plugin);
+				if(!creategem) {
 					k.sendMessage("Not enough space in your inventory for a new soul gem!");
 					return;
 				}
 				break;
 			}
-			k.sendMessage("If nothing was successfully sent to you earlier, then soul gem creation failed");
 		}
 
 		private boolean createSoulGem(PlayerInventory pI, Player deadPlayer, Heroes heroes) {
@@ -88,30 +95,35 @@ public class SkillSoulSap extends PassiveSkill {
 			int level = h.getLevel();
 			String rank = "";
 			if(level >= 0 && level <= 20) {
-				rank = "§8Newbie";
+				rank = "Petty";
 			}
 			if(level > 20 && level <= 30) {
-				rank = "§9Apprentice";
+				rank = "Weak";
 			}
 			if(level > 30 && level <= 40) {
-				rank = "§3Seasoned";
+				rank = "Common";
 			}
 			if(level > 40 && level <= 50) {
-				rank = "§2Veteran";
+				rank = "Strong";
 			}
 			if(level > 50 && level < 65) {
-				rank = "§6Elite";
+				rank = "Major";
 			}
 			if(level >= 65 && level <75) {
-				rank = "§5Legendary";
+				rank = "Master";
 			}
 			if(level == 75) {
-				rank = "§4Master";
+				rank = "Legendary";
 			}
 			if(!h.getHeroClass().hasNoParents()) {
-				rank = "§4Master";
+				rank = "Legendary";
 			}
-			emerald.getItemMeta().setDisplayName(rank + " Soul Gem");
+			ItemMeta meta = emerald.getItemMeta();
+			meta.setDisplayName(rank + " Soul Gem");
+			List<String> lore = new ArrayList<String>();
+			lore.add("A gem that entraps the soul of a newly killed opponent, can be used to gamble for enhancement prefixes/suffixes");
+			meta.setLore(lore);
+			emerald.setItemMeta(meta);
 			pI.setItem(empty, emerald);
 			((Player)((LivingEntity)pI.getHolder())).sendMessage(rank + " Soul Gem" + ChatColor.GRAY + " Successfully Created!");
 			return true;
