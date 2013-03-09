@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.AnvilInventory;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
@@ -29,7 +30,7 @@ import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 public class SkillCamouflage extends PassiveSkill {
 	//An HashMap is essentially a list linking two variables, in this case a Player along with a Boolean value (whether they are currently vanished), which will be initialized in SkillCamouflage's Constructor.
 	HashMap<Player,Boolean> camouflaged;
@@ -51,7 +52,7 @@ public class SkillCamouflage extends PassiveSkill {
 		if(!enhanced) {
 			enhancedtext = "Enhanced: Attacking while camouflaged or up to 2 seconds " +
 					"after leaving camouflage will cause that attack to" +
-					" deal a bonus $2% true damage and uncamouflage the attacker" +
+					" deal a bonus $2% damage and uncamouflage the attacker" +
 					"for the duration of combat.";
 			enhancedtext = enhancedtext.replace("$2",bonusdmg + "");
 		} else {
@@ -179,7 +180,7 @@ public class SkillCamouflage extends PassiveSkill {
 					}
 				}
 			} else {
-				int levelReq = (Integer) SkillConfigManager.getSetting(to, skill, Setting.LEVEL.node());
+				int levelReq = (Integer) SkillConfigManager.getSetting(to, skill, SkillSetting.LEVEL.node());
 				if(camouflaged.containsKey(p)) {
 					if(toLevel < levelReq) {
 						camouflaged.remove(p);
@@ -191,7 +192,6 @@ public class SkillCamouflage extends PassiveSkill {
 					camouflaged.put(p, false);
 				}
 			}
-			
 		}
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 		//Handle camouflaging

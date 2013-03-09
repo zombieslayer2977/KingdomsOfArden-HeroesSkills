@@ -11,7 +11,7 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,16 +37,16 @@ public class SkillEarthenArmor extends ActiveSkill {
 	}
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection section = super.getDefaultConfig();
-		section.set(Setting.DURATION.node(), Integer.valueOf(300000));
-		section.set(Setting.APPLY_TEXT.node(), "%hero% shattered their armor!");
-		section.set(Setting.EXPIRE_TEXT.node(), "%hero% has reaccumulated their earthen armor!");
+		section.set(SkillSetting.DURATION.node(), Integer.valueOf(300000));
+		section.set(SkillSetting.APPLY_TEXT.node(), "%hero% shattered their armor!");
+		section.set(SkillSetting.EXPIRE_TEXT.node(), "%hero% has reaccumulated their earthen armor!");
 		return section;
 	}
 
 	public void init() {
 		super.init();
-		this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT, "%hero% shattered their earthen armor!").replace("%hero%", "$1");
-		this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT, "%hero% has reaccumulated their earthen armor!").replace("%hero%", "$1");
+		this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT, "%hero% shattered their earthen armor!").replace("%hero%", "$1");
+		this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT, "%hero% has reaccumulated their earthen armor!").replace("%hero%", "$1");
 	}
 	public SkillResult use(Hero hero, String[] args) {
 		if (hero.hasEffect("EAEffect")) {
@@ -54,7 +54,7 @@ public class SkillEarthenArmor extends ActiveSkill {
 			return SkillResult.NORMAL;
 		}
 		broadcastExecuteText(hero);
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 300000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 300000, false);
 		List<Entity> entitylist = hero.getEntity().getNearbyEntities(10.0D, 10.0D, 10.0D);
 		Player p = hero.getPlayer();
 		int damage = hero.getHealth() * 2;
@@ -77,7 +77,7 @@ public class SkillEarthenArmor extends ActiveSkill {
 	}
 	
 	public String getDescription(Hero hero) {
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 300000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 300000, false);
 		double reduct = hero.getLevel() * 0.5D;
 		int dmg = hero.getLevel() * 2;
 		return getDescription().replace("$1", reduct+"").replace("$2", dmg+"").replace("$3", duration*0.001+"");

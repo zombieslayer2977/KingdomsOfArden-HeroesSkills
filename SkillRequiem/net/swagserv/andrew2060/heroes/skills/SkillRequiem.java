@@ -75,7 +75,7 @@ public class SkillRequiem extends PassiveSkill {
 			if(h.hasEffect("RequiemEffect")) {
 				return;
 			}
-			if (h.getHealth() - event.getDamage() > 1) {
+			if (h.getPlayer().getHealth() - event.getDamage() > 1) {
 				return;
 			}
 			LivingEntity finalHit = event.getDamager().getEntity();
@@ -85,7 +85,7 @@ public class SkillRequiem extends PassiveSkill {
 			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
 			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
 			h.addEffect(reqEffect);
-			h.setHealth(h.getMaxHealth());
+			p.setHealth(p.getMaxHealth());
 			scheduleExplosion(h, p, skill, finalDamager, DamageCause.ENTITY_ATTACK);
 			return;
 		}
@@ -106,7 +106,7 @@ public class SkillRequiem extends PassiveSkill {
 			if(h.hasEffect("RequiemEffect")) {
 				return;
 			}
-			if (h.getHealth() - event.getDamage() > 1) {
+			if (p.getHealth() - event.getDamage() > 1) {
 				return;
 			}
 			LivingEntity finalHit = event.getDamager().getEntity();
@@ -135,7 +135,7 @@ public class SkillRequiem extends PassiveSkill {
 			if(h.hasEffect("RequiemEffect")) {
 				return;
 			}
-			if (h.getHealth() - event.getDamage() > 1) {
+			if (p.getHealth() - event.getDamage() > 1) {
 				return;
 			}
 			DamageCause cause = event.getCause();
@@ -225,9 +225,8 @@ public class SkillRequiem extends PassiveSkill {
 				if(finalDamager != null) {
 					Skill.damageEntity(h.getEntity(), finalDamager, 50000, dmgCause);
 				} else {
-					h.setHealth(0);
+					p.setHealth(0);
 					h.syncExperience();
-					h.syncHealth();
 				}
 			}
 		}

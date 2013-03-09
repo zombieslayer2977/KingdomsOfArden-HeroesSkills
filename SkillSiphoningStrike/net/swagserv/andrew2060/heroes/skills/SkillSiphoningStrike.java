@@ -2,9 +2,10 @@ package net.swagserv.andrew2060.heroes.skills;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftOcelot;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -67,24 +68,25 @@ public class SkillSiphoningStrike extends ActiveSkill{
 				return;
 			}
 			h.removeEffect(h.getEffect("SiphoningEffect"));
-			int max = h.getMaxHealth();
-			int cur = h.getHealth();
+			Player p = h.getPlayer();
+			int max = p.getMaxHealth();
+			int cur = p.getHealth();
 			int dmg = event.getDamage();
 			int level = h.getLevel();
 			int healthregain = (int) (dmg*level*0.01);
 			
-			CraftPlayer p = (CraftPlayer)h.getPlayer();
+			CraftPlayer cP = (CraftPlayer)h.getPlayer();
 			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-			p.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
+			cP.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
 			o.remove();
 
 			h.getPlayer().sendMessage(ChatColor.GRAY + "Siphoned " + ChatColor.GREEN + healthregain + ChatColor.GRAY + " health!");
 			
 			if(cur+healthregain > max) {
-				h.setHealth(h.getMaxHealth());
+				p.setHealth(p.getMaxHealth());
 				return;
 			}
-			h.setHealth(cur+healthregain);
+			p.setHealth(cur+healthregain);
 			return;
 		}
 		

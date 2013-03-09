@@ -16,6 +16,7 @@ import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
@@ -31,6 +32,11 @@ public class SkillCommandSlow extends ActiveSkill {
 
 	@Override
 	public SkillResult use(Hero h, String[] arg1) {
+		if(h.hasEffect("TurretEffectCooldown")) {
+			h.getPlayer().sendMessage("You must wait 10 seconds between using different command skills!");
+			return SkillResult.NORMAL;
+		}
+		h.addEffect(new ExpirableEffect(this,this.plugin,"TurretEffectCooldown",10000));
 		TurretEffect tE;
 		if(!h.hasEffect("TurretEffect")) {
 			tE = new TurretEffect(plugin, this);
@@ -72,7 +78,7 @@ public class SkillCommandSlow extends ActiveSkill {
 					continue;
 				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
-					((LivingEntity)next).addPotionEffect(PotionEffectType.SLOW.createEffect(40, slowLevel));
+					((LivingEntity)next).addPotionEffect(PotionEffectType.SLOW.createEffect(80, slowLevel));
 				}
 			}
 			a.remove();

@@ -14,7 +14,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -46,30 +46,30 @@ public class SkillCompress extends ActiveSkill {
 
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection section = super.getDefaultConfig();
-		section.set(Setting.DURATION.node(), Integer.valueOf(10000));
-		section.set(Setting.APPLY_TEXT.node(), "%hero%'s tools now exert extreme pressure on anything they contact!");
-		section.set(Setting.EXPIRE_TEXT.node(), "%hero%'s tools are no longer exerting pressure!");
+		section.set(SkillSetting.DURATION.node(), Integer.valueOf(10000));
+		section.set(SkillSetting.APPLY_TEXT.node(), "%hero%'s tools now exert extreme pressure on anything they contact!");
+		section.set(SkillSetting.EXPIRE_TEXT.node(), "%hero%'s tools are no longer exerting pressure!");
 		return section;
 	}
 
 	public void init() {
 		super.init();
-		this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT, "%hero%'s tools now exert extreme pressure on anything they contact!").replace("%hero%", "$1");
-		this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT, "%hero%'s tools are no longer exerting pressure!").replace("%hero%", "$1");
-		this.pvpapplyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%hero% bashed %target% into the Ground!").replace("%target%", "$1").replace("%hero%", "$2");
+		this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT, "%hero%'s tools now exert extreme pressure on anything they contact!").replace("%hero%", "$1");
+		this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT, "%hero%'s tools are no longer exerting pressure!").replace("%hero%", "$1");
+		this.pvpapplyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%hero% bashed %target% into the Ground!").replace("%target%", "$1").replace("%hero%", "$2");
 	}
 
 	public SkillResult use(Hero hero, String[] args) {
 		broadcastExecuteText(hero);
 
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 10000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false);
 		hero.addEffect(new CompressEffect(this, duration));
 
 		return SkillResult.NORMAL;
 	}
 
 	public String getDescription(Hero hero) {
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 10000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false);
 		return getDescription().replace("$1", duration / 1000 +"");
 	}
 

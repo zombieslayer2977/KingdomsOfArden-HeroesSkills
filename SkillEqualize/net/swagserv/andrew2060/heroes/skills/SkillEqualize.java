@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
@@ -13,7 +14,7 @@ import com.herocraftonline.heroes.characters.party.HeroParty;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillEqualize extends ActiveSkill {
 
@@ -28,6 +29,7 @@ public class SkillEqualize extends ActiveSkill {
 	@Override
 	public SkillResult use(Hero h, String[] arg1) {
 		HeroParty heroParty = h.getParty();
+		Player p = h.getPlayer();
 		if(heroParty == null) {
 			h.getPlayer().sendMessage(ChatColor.GRAY + "You are not in a party!");
 			return SkillResult.INVALID_TARGET_NO_MSG;
@@ -40,13 +42,14 @@ public class SkillEqualize extends ActiveSkill {
 		boolean skipRangeCheck = (range == 0);						//0 for no maximum range
 		while(partyMembers.hasNext()) {
 			Hero h2 = partyMembers.next();
-			if(skipRangeCheck || h2.getPlayer().getLocation().toVector().distanceSquared(v) < range) {
-				maxHealthTotal += h2.getMaxHealth();
-				currentHealthTotal += h2.getHealth();
+			Player p2 = h2.getPlayer();
+			if(skipRangeCheck || p2.getLocation().toVector().distanceSquared(v) < range) {
+				maxHealthTotal += p2.getMaxHealth();
+				currentHealthTotal += p2.getHealth();
 			}
 			continue;
 		}
-		if(maxHealthTotal == h.getMaxHealth()) {
+		if(maxHealthTotal == p.getMaxHealth()) {
 			h.getPlayer().sendMessage("There is noone in range to equalize with!");
 			return SkillResult.INVALID_TARGET_NO_MSG;
 		}
@@ -54,9 +57,9 @@ public class SkillEqualize extends ActiveSkill {
 		Iterator<Hero> applyHealthIterator = heroParty.getMembers().iterator();
 		while(applyHealthIterator.hasNext()) {
 			Hero applyHero = applyHealthIterator.next();
+			Player applyP = applyHero.getPlayer();
 			if(skipRangeCheck || applyHero.getPlayer().getLocation().toVector().distanceSquared(v) < range) {
-				applyHero.setHealth((int) (applyHero.getMaxHealth()*healthMultiplier));
-				applyHero.syncHealth();
+				applyP.setHealth((int) (applyP.getMaxHealth()*healthMultiplier));
 				if(applyHero.getName() == h.getName()) {
 					h.getPlayer().sendMessage(ChatColor.GRAY + "You used Equalize!");
 				} else {
@@ -76,7 +79,7 @@ public class SkillEqualize extends ActiveSkill {
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("maxrange", Integer.valueOf(0));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(180000));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(180000));
 		return node;
 		
 	}

@@ -11,7 +11,7 @@ import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.List;
 import java.util.Random;
 
@@ -34,7 +34,7 @@ public class SkillEarthquake extends ActiveSkill {
 	}
 
 	public String getDescription(Hero hero) {
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 30000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 30000, false);
 		int damage = SkillConfigManager.getUseSetting(hero, this, "damage", 10, false);
 		int range = SkillConfigManager.getUseSetting(hero, this, "range", 10, false);
 		return getDescription().replace("$1", duration*0.001 +"").replace("$2", damage +"").replace("$3", range +"");
@@ -44,8 +44,8 @@ public class SkillEarthquake extends ActiveSkill {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("damage", Integer.valueOf(10));
 		node.set("range", Integer.valueOf(10));
-		node.set(Setting.DURATION.node(), Integer.valueOf(30000));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(300000));
+		node.set(SkillSetting.DURATION.node(), Integer.valueOf(30000));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(300000));
 		return node;
 	}
 	public class EarthquakeEffect extends PeriodicExpirableEffect {
@@ -96,7 +96,7 @@ public class SkillEarthquake extends ActiveSkill {
 	}
 	public SkillResult use(Hero hero, String[] arg1) {
 		broadcast(hero.getPlayer().getLocation(), hero.getName() + ChatColor.GRAY + " triggered an earthquake!");
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 30000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 30000, false);
 		hero.addEffect(new EarthquakeEffect(this, this.plugin, 1000L, duration));
 		return SkillResult.NORMAL;
 	}

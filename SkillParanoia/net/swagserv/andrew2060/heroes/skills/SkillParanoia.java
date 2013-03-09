@@ -18,7 +18,7 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillParanoia extends ActiveSkill {
 
@@ -69,11 +69,11 @@ public class SkillParanoia extends ActiveSkill {
 					++count;
 				}
 				int amounthealed = count * heal;
-				if(h.getHealth() + amounthealed > h.getMaxHealth()) {
-					h.setHealth(h.getMaxHealth());
+				if(p.getHealth() + amounthealed > p.getMaxHealth()) {
+					p.setHealth(p.getMaxHealth());
 					return;
 				}
-				h.setHealth(h.getHealth() + amounthealed);
+				p.setHealth(p.getHealth() + amounthealed);
 				p.getWorld().playEffect(p.getLocation(), Effect.SMOKE, 3);
 				p.sendMessage(ChatColor.DARK_GRAY + "[" 
 						+ ChatColor.RED + "Paranoia" 
@@ -99,7 +99,7 @@ public class SkillParanoia extends ActiveSkill {
 		node.set("timebeforeheal", Integer.valueOf(5));
 		node.set("heal", Integer.valueOf(5));
 		node.set("healradius", Integer.valueOf(10));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(120000));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(120000));
 		return node;
 	}
 

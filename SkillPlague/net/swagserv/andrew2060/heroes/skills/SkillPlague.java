@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.herocraftonline.heroes.Heroes;
@@ -63,26 +64,14 @@ public class SkillPlague extends ActiveSkill {
 
 		@Override
 		public void tickHero(Hero h) {
-			damageEntity(h.getEntity(), attacker.getEntity(), (int) (h.getMaxHealth()*0.02), DamageCause.MAGIC);
-			Iterator<Entity> near = h.getPlayer().getNearbyEntities(10, 10, 10).iterator();
-			while(near.hasNext()) {
-				Entity e = near.next();
-				if(!(e instanceof LivingEntity)) {
-					continue;
-				}
-				LivingEntity le = (LivingEntity)e;
-				if(!Skill.damageCheck(h.getPlayer(), le)) {
-					continue;
-				}
-				CharacterTemplate charTemp = this.plugin.getCharacterManager().getCharacter(le);
-				addSpellTarget(le, h);
-				Skill.damageEntity(le, h.getEntity(), (int) (charTemp.getMaxHealth()*0.02), DamageCause.CUSTOM);
-			}
+			Player p = h.getPlayer();
+			damageEntity(h.getEntity(), attacker.getEntity(), (int) (p.getMaxHealth()*0.02), DamageCause.MAGIC);
 		}
 
 		@Override
 		public void tickMonster(Monster m) {
-			damageEntity(m.getEntity(), attacker.getEntity(), (int) (m.getMaxHealth()*0.02), DamageCause.MAGIC);
+			LivingEntity lE = m.getEntity();
+			damageEntity(m.getEntity(), attacker.getEntity(), (int) (lE.getMaxHealth()*0.02), DamageCause.MAGIC);
 		}
 
 

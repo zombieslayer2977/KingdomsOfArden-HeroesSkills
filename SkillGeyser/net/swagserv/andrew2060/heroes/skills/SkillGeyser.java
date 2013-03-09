@@ -20,7 +20,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillGeyser extends ActiveSkill {
 
@@ -34,7 +34,7 @@ public class SkillGeyser extends ActiveSkill {
 	public String getDescription(Hero h) {
 		return getDescription()
 				.replace("$1", SkillConfigManager.getUseSetting(h, this, "TimeBurst", 1000, false)*0.001 +"")
-				.replace("$2", SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE.node(), 30, false) +h.getLevel()*SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE_INCREASE.node(), 0.5, false) + "")
+				.replace("$2", SkillConfigManager.getUseSetting(h, this, SkillSetting.DAMAGE.node(), 30, false) +h.getLevel()*SkillConfigManager.getUseSetting(h, this, SkillSetting.DAMAGE_INCREASE.node(), 0.5, false) + "")
 				.replace("$3", SkillConfigManager.getUseSetting(h, this, "SlowAmount", 2, false)*15 +"")
 				.replace("$4", SkillConfigManager.getUseSetting(h, this, "SlowDuration", 6000, false)*0.001 +"");
 	}
@@ -42,20 +42,20 @@ public class SkillGeyser extends ActiveSkill {
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
         node.set("TimeBurst", 1000);
-        node.set(Setting.DAMAGE.node(), 30);
+        node.set(SkillSetting.DAMAGE.node(), 30);
         node.set("SlowAmount", 2);
         node.set("SlowDuration", 6000);
-        node.set(Setting.COOLDOWN.node(), 30000);
-        node.set(Setting.DAMAGE.node(), 30);
-        node.set(Setting.DAMAGE_INCREASE.node(), 0.5);
-        node.set(Setting.MANA.node(), 5);
+        node.set(SkillSetting.COOLDOWN.node(), 30000);
+        node.set(SkillSetting.DAMAGE.node(), 30);
+        node.set(SkillSetting.DAMAGE_INCREASE.node(), 0.5);
+        node.set(SkillSetting.MANA.node(), 5);
         return node;
     }
 	@Override
 	public SkillResult use(Hero h, String[] args) {
 		final Hero casterHero = h;
 		long timeBurst = (long) (SkillConfigManager.getUseSetting(h, this, "TimeBurst", 1000, false)* 0.001*20);
-		final double damage = SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE.node(), 30, false) +  +h.getLevel()*SkillConfigManager.getUseSetting(h, this, Setting.DAMAGE_INCREASE.node(), 0.5, false);
+		final double damage = SkillConfigManager.getUseSetting(h, this, SkillSetting.DAMAGE.node(), 30, false) +  +h.getLevel()*SkillConfigManager.getUseSetting(h, this, SkillSetting.DAMAGE_INCREASE.node(), 0.5, false);
 		final int slowStrength = SkillConfigManager.getUseSetting(h, this, "SlowAmount", 1, false);
 		final int slowDuration = (int) (SkillConfigManager.getUseSetting(h, this, "SlowDuration", 6000, false)*0.001*20);
 		this.broadcast(h.getPlayer().getLocation(), h.getName() + ChatColor.GRAY + " is channeling a geyser!");

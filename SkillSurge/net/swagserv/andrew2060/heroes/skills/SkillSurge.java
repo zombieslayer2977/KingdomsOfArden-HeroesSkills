@@ -104,10 +104,11 @@ public class SkillSurge extends ActiveSkill{
 					ct.addEffect(new SlowEffect(skill, "SurgeExplodingEffect", 2000, 1, false, "", "", h));
 				}
 				if(h.hasEffect("SapShotEffect")) {
-					if((h.getHealth()+event.getDamage()*0.2)>h.getMaxHealth()) {
-						h.setHealth(h.getMaxHealth());
+					Player p = h.getPlayer();
+					if((p.getHealth()+event.getDamage()*0.2)>p.getMaxHealth()) {
+						p.setHealth(p.getMaxHealth());
 					} else {
-						h.setHealth((int) (h.getHealth()+event.getDamage()*0.2));
+						p.setHealth((int) (p.getHealth()+event.getDamage()*0.2));
 					}
 					h.getPlayer().sendMessage(ChatColor.GRAY + "[Surge]: heal amount doubled!");
 				}

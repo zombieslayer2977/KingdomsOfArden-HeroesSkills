@@ -9,15 +9,15 @@ import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftOcelot;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Ocelot;
@@ -39,8 +39,8 @@ public class SkillSapShot extends ActiveSkill {
 	}
 	public String getDescription(Hero hero) {
 		int level = hero.getLevel(hero.getHeroClass());
-		int levelDuration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION_INCREASE.node(), 500, false);
-		int effectDurationMillis = level * levelDuration + SkillConfigManager.getUseSetting(hero, this, Setting.DURATION.node(), 5000, false);
+		int levelDuration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION_INCREASE.node(), 500, false);
+		int effectDurationMillis = level * levelDuration + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 5000, false);
 		return getDescription()
 				.replace("$1", effectDurationMillis / 1000 +"")
 				.replace("$2", SkillConfigManager.getUseSetting(hero, this, "sapPercentage", 20, false) +"");
@@ -49,9 +49,9 @@ public class SkillSapShot extends ActiveSkill {
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("sapPercentage", Integer.valueOf(20));
-		node.set(Setting.DURATION.node(), Integer.valueOf(5000));
-		node.set(Setting.DURATION_INCREASE.node(), Integer.valueOf(500));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(120000));
+		node.set(SkillSetting.DURATION.node(), Integer.valueOf(5000));
+		node.set(SkillSetting.DURATION_INCREASE.node(), Integer.valueOf(500));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(120000));
 		return node;
 	}
 	public void init() {
@@ -61,8 +61,8 @@ public class SkillSapShot extends ActiveSkill {
 	public SkillResult use(Hero hero, String[] args) {
 		broadcastExecuteText(hero);
 		int level = hero.getLevel(hero.getHeroClass());
-		int levelDuration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION_INCREASE.node(), 500, false);
-		int effectDurationMillis = level * levelDuration + SkillConfigManager.getUseSetting(hero, this, Setting.DURATION.node(), 5000, false);
+		int levelDuration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION_INCREASE.node(), 500, false);
+		int effectDurationMillis = level * levelDuration + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 5000, false);
 		hero.addEffect(new SapShotEffect(this, effectDurationMillis));
 		return SkillResult.NORMAL;
 	}
@@ -98,34 +98,35 @@ public class SkillSapShot extends ActiveSkill {
 				return;
 			}
 			Hero h = (Hero)event.getDamager();
+			Player p = h.getPlayer();
 			if (!h.hasEffect("SapShotEffect")) {
 				return;
 			}
 			int d = event.getDamage();
-			int health = h.getHealth();
+			int health = p.getHealth();
 			int sapPercentage = SkillConfigManager.getUseSetting(h, this.skill, "sapPercentage", 20, false);
 			int modifiedHealth = (int)(health + d * sapPercentage * 0.01D);
-			if (modifiedHealth > h.getMaxHealth()) {
+			if (modifiedHealth > p.getMaxHealth()) {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped to " + ChatColor.AQUA + "max" + ChatColor.GRAY + " health!");
-				h.setHealth(h.getMaxHealth());
+				p.setHealth(p.getMaxHealth());
 				event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
 
-				CraftPlayer p = (CraftPlayer)h.getPlayer();
+				CraftPlayer cp = (CraftPlayer)h.getPlayer();
 				CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-				p.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
+				cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
 				o.remove();
 				return;
 			}
-			h.setHealth(modifiedHealth);
+			p.setHealth(modifiedHealth);
 			h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " Health!");
 			if ((event.getEntity() instanceof Player)) {
 				((Player)event.getEntity()).sendMessage(ChatColor.GRAY + h.getName() + " sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " health from you!");
 			}
 
-			CraftPlayer p = (CraftPlayer)h.getPlayer();
+			CraftPlayer cp = (CraftPlayer)h.getPlayer();
 			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
 			event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
-			p.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
+			cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
 			o.remove();
 		}
 

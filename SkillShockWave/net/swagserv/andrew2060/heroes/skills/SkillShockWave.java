@@ -5,7 +5,7 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -32,7 +32,7 @@ public class SkillShockWave extends ActiveSkill {
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("range", Integer.valueOf(10));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(60000));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(60000));
 		return node;
 	}
 

@@ -23,7 +23,7 @@ import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillAquaBurst extends ActiveSkill{
 
@@ -52,7 +52,7 @@ public class SkillAquaBurst extends ActiveSkill{
 
 	@Override
 	public String getDescription(Hero hero) {
-		int damage = (int) (SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 30, false) + SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE_INCREASE, 0.5, false)*hero.getLevel());
+		int damage = (int) (SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 30, false) + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE, 0.5, false)*hero.getLevel());
 		return getDescription()
 				.replace("$1", damage+"")
 				.replace("$2", SkillConfigManager.getUseSetting(hero, this, "SlowAmountBase", 1, false) +SkillConfigManager.getUseSetting(hero, this, "SlowAmountperLevel", 0.025, false)*hero.getLevel() + "")
@@ -89,16 +89,16 @@ public class SkillAquaBurst extends ActiveSkill{
             	int speed = (int) (SkillConfigManager.getUseSetting(hero, this.skill, "SpeedAmountBase", 1, false) + SkillConfigManager.getUseSetting(hero, this.skill, "SpeedAmountperLevel", 0.05, false)*hero.getLevel());
             	entity.addPotionEffect(PotionEffectType.SPEED.createEffect(400, speed));
             	entity.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(400, speed));
-            	if(ct.getMaxHealth() > ct.getHealth()+heal) {
-            		ct.setHealth(ct.getMaxHealth());
+            	if(entity.getMaxHealth() > entity.getHealth()+heal) {
+            		entity.setHealth(entity.getMaxHealth());
             	} else {
-            		ct.setHealth(ct.getHealth()+heal);
+            		entity.setHealth(entity.getHealth()+heal);
             	}
             	return;
             }
             addSpellTarget(entity, hero);
-            int damage = SkillConfigManager.getUseSetting(hero, skill, Setting.DAMAGE, 30, false);
-            damage += (int) (SkillConfigManager.getUseSetting(hero, skill, Setting.DAMAGE_INCREASE, 0.5, false) * hero.getSkillLevel(skill));
+            int damage = SkillConfigManager.getUseSetting(hero, skill, SkillSetting.DAMAGE, 30, false);
+            damage += (int) (SkillConfigManager.getUseSetting(hero, skill, SkillSetting.DAMAGE_INCREASE, 0.5, false) * hero.getSkillLevel(skill));
             damageEntity(entity, hero.getPlayer(), damage, EntityDamageEvent.DamageCause.MAGIC);
             int slow = (int) (SkillConfigManager.getUseSetting(hero, skill, "SlowAmountBase", 1, false) +SkillConfigManager.getUseSetting(hero, skill, "SlowAmountperLevel", 0.025, false)*hero.getLevel());
             SlowEffect slowEffect = new SlowEffect(skill, "AquaBurstSlow", 600, slow, true, "", "", hero);

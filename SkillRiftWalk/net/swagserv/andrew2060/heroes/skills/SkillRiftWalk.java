@@ -6,7 +6,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -40,8 +40,8 @@ public class SkillRiftWalk extends ActiveSkill {
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
 		node.set("range", Integer.valueOf(16));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(120000));
-		node.set(Setting.MANA.node(), Integer.valueOf(10));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(120000));
+		node.set(SkillSetting.MANA.node(), Integer.valueOf(10));
 		return node;
 	}
 

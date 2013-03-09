@@ -11,9 +11,9 @@ import com.herocraftonline.heroes.characters.effects.PeriodicDamageEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,28 +39,28 @@ public class SkillBladeWaltz extends ActiveSkill {
 	}
 	public void init() {
 		super.init();
-		this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%target% is bleeding!").replace("%target%", "$1");
-		this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!").replace("%target%", "$1");
+		this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%target% is bleeding!").replace("%target%", "$1");
+		this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!").replace("%target%", "$1");
 	}
 	public String getDescription(Hero hero) {
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION.node(), 5000, false) + 
-				SkillConfigManager.getUseSetting(hero, this, Setting.DURATION_INCREASE.node(), 200, false) * hero.getSkillLevel(this);
-		int cooldown = SkillConfigManager.getUseSetting(hero, this, Setting.COOLDOWN.node(), 120000, false) - 
-				SkillConfigManager.getUseSetting(hero, this, Setting.COOLDOWN_REDUCE.node(), 1000, false);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 5000, false) + 
+				SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION_INCREASE.node(), 200, false) * hero.getSkillLevel(this);
+		int cooldown = SkillConfigManager.getUseSetting(hero, this, SkillSetting.COOLDOWN.node(), 120000, false) - 
+				SkillConfigManager.getUseSetting(hero, this, SkillSetting.COOLDOWN_REDUCE.node(), 1000, false);
 		String description = getDescription().replace("$1", duration*0.001+"").replace("$2", cooldown*0.001+"");
 		return description;
 	}
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
-		node.set(Setting.DURATION.node(), Integer.valueOf(5000));
-		node.set(Setting.DURATION_INCREASE.node(), Integer.valueOf(100));
-		node.set(Setting.COOLDOWN.node(), Integer.valueOf(120000));
-		node.set(Setting.COOLDOWN_REDUCE.node(), Integer.valueOf(1000));
+		node.set(SkillSetting.DURATION.node(), Integer.valueOf(5000));
+		node.set(SkillSetting.DURATION_INCREASE.node(), Integer.valueOf(100));
+		node.set(SkillSetting.COOLDOWN.node(), Integer.valueOf(120000));
+		node.set(SkillSetting.COOLDOWN_REDUCE.node(), Integer.valueOf(1000));
 		return node;
 	}
 	public SkillResult use(Hero hero, String[] args) {
-		int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION.node(), 5000, false) + 
-				SkillConfigManager.getUseSetting(hero, this, Setting.DURATION_INCREASE.node(), 200, false) * hero.getSkillLevel(this);
+		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 5000, false) + 
+				SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION_INCREASE.node(), 200, false) * hero.getSkillLevel(this);
 		hero.addEffect(new BladeWaltzEffect(this, duration));
 		return SkillResult.NORMAL;
 	}

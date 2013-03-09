@@ -21,7 +21,7 @@ import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillEnchant extends PassiveSkill {
 
@@ -113,8 +113,8 @@ public class SkillEnchant extends PassiveSkill {
 		section.set("ARROW_KNOCKBACK", Integer.valueOf(1));
 		section.set("ARROW_FIRE", Integer.valueOf(1));
 		section.set("ARROW_INFINITE", Integer.valueOf(1));
-		section.set(Setting.APPLY_TEXT.node(), "");
-		section.set(Setting.UNAPPLY_TEXT.node(), "");
+		section.set(SkillSetting.APPLY_TEXT.node(), "");
+		section.set(SkillSetting.UNAPPLY_TEXT.node(), "");
 		section.set("vanillaexpcostmultiplier", Integer.valueOf(10));
 		//Ergo a lvl 30 enchant will cost 300 exp.
 		return section;

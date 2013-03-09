@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -57,6 +58,7 @@ public class SkillAgonysEmbrace extends ActiveSkill{
 				return;
 			}
 			Hero h = (Hero)event.getDamager();
+			Player p = h.getPlayer();
 			if(!h.hasEffect("agonyEffect")) {
 				return;
 			}
@@ -82,12 +84,12 @@ public class SkillAgonysEmbrace extends ActiveSkill{
 					continue;
 				}
 				int actualHeal = healthEvent.getAmount();
-				int newHealth = h.getHealth()+actualHeal;
-				if(newHealth > h.getMaxHealth()) {
-					h.setHealth(h.getMaxHealth());
+				int newHealth = p.getHealth()+actualHeal;
+				if(newHealth > p.getMaxHealth()) {
+					p.setHealth(p.getMaxHealth());
 					continue;
 				} else {
-					h.setHealth(h.getHealth()+actualHeal);
+					p.setHealth(p.getHealth()+actualHeal);
 					continue;
 				}
 			}

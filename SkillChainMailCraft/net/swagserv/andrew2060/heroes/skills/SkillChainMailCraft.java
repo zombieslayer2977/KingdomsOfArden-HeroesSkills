@@ -42,7 +42,7 @@ public class SkillChainMailCraft extends PassiveSkill {
 					Hero h = SkillChainMailCraft.this.plugin.getCharacterManager().getHero((Player)event.getWhoClicked());
 					if (!h.hasEffect("ChainMailCraft")) {
 						event.setCancelled(true);
-						h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the blacksmithing expertiese required to craft chainmail!");
+						h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the blacksmithing expertise required to craft chainmail!");
 					}
 					h.addExp(50.0D, h.getSecondClass(), h.getPlayer().getLocation());
 					return;

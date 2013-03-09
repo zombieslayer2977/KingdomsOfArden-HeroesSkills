@@ -131,13 +131,14 @@ public class SkillPurify extends TargettedSkill {
 		if(ct instanceof Hero) {
 			((Hero)ct).getPlayer().sendMessage(ChatColor.GRAY + "Purified by " + h.getName() + "!");
 		}
+		LivingEntity lE = ct.getEntity();
 		HeroRegainHealthEvent event = new HeroRegainHealthEvent((Hero)ct, h.getLevel(), this, h);
 		Bukkit.getPluginManager().callEvent(event);
-		int finalAmount = ct.getHealth()+event.getAmount();
-		if(finalAmount > ct.getMaxHealth()) {
-			finalAmount = ct.getMaxHealth();
+		int finalAmount = lE.getHealth()+event.getAmount();
+		if(finalAmount > lE.getMaxHealth()) {
+			finalAmount = lE.getMaxHealth();
 		}
-		ct.setHealth(finalAmount);
+		lE.setHealth(finalAmount);
 		return;
 	}
 

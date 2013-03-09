@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -38,10 +39,11 @@ public class SkillDesperateFury extends PassiveSkill {
 				return;
 			}
 			Hero h = (Hero) event.getDamager();
+			Player p = h.getPlayer();
 			if(!h.hasEffect("DesperateFury")) {
 				return;
 			}
-			if((h.getHealth()/h.getMaxHealth()) > 0.3) {
+			if((p.getHealth()/p.getMaxHealth()) > 0.3) {
 				return;
 			}
 			if(!(event.getEntity() instanceof LivingEntity)) {

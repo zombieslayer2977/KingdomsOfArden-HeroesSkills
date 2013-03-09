@@ -59,7 +59,7 @@ import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillCauldron extends PassiveSkill {
 
@@ -83,7 +83,7 @@ public class SkillCauldron extends PassiveSkill {
 	@Override
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection section = super.getDefaultConfig();
-		section.set(Setting.LEVEL.node(), 1);
+		section.set(SkillSetting.LEVEL.node(), 1);
 		return section;
 	}
 

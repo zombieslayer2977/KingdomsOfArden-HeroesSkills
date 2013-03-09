@@ -3,11 +3,7 @@ package net.swagserv.andrew2060.heroes.skills;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
-import net.minecraft.server.v1_4_6.ContainerAnvil;
-import net.minecraft.server.v1_4_6.EntityHuman;
-import net.minecraft.server.v1_4_6.ItemStack;
-import net.minecraft.server.v1_4_6.PlayerInventory;
-import net.minecraft.server.v1_4_6.World;
+import net.minecraft.server.v1_4_R1.ContainerAnvil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

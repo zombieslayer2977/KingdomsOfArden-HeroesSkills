@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -86,14 +87,16 @@ public class SkillDeathMark extends TargettedSkill {
 		}
 		@Override
 		public void removeFromHero(Hero h) {
-			double damage = h.getMaxHealth()*i*0.01;
+			Player p = h.getPlayer();
+			double damage = p.getMaxHealth()*i*0.01;
 			Skill.damageEntity(h.getEntity(), attacker.getEntity(), (int) damage, DamageCause.ENTITY_ATTACK);
 			h.getPlayer().sendMessage(ChatColor.GRAY + "The death mark from " + attacker.getName() + " exploded, dealing " + ChatColor.RED + damage + ChatColor.GRAY + " damage.");
 		}
 		@Override
 		public void removeFromMonster(Monster m) {
-			double damage = m.getMaxHealth()*i*0.01;
-			Skill.damageEntity(m.getEntity(), attacker.getEntity(), (int) damage, DamageCause.ENTITY_ATTACK);
+			LivingEntity lE = m.getEntity();
+			double damage = lE.getMaxHealth()*i*0.01;
+			Skill.damageEntity(lE, attacker.getEntity(), (int) damage, DamageCause.ENTITY_ATTACK);
 		}
 		public void incrementStack() {
 			++i;

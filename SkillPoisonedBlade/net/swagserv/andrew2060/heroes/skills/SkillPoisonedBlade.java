@@ -27,7 +27,7 @@ import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillPoisonedBlade extends ActiveSkill {
 
@@ -124,7 +124,7 @@ public class SkillPoisonedBlade extends ActiveSkill {
 	}
 	@Override
 	public String getDescription(Hero h) {
-		int duration = SkillConfigManager.getUseSetting(h, this, Setting.DURATION.node(), 2000, false);
+		int duration = SkillConfigManager.getUseSetting(h, this, SkillSetting.DURATION.node(), 2000, false);
 		return getDescription()
 				.replace("$1", duration + "");
 		//To typecast to a string, simply add +"" to the end: for an explanation of typecasting, please read further down.
@@ -225,7 +225,7 @@ public class SkillPoisonedBlade extends ActiveSkill {
 			//That are defined for it: namely bukkit allows you to add potion effects to a living entity
 			LivingEntity lE = (LivingEntity)event.getEntity();
 			//Get the configuration setting for the duration and convert from milliseconds to ticks (because ticks is what bukkit uses)
-			long duration = (long) (SkillConfigManager.getUseSetting(h, skill, Setting.DURATION.node(), 2000, false)*0.001*20);
+			long duration = (long) (SkillConfigManager.getUseSetting(h, skill, SkillSetting.DURATION.node(), 2000, false)*0.001*40);
 			
 			//Add the potion effect
 			lE.addPotionEffect(PotionEffectType.POISON.createEffect((int) duration, 3), true);
@@ -243,7 +243,7 @@ public class SkillPoisonedBlade extends ActiveSkill {
 	 */
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
-		node.set(Setting.DURATION.node(), Integer.valueOf(2000));
+		node.set(SkillSetting.DURATION.node(), Integer.valueOf(2000));
 		return node;
 	}
 

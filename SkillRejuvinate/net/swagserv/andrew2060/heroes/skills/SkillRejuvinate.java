@@ -5,9 +5,10 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftOcelot;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
@@ -20,7 +21,7 @@ import com.herocraftonline.heroes.characters.party.HeroParty;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 public class SkillRejuvinate extends ActiveSkill {
 
@@ -43,37 +44,35 @@ public class SkillRejuvinate extends ActiveSkill {
 
 		@Override
 		public void tickHero(Hero h) {
+			Player p = h.getPlayer();
 			switch(mode) {
 			case 0:
 				HeroRegainHealthEvent event = new HeroRegainHealthEvent(h, (int) amountHealed, skill);
 				Bukkit.getPluginManager().callEvent(event);
 				if(!event.isCancelled()) {
-					h.setHealth(h.getHealth() + event.getAmount());
-                    h.syncHealth();
+					p.setHealth(p.getHealth() + event.getAmount());
 				}
 				break;
 			case 1:
 				double multiplier = amountHealed*0.01;
-				HeroRegainHealthEvent event1 = new HeroRegainHealthEvent(h, (int) (h.getMaxHealth()*multiplier), skill);
+				HeroRegainHealthEvent event1 = new HeroRegainHealthEvent(h, (int) (p.getMaxHealth()*multiplier), skill);
 				Bukkit.getPluginManager().callEvent(event1);
 				if(!event1.isCancelled()) {
-					h.setHealth(h.getHealth() + event1.getAmount());
-                    h.syncHealth();
+					p.setHealth(p.getHealth() + event1.getAmount());
 				}
 				break;
 			case 2:
 				double multiplier1 = amountHealed*0.01;
-				HeroRegainHealthEvent event2 = new HeroRegainHealthEvent(h, (int) ((h.getMaxHealth()-h.getHealth())*multiplier1), skill);
+				HeroRegainHealthEvent event2 = new HeroRegainHealthEvent(h, (int) ((p.getMaxHealth()-p.getHealth())*multiplier1), skill);
 				Bukkit.getPluginManager().callEvent(event2);
 				if(!event2.isCancelled()) {
-					h.setHealth(h.getHealth() + event2.getAmount());
-                    h.syncHealth();
+					p.setHealth(p.getHealth() + event2.getAmount());
 				}
 				break;
 			}
-			CraftPlayer p = (CraftPlayer)h.getPlayer();
+			CraftPlayer cp = (CraftPlayer)h.getPlayer();
 			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-			p.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
+			cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
 			o.remove();
 		}
 
@@ -109,7 +108,7 @@ public class SkillRejuvinate extends ActiveSkill {
 		}
 		double amountHealed = SkillConfigManager.getUseSetting(h, this, "amount", 5, false);
 		double period = SkillConfigManager.getUseSetting(h, this, "period", 1000, false);
-		double duration = SkillConfigManager.getUseSetting(h, this, Setting.DURATION.node(), 30000, false);
+		double duration = SkillConfigManager.getUseSetting(h, this, SkillSetting.DURATION.node(), 30000, false);
 		this.broadcast(h.getPlayer().getLocation(), h.getName() + " used Rejuvinate!");
 		Vector v = h.getPlayer().getLocation().toVector();
 		Iterator<Hero> partyMembers = hParty.getMembers().iterator();
@@ -155,7 +154,7 @@ public class SkillRejuvinate extends ActiveSkill {
 		}
 		double amountHealed = SkillConfigManager.getUseSetting(h, this, "amount", 5, false);
 		double period = SkillConfigManager.getUseSetting(h, this, "period", 1000, false)*0.001;
-		double duration = SkillConfigManager.getUseSetting(h, this, Setting.DURATION.node(), 30000, false)*0.001;
+		double duration = SkillConfigManager.getUseSetting(h, this, SkillSetting.DURATION.node(), 30000, false)*0.001;
 
 		return getDescription()
 				.replace("$1",amountHealed + "")
@@ -165,7 +164,7 @@ public class SkillRejuvinate extends ActiveSkill {
 	}
 	public ConfigurationSection getDefaultConfig() {
 		ConfigurationSection node = super.getDefaultConfig();
-		node.set(Setting.DURATION.node(), Integer.valueOf(30000));
+		node.set(SkillSetting.DURATION.node(), Integer.valueOf(30000));
 		node.set("period", Integer.valueOf(1000));
 		node.set("amount", Integer.valueOf(5));
 		node.set("AmountMode", true);

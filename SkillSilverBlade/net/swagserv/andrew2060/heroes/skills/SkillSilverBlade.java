@@ -10,7 +10,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
-import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -33,8 +32,7 @@ public class SkillSilverBlade extends PassiveSkill {
 					double percent = SkillConfigManager.getUseSetting(h, skill, "amountMax" , 1.00, false);
 					percent += SkillConfigManager.getUseSetting(h,skill,"amountMaxPerLevel",0.05,false)*h.getLevel();
 					LivingEntity target = (LivingEntity)event.getEntity();
-					CharacterTemplate targetCT = skill.plugin.getCharacterManager().getCharacter(target);
-					Skill.damageEntity(target, h.getEntity(), (int) (targetCT.getMaxHealth() * percent * 0.01), DamageCause.MAGIC);
+					Skill.damageEntity(target, h.getEntity(), (int) (target.getMaxHealth() * percent * 0.01), DamageCause.MAGIC);
 				}
 			}
 		}

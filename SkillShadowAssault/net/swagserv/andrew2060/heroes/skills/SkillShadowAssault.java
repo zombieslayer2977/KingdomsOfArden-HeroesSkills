@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -43,33 +44,33 @@ public class SkillShadowAssault extends ActiveSkill {
 
 		public ShadowAssaultEffect(Skill skill, Heroes plugin,
 				long duration) {
-			super(skill, plugin, "ShadowAssaultEffect", duration);
+			super(skill, "ShadowAssaultEffect", duration);
 		}
 		@Override
 		public void applyToHero(Hero h) {
+            super.applyToHero(h);
+			h.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(3000, 3));
 			Player toHide = h.getPlayer();
 			Player[] online = Bukkit.getServer().getOnlinePlayers();
 			for(int i = 0; i < online.length; i++) {
 				Player p = online[i];
 				p.hidePlayer(toHide);
 			}
-			h.addEffect(new QuickenEffect(skill, "ShadowAssaultSpeed", 15000, 3, null, null));
 			h.getPlayer().sendMessage(ChatColor.GRAY + "You begin your shadow assault. You have 15 seconds to enter combat before the energy used overloads and hurts you.");
 		}
 		@Override
 		public void removeFromHero(Hero h) {
-			if(h.hasEffect("ShadowAssaultSpeed")) {
-				h.removeEffect(h.getEffect("ShadowAssaultSpeed"));
-			}
+            super.removeFromHero(h);
 			h.getPlayer().sendMessage(ChatColor.GRAY + "Your shadow assault has ended.");
 			Player toShow = h.getPlayer();
+			toShow.removePotionEffect(PotionEffectType.SPEED);
 			Player[] online = Bukkit.getServer().getOnlinePlayers();
 			for(int i = 0; i < online.length; i++) {
 				Player p = online[i];
 				p.showPlayer(toShow);
 			}
 			if(!h.isInCombat()) {
-				skill.damageEntity(h.getEntity(), h.getEntity(), (int) (h.getMaxHealth()*0.5));
+				skill.damageEntity(h.getEntity(), h.getEntity(), (int) (h.getPlayer().getMaxHealth()*0.5));
 				Messaging.send(h.getPlayer(), "The energy used for this assault turns against you as you have not expended it on a target", new Object[0]);
 			}
 		}
@@ -79,7 +80,7 @@ public class SkillShadowAssault extends ActiveSkill {
 
 	public SkillShadowAssault(Heroes plugin) {
 		super(plugin, "ShadowAssault");
-		setDescription("Becomes invisible and gains 60% movement speed for 15 seconds. If after these 15 seconds no attacks are made, 50% max health damage is dealt. The first attack done while shadow assault is active deals 25% bonus damage. and ends shadow assault.");
+		setDescription("Becomes invisible and gains 45% movement speed for 15 seconds. If after these 15 seconds no attacks are made, 50% max health damage is dealt. The first attack done while shadow assault is active deals 25% bonus damage. and ends shadow assault.");
 		setIdentifiers("skill shadowassault");
 		setUsage("/skill shadowassault");
 		setArgumentRange(0,0);
@@ -87,10 +88,10 @@ public class SkillShadowAssault extends ActiveSkill {
 	}
 
 	@Override
-	public SkillResult use(Hero h, String[] args) {
-		h.addEffect(new ShadowAssaultEffect(this, this.plugin, 30000));
-		return SkillResult.NORMAL;
-	}
+		public SkillResult use(Hero h, String[] args) {
+			h.addEffect(new ShadowAssaultEffect(this, this.plugin, 15000));
+			return SkillResult.NORMAL;
+		}
 
 	@Override
 	public String getDescription(Hero h) {
