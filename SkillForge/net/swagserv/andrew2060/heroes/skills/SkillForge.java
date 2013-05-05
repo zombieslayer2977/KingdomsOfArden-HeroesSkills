@@ -17,34 +17,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 
 public class SkillForge extends PassiveSkill {
 	public SkillForge(Heroes plugin) {
 		super(plugin, "Forge");
-		setDescription("Passive: Grants ability to use the anvil to improve weapons/tools/armor: Current Cost: $1 of material per tier.");
+		setDescription("Passive: Grants ability to use the anvil to improve weapons/tools/armor The maximum amount improved depends on the blacksmith's level.");
 		setEffectTypes(new EffectType[] { EffectType.BENEFICIAL });
 		Bukkit.getServer().getPluginManager().registerEvents(new BlockRightClickListener(), plugin);
 	}
 
 	public String getDescription(Hero hero) {
-		int level = hero.getLevel(hero.getSecondClass());
-		int cost = 0;
-		if (level < 20) {
-			cost = 5;
-		}
-		if ((19 < level) && (level < 40)) {
-			cost = 4;
-		}
-		if ((39 < level) && (level < 60)) {
-			cost = 3;
-		}
-		if ((59 < level) && (level < 80)) {
-			cost = 2;
-		}
-		if (79 < level) {
-			cost = 1;
-		}
-		return getDescription().replace("$1", cost+"");
+		return getDescription();
 	}
 	public class BlockRightClickListener implements Listener {
 		@SuppressWarnings("deprecation")
@@ -61,7 +45,7 @@ public class SkillForge extends PassiveSkill {
 			event.setCancelled(true);
 			Hero h = SkillForge.this.plugin.getCharacterManager().getHero(event.getPlayer());
 			if (!h.hasEffect("Forge")) {
-				h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the training to improve items with an anvil!");
+				h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the training to improve items with an anvil (use /hero choose blacksmith to become a blacksmith)!");
 				return;
 			}
 			int maxDurability = 0;
@@ -138,12 +122,12 @@ public class SkillForge extends PassiveSkill {
 			case CHAINMAIL_CHESTPLATE:
 				t = 3;
 				maxDurability = 242;
-				requiredImprove = Material.LEATHER;
+				requiredImprove = Material.IRON_INGOT;
 				break;
 			case CHAINMAIL_LEGGINGS:
 				t = 3;
 				maxDurability = 226;
-				requiredImprove = Material.LEATHER;
+				requiredImprove = Material.IRON_INGOT;
 				break;
 			case CHAINMAIL_BOOTS:
 				t = 3;
@@ -239,22 +223,7 @@ public class SkillForge extends PassiveSkill {
 				return;
 			}
 			int level = h.getLevel(h.getSecondClass());
-			double durabilityRestored = maxDurability * 0.17D;
-			if (level < 10) {
-				durabilityRestored *= 0.2D;
-			}
-			if ((9 < level) && (level < 20)) {
-				durabilityRestored *= 0.25D;
-			}
-			if ((19 < level) && (level < 30)) {
-				durabilityRestored *= 0.4D;
-			}
-			if ((29 < level) && (level < 40)) {
-				durabilityRestored *= 0.5D;
-			}
-			if (39 < level) {
-				durabilityRestored *= 1.0D;
-			}
+			double durabilityRestored = maxDurability * 0.17D*0.2D;
 			if (!h.getPlayer().getInventory().contains(requiredImprove)) {
 				switch (requiredImprove.getId()) {
 				case 265:
@@ -280,14 +249,35 @@ public class SkillForge extends PassiveSkill {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "You need " + ChatColor.AQUA + commonName + ChatColor.GRAY + " to improve this item");
 				return;
 			}
-			Player p = event.getPlayer();
+			Player p = h.getPlayer();
+			double breakoff = 0.00D;
+			if(level <=10) {
+				breakoff = 0.37;
+			} else if(level <=20) {
+				breakoff = 0.53;
+			} else if(level <= 30) {
+				breakoff = 0.68;
+			} else if(level <= 40) {
+				breakoff = 0.84;
+			} else if(level <= 50) {
+				breakoff = 1.00;
+			}
+			
 			Inventory pInv = p.getInventory();
 			ItemStack mat = pInv.getItem(pInv.first(requiredImprove));
-			if (maxDurability - handItem.getDurability() > maxDurability * 2.0D) {
-				p.sendMessage(ChatColor.GRAY + "This Item cannot be Improved Further!");
+			short finalDura = (short) (handItem.getDurability() - durabilityRestored);
+			if(breakoff == 1.00) {
+				if(handItem.getDurability() > 0 && finalDura < 0) {
+					finalDura = 0;
+				} else {
+					p.sendMessage(ChatColor.GRAY + "You cannot improve this item any further!");
+					return;
+				}
+			} else if (maxDurability - finalDura > maxDurability * breakoff) {
+				p.sendMessage(ChatColor.GRAY + "You cannot improve this item any further ! You need more experience with blacksmithing!");
 				return;
 			}
-			handItem.setDurability((short)(int)(handItem.getDurability() - durabilityRestored));
+			handItem.setDurability(finalDura);
 			if (mat.getAmount() > 1) {
 				mat.setAmount(mat.getAmount() - 1);
 			} else pInv.remove(mat);
@@ -295,128 +285,133 @@ public class SkillForge extends PassiveSkill {
 			ItemStack i = handItem;
 			int durability = maxDurability - i.getDurability();
 			if (t == 1) {
-				if (durability > maxDurability * 1.68D) {
+				if( durability > maxDurability * 0.84) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
 					i.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 5);
 				}
-				if ((maxDurability * 1.68D > durability) && (durability > maxDurability * 1.51D)) {
+				if(maxDurability * 0.84 >= durability && durability > maxDurability * 0.68) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
 					i.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 4);
 				}
-				if ((maxDurability * 1.51D > durability) && (durability > maxDurability * 1.34D)) {
+				if(maxDurability * 0.68 >= durability && durability > maxDurability * 0.53) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
 					i.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
 				}
-				if ((maxDurability * 1.34D > durability) && (durability > maxDurability * 1.17D)) {
+				if(maxDurability * 0.53 >= durability && durability > maxDurability * 0.37) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
 					i.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
 				}
-				if ((maxDurability * 1.17D > durability) && (durability > maxDurability * 1.0D)) {
+				if(maxDurability * 0.37 >= durability && durability > maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
 					i.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
 				}
-				if (durability < maxDurability * 1.0D) {
+				if(durability < maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.DAMAGE_ALL);
-				}
+				}   
 			} else if (t == 2) {
-				if (durability > maxDurability * 1.68D) {
+				if( durability > maxDurability * 0.84) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
 					i.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 5);
 				}
-				if ((maxDurability * 1.68D > durability) && (durability > maxDurability * 1.51D)) {
+				if(maxDurability * 0.84 >= durability && durability > maxDurability * 0.68) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
 					i.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 4);
 				}
-				if ((maxDurability * 1.51D > durability) && (durability > maxDurability * 1.34D)) {
+				if(maxDurability * 0.68 >= durability && durability > maxDurability * 0.53) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
 					i.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 3);
 				}
-				if ((maxDurability * 1.34D > durability) && (durability > maxDurability * 1.17D)) {
+				if(maxDurability * 0.53 >= durability && durability > maxDurability * 0.37) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
 					i.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 2);
 				}
-				if ((maxDurability * 1.17D > durability) && (durability > maxDurability * 1.0D)) {
+				if(maxDurability * 0.37 >= durability && durability > maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
 					i.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
 				}
-				if (durability < maxDurability * 1.0D) {
+				if(durability < maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.ARROW_DAMAGE);
-				}
+					return;
+				}   
 			} else if (t == 3) {
-				if (durability > maxDurability * 1.68D) {
+				if( durability > maxDurability * 0.84) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
 					i.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5);
 				}
-				if ((maxDurability * 1.68D > durability) && (durability > maxDurability * 1.51D)) {
+				if(maxDurability * 0.84 >= durability && durability > maxDurability * 0.68) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
 					i.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4);
 				}
-				if ((maxDurability * 1.51D > durability) && (durability > maxDurability * 1.34D)) {
+				if(maxDurability * 0.68 >= durability && durability > maxDurability * 0.53) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
 					i.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 				}
-				if ((maxDurability * 1.34D > durability) && (durability > maxDurability * 1.17D)) {
+				if(maxDurability * 0.53 >= durability && durability > maxDurability * 0.37) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
 					i.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 				}
-				if ((maxDurability * 1.17D > durability) && (durability > maxDurability * 1.0D)) {
+				if(maxDurability * 0.37 >= durability && durability > maxDurability * 0.20) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
 					i.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 				}
-				if (durability < maxDurability * 1.0D) {
+	            if(maxDurability * 0.20 >= durability) {
 					i.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
-				}
+	            }
 			} else if (t == 4) {
-				if (durability > maxDurability * 1.68D) {
+				if( durability > maxDurability * 0.84) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
 					i.addUnsafeEnchantment(Enchantment.DIG_SPEED, 5);
+					return;
 				}
-				if ((maxDurability * 1.68D > durability) && (durability > maxDurability * 1.51D)) {
+				if(maxDurability * 0.84 >= durability && durability > maxDurability * 0.68) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
 					i.addUnsafeEnchantment(Enchantment.DIG_SPEED, 4);
+					return;
 				}
-				if ((maxDurability * 1.51D > durability) && (durability > maxDurability * 1.34D)) {
+				if(maxDurability * 0.68 >= durability && durability > maxDurability * 0.53) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
 					i.addUnsafeEnchantment(Enchantment.DIG_SPEED, 3);
+					return;
 				}
-				if ((maxDurability * 1.34D > durability) && (durability > maxDurability * 1.17D)) {
+				if(maxDurability * 0.53 >= durability && durability > maxDurability * 0.37) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
 					i.addUnsafeEnchantment(Enchantment.DIG_SPEED, 2);
+					return;
 				}
-				if ((maxDurability * 1.17D > durability) && (durability > maxDurability * 1.0D)) {
+				if(maxDurability * 0.37 >= durability && durability > maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
 					i.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
+					return;
 				}
-				if (durability < maxDurability * 1.0D) {
+		        if(durability < maxDurability*0.20) {
 					i.removeEnchantment(Enchantment.DIG_SPEED);
-				}
+					return;
+		        }
 			}
 
 			p.sendMessage(ChatColor.AQUA + "Item Improvement Successful!");
-			if (h.getLevel(h.getSecondClass()) <= 50) {
-				int exp = 0;
-				switch (requiredImprove) {
-				case IRON_INGOT:
-					exp = 10;
-					break;
-				case GOLD_INGOT:
-					exp = 5;
-					break;
-				case LEATHER:
-					exp = 3;
-					break;
-				case WOOD:
-					exp = 1;
-					break;
-				case FLINT:
-					exp = 2;
-					break;
-				default:
-					exp = 0;
-				}
-
-				h.addExp(exp, h.getSecondClass(), h.getPlayer().getLocation());
+			int exp = 0;
+			switch (requiredImprove) {
+			case IRON_INGOT:
+				exp = 30;
+				break;
+			case GOLD_INGOT:
+				exp = 10;
+				break;
+			case LEATHER:
+				exp = 6;
+				break;
+			case WOOD:
+				exp = 2;
+				break;
+			case FLINT:
+				exp = 4;
+				break;
+			default:
+				exp = 0;
 			}
+
+			h.addExp(exp, h.getSecondClass(), h.getPlayer().getLocation());
 		}
 	}
 }
