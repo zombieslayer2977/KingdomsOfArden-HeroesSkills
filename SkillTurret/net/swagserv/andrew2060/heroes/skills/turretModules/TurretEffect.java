@@ -24,10 +24,6 @@ public class TurretEffect extends Effect {
 	public int getTurretNumber() {
 		return numberOfTurrets;
 	}
-	public void madeATurret(Turret turret) {
-		numberOfTurrets++;
-		queue.addLast(turret);
-	}
 	public Turret getOldest() {
 		Turret first = queue.getFirst();
 		return first;		
