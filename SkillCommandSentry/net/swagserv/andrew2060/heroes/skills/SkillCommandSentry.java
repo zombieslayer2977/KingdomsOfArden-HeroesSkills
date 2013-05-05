@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
 import org.bukkit.util.Vector;
 
+import net.swagserv.andrew2060.heroes.skills.turretModules.Turret;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -139,6 +140,11 @@ public class SkillCommandSentry extends ActiveSkill {
 			}
 			a.remove();
 			return;
+		}
+		@Override
+		//Prevent sentried turrets expiry
+		public boolean onDestroy(Turret turret) {
+			return false;
 		}
 		
 	}

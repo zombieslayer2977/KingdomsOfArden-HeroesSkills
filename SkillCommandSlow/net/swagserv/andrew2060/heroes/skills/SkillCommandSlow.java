@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -24,7 +25,7 @@ public class SkillCommandSlow extends ActiveSkill {
 
 	public SkillCommandSlow(Heroes plugin) {
 		super(plugin, "CommandSlow");
-		setDescription("Command: Slow: Turrets will slow all enemies in range by 15/30/45/60% at levels 1/25/50/75");
+		setDescription("Command: Slow: Turrets will slow all enemies in range starting at a 15% slow. For each additional firing cycle that one remains in the turrets radius, the effect of the slow will be increased by 15% up to a maximum of 90%");
 		setUsage("/skill commandslow");
 		setArgumentRange(0,0);
 		setIdentifiers("skill commandslow");
@@ -44,29 +45,13 @@ public class SkillCommandSlow extends ActiveSkill {
 		} else {
 			tE = (TurretEffect)h.getEffect("TurretEffect");
 		}
-		int slowLevel = 0;
-		int heroLevel = h.getLevel();
-		if(heroLevel < 25) {
-			slowLevel = 1;
-		}
-		if(heroLevel >= 25 && heroLevel < 50) {
-			slowLevel = 2;
-		}
-		if(heroLevel >= 50 && heroLevel < 75) {
-			slowLevel = 3;
-		}
-		if(heroLevel >= 75) {
-			slowLevel = 4;
-		}
-		SlowTurret fireFunc = new SlowTurret(slowLevel);
+		SlowTurret fireFunc = new SlowTurret();
 		tE.setFireFunctionWrapper(fireFunc);
 		return SkillResult.NORMAL;
 	}
 	private class SlowTurret extends TurretFireWrapper {
-		int slowLevel;
-		public SlowTurret(int slowLevel) {
-			this.slowLevel = slowLevel;
-		}
+		int slowlevel;
+
 		@Override
 		public void fire(Hero h, Location loc, double range) {
 			Arrow a = loc.getWorld().spawnArrow(loc, new Vector(0,0,0), 0.6f, 1.6f);
@@ -78,13 +63,25 @@ public class SkillCommandSlow extends ActiveSkill {
 					continue;
 				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
-					((LivingEntity)next).addPotionEffect(PotionEffectType.SLOW.createEffect(80, slowLevel));
+
+					Iterator<PotionEffect> effects = ((LivingEntity)next).getActivePotionEffects().iterator();
+					slowlevel = 1;
+					while(effects.hasNext()) {
+						PotionEffect nextEffect = effects.next();
+						if(nextEffect.getType().equals(PotionEffectType.SLOW)) {
+							slowlevel += nextEffect.getAmplifier();
+							break;
+						}
+					}
+					if(slowlevel > 5) {
+						slowlevel = 5;
+					}
+					((LivingEntity)next).addPotionEffect(PotionEffectType.SLOW.createEffect(100, slowlevel));
 				}
 			}
 			a.remove();
 			return;
 		}
-		
 	}
 	@Override
 	public String getDescription(Hero h) {

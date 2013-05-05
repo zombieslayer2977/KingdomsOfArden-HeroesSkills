@@ -6,6 +6,7 @@ import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -20,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SkillRequiem extends PassiveSkill {
 	public SkillRequiem(Heroes plugin) {
@@ -38,7 +40,7 @@ public class SkillRequiem extends PassiveSkill {
 		return getDescription();
 	}
 
-	public class RequiemEffect extends com.herocraftonline.heroes.characters.effects.Effect {
+	public class RequiemEffect extends Effect {
 		public RequiemEffect(Skill skill) {
 			super(skill, "RequiemEffect");
 		}
@@ -204,7 +206,7 @@ public class SkillRequiem extends PassiveSkill {
 	}
 
 	public void scheduleExplosion(final Hero h, final Player p, Skill skill, final LivingEntity finalDamager, final DamageCause dmgCause) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(skill.plugin, new Runnable() {
+		new BukkitRunnable() {
 			public void run() {
 				h.removeEffect(h.getEffect("RequiemEffect"));
 				p.getWorld().createExplosion(p.getLocation(), 0.0F);
@@ -229,8 +231,7 @@ public class SkillRequiem extends PassiveSkill {
 					h.syncExperience();
 				}
 			}
-		}
-		, 100L);
+		}.runTaskLater(this.plugin, 100L);
 		
 	}
 }

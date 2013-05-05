@@ -9,10 +9,14 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.swagserv.andrew2060.heroes.skills.turretModules.Turret;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
+import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
+
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
@@ -38,15 +42,15 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 		} else {
 			tE = (TurretEffect)h.getEffect("TurretEffect");
 		}
+		tE.setFireFunctionWrapper(new NullTurret());
 		ArrayList<Turret> turrets = ((SkillTurret)this.plugin.getSkillManager().getSkill("Turret")).getTurrets();
-		tE.setFireFunctionWrapper(null);
 		Iterator<Turret> turretIt = turrets.iterator();
 		while(turretIt.hasNext()) {
 			Turret next = turretIt.next();
 			if(next.getCreator() == h) {
 				next.setExpirationTime(System.currentTimeMillis());
 				Location loc = next.getLoc();
-				loc.getWorld().createExplosion(loc,0.0F);
+				loc.getWorld().createExplosion(loc,1.0F);
 				next.destroyTurret();
 				Arrow a = loc.getWorld().spawnArrow(loc, new Vector(0,0,0), 0.6f, 1.6f);
 				Iterator<Entity> nearby = a.getNearbyEntities(next.getRange()*2, next.getRange()*2, next.getRange()*2).iterator();
@@ -57,7 +61,7 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 					}
 					if(Skill.damageCheck(h.getPlayer(), (LivingEntity) nextEnt) && (LivingEntity)nextEnt != h.getEntity()) {
 						this.addSpellTarget(nextEnt, h);
-						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), h.getSkillLevel(this)/2, DamageCause.BLOCK_EXPLOSION);
+						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), h.getSkillLevel(this)/2, DamageCause.MAGIC);
 					}
 				}
 				a.remove();
@@ -73,5 +77,11 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 		return getDescription()
 				.replace("$1", h.getLevel() + "");
 	}
+	private class NullTurret extends TurretFireWrapper {
 
+		@Override
+		public void fire(Hero h, Location loc, double range) {
+			return;
+		}
+	}
 }

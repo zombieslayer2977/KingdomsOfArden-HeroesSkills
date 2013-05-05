@@ -48,7 +48,7 @@ public class SkillShadowStrike extends TargettedSkill {
 	@Override
 	public SkillResult use(Hero h, LivingEntity lE, String[] args) {
 		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(lE);
-		h.getPlayer().teleport(lE.getLocation(), TeleportCause.PLUGIN);
+		h.getPlayer().teleport(lE.getLocation(), TeleportCause.UNKNOWN);
 		cT.addEffect(new ExpirableEffect(this, plugin, "ShadowStrikeSilence", 4000));
 		lE.addPotionEffect(PotionEffectType.SLOW.createEffect(60, 2));
 		Skill.damageEntity(lE, h.getEntity(), (int) (cT.getMaxHealth()*5*0.01), DamageCause.ENTITY_ATTACK);

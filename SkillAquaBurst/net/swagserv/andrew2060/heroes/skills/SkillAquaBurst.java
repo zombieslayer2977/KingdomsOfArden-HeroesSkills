@@ -3,6 +3,7 @@ package net.swagserv.andrew2060.heroes.skills;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
 import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
@@ -85,10 +87,16 @@ public class SkillAquaBurst extends ActiveSkill{
             event.setCancelled(true);
         	CharacterTemplate ct = this.skill.plugin.getCharacterManager().getCharacter(entity);
             if(!Skill.damageCheck(dmger, entity)) {
+            	dmger.sendMessage("Debug: Friendly");
             	int heal = (int) (SkillConfigManager.getUseSetting(hero, this.skill, "HealAmountBase", 10, false) + SkillConfigManager.getUseSetting(hero, this.skill, "HealAmountperLevel", 0.5, false)*hero.getLevel());
             	int speed = (int) (SkillConfigManager.getUseSetting(hero, this.skill, "SpeedAmountBase", 1, false) + SkillConfigManager.getUseSetting(hero, this.skill, "SpeedAmountperLevel", 0.05, false)*hero.getLevel());
             	entity.addPotionEffect(PotionEffectType.SPEED.createEffect(400, speed));
             	entity.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(400, speed));
+            	if(entity instanceof Player) {
+            		HeroRegainHealthEvent healEvent = new HeroRegainHealthEvent(hero, heal, skill, hero);
+            		Bukkit.getServer().getPluginManager().callEvent(healEvent);
+            		heal = healEvent.getAmount();
+            	}
             	if(entity.getMaxHealth() > entity.getHealth()+heal) {
             		entity.setHealth(entity.getMaxHealth());
             	} else {
@@ -96,6 +104,7 @@ public class SkillAquaBurst extends ActiveSkill{
             	}
             	return;
             }
+            dmger.sendMessage("Debug: Hostile");
             addSpellTarget(entity, hero);
             int damage = SkillConfigManager.getUseSetting(hero, skill, SkillSetting.DAMAGE, 30, false);
             damage += (int) (SkillConfigManager.getUseSetting(hero, skill, SkillSetting.DAMAGE_INCREASE, 0.5, false) * hero.getSkillLevel(skill));

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
@@ -59,6 +60,7 @@ public class SkillCommandFlamethrower extends ActiveSkill {
 					continue;
 				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next)  && (LivingEntity)next != h.getEntity()) {
+					Skill.damageEntity((LivingEntity)next, h.getEntity(), 2, DamageCause.MAGIC);
 					next.setFireTicks(100);
 				}
 			}
