@@ -18,7 +18,6 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -105,23 +104,11 @@ public class SkillSilverArrows extends ActiveSkill{
 				return;
 			}
 			LivingEntity le = (LivingEntity)event.getEntity();
-			if(le instanceof Player) {
-				if(Skill.damageCheck(h.getPlayer(), le)) {
-					Hero h2 = SkillSilverArrows.this.plugin.getCharacterManager().getHero((Player)le);
-					int extradmg = (int) (h2.getMaxHealth()*0.05);
-					h.getPlayer().sendMessage(ChatColor.GRAY + "Silver Arrows dealt an additional " + extradmg + " damage!");
-					Skill.damageEntity(le, h.getEntity(), extradmg, DamageCause.MAGIC);
-					return;
-				}
-			} 
-			if(le instanceof org.bukkit.entity.Monster) {
-				if(Skill.damageCheck(h.getPlayer(), le)) {
-					Monster m = SkillSilverArrows.this.plugin.getCharacterManager().getMonster(le);
-					int extradmg = (int) (m.getMaxHealth()*0.05);
-					h.getPlayer().sendMessage(ChatColor.GRAY + "Silver Arrows dealt an additional " + extradmg + " damage!");
-					Skill.damageEntity(le, h.getEntity(), extradmg, DamageCause.MAGIC);
-					return;
-				}
+			if(Skill.damageCheck(h.getPlayer(), le)) {
+				int extradmg = (int) (le.getMaxHealth()*0.05);
+				h.getPlayer().sendMessage(ChatColor.GRAY + "Silver Arrows dealt an additional " + extradmg + " damage!");
+				Skill.damageEntity(le, h.getEntity(), extradmg, DamageCause.MAGIC);
+				return;
 			}
 			
 		}

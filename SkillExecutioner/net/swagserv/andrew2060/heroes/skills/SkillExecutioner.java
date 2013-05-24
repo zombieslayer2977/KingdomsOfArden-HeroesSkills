@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
-import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 
@@ -41,8 +40,7 @@ public class SkillExecutioner extends PassiveSkill {
 				return;
 			}
 			LivingEntity e = (LivingEntity)event.getEntity();
-			CharacterTemplate damaged = SkillExecutioner.this.plugin.getCharacterManager().getCharacter(e);
-			double dmgpercent = 1 + (((damaged.getMaxHealth() - damaged.getHealth())/damaged.getMaxHealth()) * 0.2);
+			double dmgpercent = 1 + (((e.getMaxHealth() - e.getHealth())/e.getMaxHealth()) * 0.2);
 			event.setDamage((int) (event.getDamage() * dmgpercent));
 		}
 	}

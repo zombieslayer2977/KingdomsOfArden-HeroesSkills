@@ -64,10 +64,10 @@ public class SkillManaShield extends PassiveSkill {
 				int threshold = SkillConfigManager.getUseSetting(h, this.skill, "deactivatePercentage", 50, false);
 				if (m >= h.getMaxMana() * (threshold * 0.01D)) {
 					int percentageBlocked = SkillConfigManager.getUseSetting(h, this.skill, "damagePercentageBlocked", 75, false);
-					double damageMultiplier = 100 - percentageBlocked * 0.01D;
+					double damageMultiplier = 100 - percentageBlocked * 0.01;
 					event.setDamage((int)(d * damageMultiplier));
 					int manaLossPercentage = SkillConfigManager.getUseSetting(h, this.skill, "percentDamageManaDrainonHit", 25, false);
-					int manaLoss = (int)(d * (manaLossPercentage * 0.01D));
+					int manaLoss = (int)(d * (manaLossPercentage * 0.01));
 					h.setMana(h.getMana() - manaLoss);
 					Location loc = h.getPlayer().getLocation();
 					loc.getWorld().playEffect(loc, Effect.STEP_SOUND, Material.GLASS);

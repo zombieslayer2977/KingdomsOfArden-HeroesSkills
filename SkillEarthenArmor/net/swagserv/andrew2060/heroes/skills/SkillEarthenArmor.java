@@ -57,7 +57,7 @@ public class SkillEarthenArmor extends ActiveSkill {
 		int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 300000, false);
 		List<Entity> entitylist = hero.getEntity().getNearbyEntities(10.0D, 10.0D, 10.0D);
 		Player p = hero.getPlayer();
-		int damage = hero.getHealth() * 2;
+		int damage = p.getHealth() * 2;
 		for (Entity entity : entitylist) {
 			if (!(entity instanceof Player)) {
 				if (((entity instanceof LivingEntity)) && (!(entity instanceof Player))) {

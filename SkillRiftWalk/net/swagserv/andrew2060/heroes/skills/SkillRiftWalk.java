@@ -75,13 +75,6 @@ public class SkillRiftWalk extends ActiveSkill {
 			if ((nearby.get(x) instanceof LivingEntity)) {
 				if (damageCheck(p, (LivingEntity)nearby.get(x))) {
 					damageEntity((LivingEntity)nearby.get(x), p, (int)(hero.getLevel() * 0.5D), DamageCause.MAGIC);
-					if ((nearby.get(x) instanceof Player)) {
-						Hero hDmg = this.plugin.getCharacterManager().getHero((Player)nearby.get(x));
-						p.sendMessage(hDmg.getName() + " took " + hero.getLevel() * 0.5D + " damage. " + hDmg.getHealth() + "/" + hDmg.getMaxHealth() + " health.");
-					} else {
-						Monster mDmgDel = this.plugin.getCharacterManager().getMonster((LivingEntity)nearby.get(x));
-						p.sendMessage(mDmgDel.getName() + " took " + hero.getLevel() * 0.5D + " damage. " + mDmgDel.getHealth() + "/" + mDmgDel.getMaxHealth() + " health.");
-					}
 					repeat = true;
 				}
 			}
@@ -119,13 +112,6 @@ public class SkillRiftWalk extends ActiveSkill {
 						if ((nearbyDel.get(x) instanceof LivingEntity)) {
 							if (SkillRiftWalk.damageCheck(pDelayed, (LivingEntity)nearbyDel.get(x))) {
 								SkillRiftWalk.damageEntity((LivingEntity)nearbyDel.get(x), pDelayed, (int)(hDelayed.getLevel() * 0.25D), DamageCause.MAGIC);
-								if ((nearbyDel.get(x) instanceof Player)) {
-									Hero hDmgDel = SkillRiftWalk.this.plugin.getCharacterManager().getHero((Player)nearbyDel.get(x));
-									pDelayed.sendMessage(hDmgDel.getName() + " took " + hDelayed.getLevel() * 0.25D + " damage. " + hDmgDel.getHealth() + "/" + hDmgDel.getMaxHealth() + " health.");
-								} else {
-									Monster mDmgDel = SkillRiftWalk.this.plugin.getCharacterManager().getMonster((LivingEntity)nearbyDel.get(x));
-									pDelayed.sendMessage(mDmgDel.getName() + " took " + hDelayed.getLevel() * 0.25D + " damage. " + mDmgDel.getHealth() + "/" + mDmgDel.getMaxHealth() + " health.");
-								}
 							}
 						}
 					}

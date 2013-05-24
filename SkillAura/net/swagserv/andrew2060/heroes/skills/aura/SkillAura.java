@@ -11,7 +11,7 @@ public class SkillAura extends ActiveSkill {
 
 	public SkillAura(Heroes plugin) {
 		super(plugin, "Aura");
-		setDescription("Passive: this hero carries an aura that provides bonuses to surrounding allies depending on active effect.");
+		setDescription("Passive: this hero carries an aura that provides bonuses to allies in the party. Active: displays the currently active aura");
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class SkillAura extends ActiveSkill {
 	public SkillResult use(Hero h, String[] arg1) {
 		String name;
 		if(!h.hasEffect("AuraEffect")) {
-			h.addEffect(new AuraEffect(this.plugin,new NeutralAuraFWrapper("None")));
+			h.addEffect(new AuraEffect(this.plugin,new NeutralAuraFWrapper()));
 			name = "None";
 		} else {
 			AuraEffect aEffect = (AuraEffect) h.getEffect("AuraEffect");
@@ -35,8 +35,8 @@ public class SkillAura extends ActiveSkill {
 	
 	
 	private class NeutralAuraFWrapper extends AuraWrapper {
-		public NeutralAuraFWrapper(String auraName) {
-			super(auraName);
+		public NeutralAuraFWrapper() {
+			super("None");
 		}
 		@Override
 		public void onApply(Hero h) {

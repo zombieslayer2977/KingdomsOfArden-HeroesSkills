@@ -1,21 +1,13 @@
 package net.swagserv.andrew2060.heroes.skills;
 
-/**
- * Not Coded for Swagserv->this skill is essentially a cleaner version of SkillForge minus the greater than 100% handling
- */
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Set;
 
-import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.effects.EffectType;
-import com.herocraftonline.heroes.characters.skill.PassiveSkill;
+import java.text.DecimalFormat;
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,58 +17,56 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class SkillBlacksmith extends PassiveSkill {
-	public SkillBlacksmith(Heroes plugin) {
-		super(plugin, "Blacksmith");
-		setDescription("Passive: Grants ability to use the forge to improve weapons/tools/armor: Current Repair Rate: $1% of Max Durability. (Right click Iron Block to use)");
+import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.EffectType;
+import com.herocraftonline.heroes.characters.skill.PassiveSkill;
+
+public class SkillRepair extends PassiveSkill {
+
+
+	public SkillRepair(Heroes plugin) {
+		super(plugin, "Repair");
+		setDescription("Passive: Grants ability to use the anvil to repair weapons/tools/armor. Each repair has a $1% chance of breaking the item (decreases with blacksmith level)");
 		setEffectTypes(new EffectType[] { EffectType.BENEFICIAL });
 		Bukkit.getServer().getPluginManager().registerEvents(new BlockRightClickListener(), plugin);
 	}
 
-	public String getDescription(Hero hero) {
-		int level = hero.getLevel(hero.getSecondClass());
-		int repair = 0;
-		if (level < 20) {
-			repair = 20;
-		}
-		if ((19 < level) && (level < 40)) {
-			repair = 25;
-		}
-		if ((39 < level) && (level < 60)) {
-			repair = 33;
-		}
-		if ((59 < level) && (level < 80)) {
-			repair = 50;
-		}
-		if (79 < level) {
-			repair = 100;
-		}
-		return getDescription().replace("$1", repair+"");
+	@Override
+	public String getDescription(Hero h) {
+		double breakChance = Math.pow(h.getLevel(h.getSecondClass()), -1) * (1.0D/3.0D) * 100;
+		DecimalFormat dF = new DecimalFormat("##.###");
+		return getDescription().replace("$1",dF.format(breakChance)+"%");
 	}
+	
 	public class BlockRightClickListener implements Listener {
-		@EventHandler(priority=EventPriority.MONITOR)
-		public void onPlayerInteract(PlayerInteractEvent event) {
-			/*Check to see if the person that triggered this event satisfies the conditions for triggering this check*/
-			Action a = event.getAction();
-			if (!a.equals(Action.RIGHT_CLICK_BLOCK)) {
+		@SuppressWarnings("deprecation")
+		@EventHandler(priority = EventPriority.MONITOR) 
+		public void onRightClick(PlayerInteractEvent event) {
+			if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 				return;
 			}
-			Block b = event.getClickedBlock();
-			if (!b.getType().equals(Material.ANVIL)) {
+			if(!event.getClickedBlock().getType().equals(Material.ANVIL)) {
 				return;
 			}
-			Hero h = SkillBlacksmith.this.plugin.getCharacterManager().getHero(event.getPlayer());
-			if (!h.hasEffect("Blacksmith")) {
-				h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the training to use anvils to repair your items!");
+			Material bMat = event.getClickedBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType();
+			if(bMat.equals(Material.FIRE)){
 				return;
-			}			
-			/*End Checks*/
-			/*Define Item Max Durabilities as well as the items required to repair them (referred to as improving them)*/
+			}
+			event.setCancelled(true);
+			Player p = event.getPlayer();
+			Hero h = SkillRepair.this.plugin.getCharacterManager().getHero(p);
+			if (!h.hasEffect("Repair")) {
+				p.sendMessage(ChatColor.GRAY + "You lack the training to repair items with an anvil (use /hero choose blacksmith to become a blacksmith)!");
+				return;
+			}
 			int maxDurability = 0;
 			Material requiredImprove = Material.DIAMOND;
 			ItemStack handItem = h.getPlayer().getItemInHand();
 			switch(handItem.getType()) {
-			case DIAMOND_SWORD:				
+			case DIAMOND_SWORD:
+				maxDurability = 1562;
+				break;
 			case DIAMOND_PICKAXE:
 			case DIAMOND_HOE:
 			case DIAMOND_AXE:
@@ -96,6 +86,9 @@ public class SkillBlacksmith extends PassiveSkill {
 				maxDurability = 430;
 				break;
 			case IRON_SWORD:
+				maxDurability = 251;
+				requiredImprove = Material.IRON_INGOT;
+				break;
 			case IRON_PICKAXE:
 			case IRON_HOE:
 			case IRON_AXE:
@@ -119,7 +112,26 @@ public class SkillBlacksmith extends PassiveSkill {
 				maxDurability = 196;
 				requiredImprove = Material.IRON_INGOT;
 				break;
+			case CHAINMAIL_HELMET:
+				maxDurability = 166;
+				requiredImprove = Material.LEATHER;
+				break;
+			case CHAINMAIL_CHESTPLATE:
+				maxDurability = 242;
+				requiredImprove = Material.IRON_INGOT;
+				break;
+			case CHAINMAIL_LEGGINGS:
+				maxDurability = 226;
+				requiredImprove = Material.IRON_INGOT;
+				break;
+			case CHAINMAIL_BOOTS:
+				maxDurability = 196;
+				requiredImprove = Material.LEATHER;
+				break;
 			case GOLD_SWORD:	
+				maxDurability = 33;
+				requiredImprove = Material.GOLD_INGOT;
+				break;
 			case GOLD_PICKAXE:
 			case GOLD_HOE:
 			case GOLD_AXE:
@@ -144,6 +156,9 @@ public class SkillBlacksmith extends PassiveSkill {
 				requiredImprove = Material.GOLD_INGOT;
 				break;
 			case STONE_SWORD:
+				maxDurability = 132;
+				requiredImprove = Material.COBBLESTONE;
+				break;
 			case STONE_PICKAXE:				
 			case STONE_HOE:
 			case STONE_AXE:
@@ -151,7 +166,7 @@ public class SkillBlacksmith extends PassiveSkill {
 				maxDurability = 132;
 				requiredImprove = Material.COBBLESTONE;
 				break;
-			case LEATHER_HELMET:	
+			case LEATHER_HELMET:
 				maxDurability = 56;
 				requiredImprove = Material.LEATHER;
 				break;
@@ -168,10 +183,13 @@ public class SkillBlacksmith extends PassiveSkill {
 				requiredImprove = Material.LEATHER;
 				break;
 			case WOOD_SWORD:
+				maxDurability = 60;
+				requiredImprove = Material.WOOD;
+				break;
 			case WOOD_PICKAXE:
 			case WOOD_HOE:
 			case WOOD_AXE:
-			case WOOD_SPADE: 
+			case WOOD_SPADE:
 				maxDurability = 60;
 				requiredImprove = Material.WOOD;
 				break;
@@ -180,11 +198,10 @@ public class SkillBlacksmith extends PassiveSkill {
 				requiredImprove = Material.LEATHER;
 				break;
 			default:
-				event.getPlayer().sendMessage(ChatColor.GRAY + "This is not a valid tool or armor type to improve!");
+				event.getPlayer().sendMessage(ChatColor.GRAY + "This is not a valid tool or armor type to repair!");
 				return;
+
 			}
-			/*End max durability definitions*/
-			/*Check to see if player actually has the items required to repair*/
 			if (!h.getPlayer().getInventory().contains(requiredImprove)) {
 				String commonName;
 				switch(requiredImprove) {
@@ -210,71 +227,46 @@ public class SkillBlacksmith extends PassiveSkill {
 					commonName = "something broke here, go get andrew2060";
 					break;
 				}
-				h.getPlayer().sendMessage(ChatColor.GRAY + "You need " + ChatColor.AQUA + commonName + ChatColor.GRAY + " to improve this item");
+				h.getPlayer().sendMessage(ChatColor.GRAY + "You need " + ChatColor.AQUA + commonName + ChatColor.GRAY + " to repair this item");
 				return;
 			}
-			/*End check*/
-			/*Actually do the repairing now*/
-			Player p = event.getPlayer();
 			Inventory pInv = p.getInventory();
 			ItemStack mat = pInv.getItem(pInv.first(requiredImprove));
-			/*Check if at max durability*/
 			if(handItem.getDurability() == 0) {
 				p.sendMessage(ChatColor.GRAY + "This Item is already at Max Durability!");
 				return;
 			}
-			/*End Check*/
-			/*Remove the required item to improve*/
 			if (mat.getAmount() > 1) {
 				mat.setAmount(mat.getAmount() - 1);
 			}
 			else pInv.clear(pInv.first(requiredImprove));
-			/*End Removal*/
-			/*Define durability to restore*/
-			double durabilityRestored = maxDurability; 						//Initialize the variable to 100% durability, then modify by multiplying based on level
-			int level = h.getLevel();
-			if (level < 10) {
-				durabilityRestored *= 0.2D;
-			}
-			if ((9 < level) && (level < 20)) {
-				durabilityRestored *= 0.25D;
-			}
-			if ((19 < level) && (level < 30)) {
-				durabilityRestored *= 0.33D;								//Not perfect, but 1/3 doesn't work
-			}
-			if ((29 < level) && (level < 40)) {
-				durabilityRestored *= 0.5D;
-			}
-			if (39 < level) {
-				durabilityRestored *= 1.0D;
-			}
-			/*Actually set durability (0 = new, if getDurability = maxDurability(), item has 0 uses left)*/
+			p.updateInventory();
+			double durabilityRestored = maxDurability*0.2;
 			handItem.setDurability((short)(int)(handItem.getDurability() - durabilityRestored));
-			/*Check if the repair went above 100% durability, if so, set to 100% durability*/
+			Random randGen = new Random();
+			double rand = randGen.nextInt(10000)*0.01;
+			double breakChance = Math.pow(h.getLevel(h.getSecondClass()), -1) * (1.0D/3.0D) * 100;
 			if(handItem.getDurability() < 0) {
 				handItem.setDurability((short) 0);
 			}
-			/*End Check*/
-			p.sendMessage(ChatColor.AQUA + "Item Improvement Successful!");
-			
 			/*Optional, add exp based on the item used to repair, remove the subsequent comment block if you want to use it*/
 			if (h.getLevel(h.getSecondClass()) <= 50) {
 				int exp = 0;
 				switch (requiredImprove) {
 				case DIAMOND:
-					exp = 10;
+					exp = 20;
 					break;
 				case IRON_INGOT:
-					exp = 5;
+					exp = 10;
 					break;
 				case GOLD_INGOT:
-					exp = 3;
+					exp = 6;
 					break;
 				case WOOD:
-					exp = 1;
+					exp = 2;
 					break;
 				case LEATHER:
-					exp = 2;
+					exp = 4;
 					break;
 				default:
 					exp = 0;
@@ -283,17 +275,15 @@ public class SkillBlacksmith extends PassiveSkill {
 				h.addExp(exp, h.getSecondClass(), h.getPlayer().getLocation());
 			}
 
-			/*Enchantment handling, in this case chances of losing enchants is 100-level%*/
-			Random rand = new Random();
-			if(rand.nextInt(100) < 100-h.getLevel(h.getSecondClass())) {
-				Set<Enchantment> enchants = handItem.getEnchantments().keySet();
-				Iterator<Enchantment> enchantIterator = enchants.iterator();
-				while(enchantIterator.hasNext()) {
-					handItem.removeEnchantment(enchantIterator.next());
-				}
-				p.sendMessage(ChatColor.GRAY + "Enchantments were lost during repair, level up your blacksmithing skill to reduce the chance of this happening!");
+			if(rand <= breakChance) {
+				p.sendMessage(ChatColor.GRAY + "Repairing Failed! Your item broke");
+				p.getInventory().remove(handItem);
+				p.updateInventory();
+				return;
+			} else {
+				p.sendMessage(ChatColor.GRAY + "Repair Successful");
 			}
-			return;
+			
 		}
 	}
 }

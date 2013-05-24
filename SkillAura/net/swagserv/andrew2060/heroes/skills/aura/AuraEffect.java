@@ -1,3 +1,4 @@
+
 package net.swagserv.andrew2060.heroes.skills.aura;
 
 import com.herocraftonline.heroes.Heroes;
