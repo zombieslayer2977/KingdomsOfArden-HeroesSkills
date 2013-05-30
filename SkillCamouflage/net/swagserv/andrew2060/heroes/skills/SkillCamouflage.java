@@ -1,11 +1,18 @@
 package net.swagserv.andrew2060.heroes.skills;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,8 +22,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.AnvilInventory;
-
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
@@ -34,15 +39,50 @@ import com.herocraftonline.heroes.characters.skill.SkillSetting;
 public class SkillCamouflage extends PassiveSkill {
 	//An HashMap is essentially a list linking two variables, in this case a Player along with a Boolean value (whether they are currently vanished), which will be initialized in SkillCamouflage's Constructor.
 	HashMap<Player,Boolean> camouflaged;
+	/*
+	 * A hashmap of players that can TEMPORARILY see each other due to being within the 3 block range
+	 * HashMap<Player movingPlayer, List<Player> camouflagedPlayers>
+	 * We then schedule a timed task to check this every 5 seconds and rehide if necessary
+	 */
+	public HashMap<Player, Set<Player>> tempSee;
+	private final SkillCamouflage skill;
 	//SkillCamouflage's Constructor: Note the lack of a return type! a constructor is called when a new instance of an object is created using the new keyword
 	public SkillCamouflage(Heroes plugin) {
 		super(plugin, "Camouflage");
-		setDescription("Passive: When within $1 blocks of a leaf block, becomes invisible to everyone. $2");
+		setDescription("Passive: When within $1 blocks of a vine or leaf block, becomes invisible to everyone greater than 4 blocks away. $2");
 		//Note the new className(this): this means I am calling upon the CONSTRUCTOR of an object (a special type of function with no return type)
 		Bukkit.getPluginManager().registerEvents(new CamouflageListener(this), this.plugin);
 		this.camouflaged = new HashMap<Player,Boolean>();
-	}
+		this.tempSee = new HashMap<Player,Set<Player>>();
+		//Schedule a repeating task every 3 seconds to check if a player is camouflaged again in the tempSee list
+		this.skill = this;
+		Bukkit.getScheduler().runTaskTimer(this.plugin, new Runnable() {
 
+			@Override
+			public void run() {
+				Iterator<Player> entrySet = skill.tempSee.keySet().iterator();
+				while(entrySet.hasNext()) {
+					Player next = entrySet.next();
+					Set<Player> toShow = skill.tempSee.get(next);
+					Iterator<Player> showIt = toShow.iterator();
+					while(showIt.hasNext()) {
+						Player check = showIt.next();
+						Location loc = next.getLocation();
+						Location loc2 = check.getLocation();
+						if(loc.getWorld() != loc2.getWorld() || next.getLocation().distanceSquared(check.getLocation()) > 16) {
+							toShow.remove(check);
+							Boolean stillCamoed = skill.camouflaged.get(check);
+							if(stillCamoed != null && stillCamoed) {
+								next.hidePlayer(check);
+							}
+						}
+					}
+					skill.tempSee.put(next, toShow);
+				}
+			}
+			
+		}, 0, 60L);
+	}
 	@Override
 	public String getDescription(Hero h) {
 		int radius = SkillConfigManager.getUseSetting(h, this, "radius", 2, false);
@@ -102,7 +142,7 @@ public class SkillCamouflage extends PassiveSkill {
 			Hero h = skill.plugin.getCharacterManager().getHero(p);
 			//Check to see if the player logging in has access to this skill.
 			if(!h.hasEffect("Camouflage")) {
-				//Ok he does not have this affect-> we want to continue/don't want to do anything
+				//Ok he does not have this effect-> we want to continue/don't want to do anything
 				return;
 				//This will return; our function, and will make anything below it not run.
 			}
@@ -117,7 +157,6 @@ public class SkillCamouflage extends PassiveSkill {
 		//Indicate to bukkit event registrar that we have another listener being implemented on the line after this
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 		//Listen in on Player logout: we want to remove if they're in the camouflaged list, as they are no longer ingame
-		//Silly me, forgot the name of the event is PlayerQuitEvent lol
 		//Note that I can name the function (currently onPlayerQuit) whatever I want->However it is generally considered
 		//The best idea to have your function names describe what you will be doing in that function.
 		public void onPlayerQuit(PlayerQuitEvent event) {
@@ -174,6 +213,7 @@ public class SkillCamouflage extends PassiveSkill {
 			Player p = h.getPlayer();
 			if(!to.hasSkill("Camouflage")) {
 				if(camouflaged.containsKey(p)) {
+					//Don't need to send the shown message here because this should never happen/is a bugfix case
 					camouflaged.remove(p);
 					for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 						online.showPlayer(p);
@@ -193,8 +233,8 @@ public class SkillCamouflage extends PassiveSkill {
 				}
 			}
 		}
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		//Handle camouflaging
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+		//Handle camouflaging (listen on highest because we want the distance check to run after
 		public void onPlayerMove(PlayerMoveEvent event) {
 			//PlayerMoveEvent is the LAGGIEST event to listen to, we want to avoid doing major stuff as often as possible.
 			Player p = event.getPlayer();
@@ -207,7 +247,7 @@ public class SkillCamouflage extends PassiveSkill {
 			}
 			boolean currentlyVanished = camouflaged.get(p);
 			//Cut it down some more: if no leaves nearby cancel.
-			if(!checkForLeaves(p.getLocation(),SkillConfigManager.getUseSetting(h, skill, "radius", 2, false))) {
+			if(!checkForLeavesorVines(p.getLocation(),SkillConfigManager.getUseSetting(h, skill, "radius", 2, false))) {
 				if(currentlyVanished) {
 					//Means player just left camouflage
 					//I'll do the damage boost later
@@ -217,6 +257,8 @@ public class SkillCamouflage extends PassiveSkill {
 					for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 						online.showPlayer(p);
 					}
+					//Send a message saying that he has left camo
+					p.sendMessage(ChatColor.GRAY + "You have Exited Camouflage");
 					final Hero h2 = h;
 					//Remove the bonus damage effect 2 seconds after leaving stealth.
 					Runnable task = new Runnable() {
@@ -240,15 +282,68 @@ public class SkillCamouflage extends PassiveSkill {
 					return;
 				} else {
 					//Hide and set vanished state to true in hashmap.
+					p.sendMessage(ChatColor.GRAY + "You have Entered Camouflage");
 					camouflaged.put(p, true);
 					for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 						online.hidePlayer(p);
-					}
+					} 
 					//Add the bonus damage effect to our player.
 					if(!h.getHeroClass().hasNoParents()) {
 						h.addEffect(new CamouflageAttackBonusEffect(skill));
 					}
 					return;
+				}
+			}
+		}
+		//Move event listener: check if someone is camouflaged within 3 blocks, if so show them
+		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+		//Once again we want to call on PlayerMoveEvent as little as possible
+		public void onNonCamouflagedPlayerMove(PlayerMoveEvent event) {
+			Player p = event.getPlayer();
+			Iterator<Entity> nearIt = p.getNearbyEntities(4, 3, 4).iterator();
+			List<Player> toCheck = new ArrayList<Player>();
+			while(nearIt.hasNext()) {
+				Entity next = nearIt.next();
+				if(next instanceof Player) {
+					toCheck.add((Player)next);
+					continue;
+				}
+				continue;
+			}
+			//Check our players see if they are currently camouflaged
+			Iterator<Player> checkIt = toCheck.iterator();
+			while(checkIt.hasNext()) {
+				Player check = checkIt.next();
+				if(camouflaged.containsKey(check) && camouflaged.get(check)) {
+					if(tempSee.containsKey(p)) {
+						Set<Player> players = tempSee.get(p);
+						if(players.contains(check)) {
+							continue;
+						} else {
+							if(!check.hasPermission("essentials.vanish")) {
+								Hero h = skill.plugin.getCharacterManager().getHero(check);
+								if(h.hasEffect("ShadowAssaultEffect")) {
+									continue;
+								}
+								players.add(check);
+								p.showPlayer(check);
+								tempSee.put(p, players);
+							}
+						}
+					} else {
+						tempSee.put(p, new HashSet<Player>());
+						Set<Player> players = tempSee.get(p);
+						if(!check.hasPermission("essentials.vanish")) {
+							Hero h = skill.plugin.getCharacterManager().getHero(check);
+							if(h.hasEffect("ShadowAssaultEffect")) {
+								continue;
+							}
+							players.add(check);
+							p.showPlayer(check);
+							tempSee.put(p, players);
+							
+						}
+					}
 				}
 			}
 		}
@@ -275,11 +370,12 @@ public class SkillCamouflage extends PassiveSkill {
 		}
 	}
 	//Function I wrote a while ago to check area around a person for a block, not going to go into detail about how it works but if you can't figure it out I'll be happy to help
-	private boolean checkForLeaves(Location center, int radius) {
+	private boolean checkForLeavesorVines(Location center, int radius) {
 		for (int x = center.getBlockX() - radius; x <= center.getBlockX() + radius; x++) {
 			for (int y = center.getBlockY() - radius; y <= center.getBlockY() + radius; y++) {
 				for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z++) {
-					if (center.getWorld().getBlockAt(x, y, z).getType().equals(Material.LEAVES)) {
+					Material mat = center.getWorld().getBlockAt(x, y, z).getType();
+					if (mat.equals(Material.LEAVES) || mat.equals(Material.VINE)) {
 						return true;
 					}
 				}
@@ -287,5 +383,4 @@ public class SkillCamouflage extends PassiveSkill {
 		}
 		return false;
 	}
-
 }
