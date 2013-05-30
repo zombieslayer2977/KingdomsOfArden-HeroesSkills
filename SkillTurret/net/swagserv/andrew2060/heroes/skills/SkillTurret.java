@@ -11,6 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
@@ -19,7 +24,38 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class SkillTurret extends ActiveSkill {
 	final private ArrayList<Turret> turrets;
+	
+	public class DestroyTurretListener implements Listener {
 
+		private SkillTurret skill;
+		public DestroyTurretListener(SkillTurret skill) {	
+			this.skill = skill;
+		}
+		@EventHandler
+		public void onPluginDisable(PluginDisableEvent event) {
+			if(event.getPlugin() == plugin) {
+				Iterator<Turret> turrets = skill.getTurrets().iterator();
+				while(turrets.hasNext()) {
+					Turret turret = turrets.next();
+					turret.destroyTurretNonCancellable();
+				}
+			}
+		}
+		@EventHandler
+		public void onPlayerDeath(PlayerDeathEvent event) {
+			Hero h = skill.plugin.getCharacterManager().getHero(event.getEntity());
+			if(h.hasEffect("TurretEffect")) {
+				TurretEffect tE = (TurretEffect) h.getEffect("TurretEffect");
+				Iterator<Turret> turrets = tE.getCreatedTurrets().iterator();
+				while(turrets.hasNext()) {
+					Turret t = turrets.next();
+					t.destroyTurretNonCancellable();
+					skill.turrets.remove(t);
+				}
+			}
+		}
+
+	}
 	public SkillTurret(Heroes plugin) {
 		super(plugin, "Turret");
 		setArgumentRange(0,0);
@@ -29,8 +65,7 @@ public class SkillTurret extends ActiveSkill {
 		//List of turrets
 		turrets = new ArrayList<Turret>();
 		//Every second access this list of turret locations and then fire arrows at nearby entities
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-
+		Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			@Override
 			public void run() {
 				//An iterator is basically a way to go up/down a list
@@ -49,10 +84,11 @@ public class SkillTurret extends ActiveSkill {
 						turret.fireTurret();
 					}
 				}
-				
 			}
 			
 		}, 0, 20L);
+		//Registers a listener for when plugin disables to destroy remaining turrets
+		Bukkit.getPluginManager().registerEvents(new DestroyTurretListener(this), plugin);
 	}
 	//This function defines what happens when someone uses the skill
 	@Override
@@ -76,16 +112,6 @@ public class SkillTurret extends ActiveSkill {
 		if(level >= 75) {
 			number = 4;
 		}
-		while(tE.getTurretNumber() >= number) {
-			Turret oldest = tE.getOldest();
-			if(oldest==null) {
-				System.out.println("Problem with turrets queue being empty");
-				break;
-			}
-			oldest.destroyTurretNonCancellable();
-			getTurrets().remove(oldest);
-			tE.removeOldestTurret();
-		}
 		//First we get the location where the user is looking (up to 10 blocks away)
 		Location loc = h.getPlayer().getTargetBlock(null, 10).getRelative(BlockFace.UP).getLocation();
 		//We determine how long this guy's turret lasts
@@ -101,7 +127,16 @@ public class SkillTurret extends ActiveSkill {
 		//We add the turret to a list of turrets so that the scheduled task can fire it
 		tE.addNewTurret(newTurret);
 		h.getPlayer().sendMessage("A turret was successfully created!");
-		getTurrets().add(newTurret);
+		turrets.add(newTurret);
+		//Remove if over the limit here
+		while(tE.getTurretNumber() > number) {
+			Turret oldest = tE.getOldest();
+			if(oldest==null) {
+				break;
+			}
+			oldest.destroyTurretNonCancellable();
+			getTurrets().remove(oldest);
+		}
 		return SkillResult.NORMAL;
 	}
 

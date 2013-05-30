@@ -1,8 +1,6 @@
 package net.swagserv.andrew2060.heroes.skills.turretModules;
 
 
-import java.util.LinkedList;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -41,12 +39,12 @@ public class Turret {
 		e = w.getBlockAt(new Location(w,getLoc().getX() , getLoc().getY() , getLoc().getZ() - 1));
 		f = w.getBlockAt(new Location(w,getLoc().getX(), getLoc().getY() + 1, getLoc().getZ()));
 		//Check to make sure that these blocks are clear
-		if(!(a.getType().equals(Material.AIR) 
-				&& b.getType().equals(Material.AIR) 
-				&& c.getType().equals(Material.AIR) 
-				&& d.getType().equals(Material.AIR) 
-				&& e.getType().equals(Material.AIR) 
-				&& f.getType().equals(Material.AIR))) {
+		if(!((a.getType().equals(Material.AIR) || a.getType().equals(Material.GRASS)) 
+				&& (b.getType().equals(Material.AIR) || b.getType().equals(Material.GRASS))
+				&& (c.getType().equals(Material.AIR) || c.getType().equals(Material.GRASS))
+				&& (d.getType().equals(Material.AIR) || d.getType().equals(Material.GRASS))
+				&& (e.getType().equals(Material.AIR) || e.getType().equals(Material.GRASS))
+				&& (f.getType().equals(Material.AIR) || f.getType().equals(Material.GRASS)))) {
 			return false;
 		}
 		//Create the turret
@@ -70,10 +68,7 @@ public class Turret {
 					return false;
 				}
 			}
-			LinkedList<Turret> queue = tE.getCreatedTurrets();
-			queue.remove(this);
-			tE.setTurretQueue(queue);
-			tE.setTurretNumber(tE.getTurretNumber()-1);
+			tE.removeTurret(this);
 		}
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);
@@ -124,9 +119,7 @@ public class Turret {
 	public void destroyTurretNonCancellable() {
 		TurretEffect tE = (TurretEffect)getCreator().getEffect("TurretEffect");
 		if(tE != null) {
-			LinkedList<Turret> queue = tE.getCreatedTurrets();
-			queue.remove(this);
-			tE.setTurretQueue(queue);
+			tE.removeTurret(this);
 		}
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);
