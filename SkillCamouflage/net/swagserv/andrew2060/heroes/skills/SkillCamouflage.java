@@ -241,13 +241,13 @@ public class SkillCamouflage extends PassiveSkill {
 			if(!camouflaged.containsKey(p)) {
 				return;
 			}
-			Hero h = skill.plugin.getCharacterManager().getHero(p);
+			final Hero h = skill.plugin.getCharacterManager().getHero(p);
 			if(h.isInCombat()) {
 				return;
 			}
 			boolean currentlyVanished = camouflaged.get(p);
 			//Cut it down some more: if no leaves nearby cancel.
-			if(!checkForLeavesorVines(p.getLocation(),SkillConfigManager.getUseSetting(h, skill, "radius", 2, false))) {
+			if(!checkForValidBlocks(p.getLocation(),SkillConfigManager.getUseSetting(h, skill, "radius", 2, false))) {
 				if(currentlyVanished) {
 					//Means player just left camouflage
 					//I'll do the damage boost later
@@ -258,15 +258,14 @@ public class SkillCamouflage extends PassiveSkill {
 						online.showPlayer(p);
 					}
 					//Send a message saying that he has left camo
-					p.sendMessage(ChatColor.GRAY + "You have Exited Camouflage");
-					final Hero h2 = h;
+					if(!h.isSuppressing(this.skill)) {
+						p.sendMessage(ChatColor.GRAY + "You have Exited Camouflage");
+					}
 					//Remove the bonus damage effect 2 seconds after leaving stealth.
 					Runnable task = new Runnable() {
-
 						@Override
 						public void run() {
-							h2.removeEffect(h2.getEffect("CamouflageDmg"));
-							
+							h.removeEffect(h.getEffect("CamouflageDmg"));
 						}
 						
 					};
@@ -282,7 +281,9 @@ public class SkillCamouflage extends PassiveSkill {
 					return;
 				} else {
 					//Hide and set vanished state to true in hashmap.
-					p.sendMessage(ChatColor.GRAY + "You have Entered Camouflage");
+					if(!h.isSuppressing(this.skill)) {
+						p.sendMessage(ChatColor.GRAY + "You have Entered Camouflage");
+					}
 					camouflaged.put(p, true);
 					for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 						online.hidePlayer(p);
@@ -370,7 +371,7 @@ public class SkillCamouflage extends PassiveSkill {
 		}
 	}
 	//Function I wrote a while ago to check area around a person for a block, not going to go into detail about how it works but if you can't figure it out I'll be happy to help
-	private boolean checkForLeavesorVines(Location center, int radius) {
+	private boolean checkForValidBlocks(Location center, int radius) {
 		for (int x = center.getBlockX() - radius; x <= center.getBlockX() + radius; x++) {
 			for (int y = center.getBlockY() - radius; y <= center.getBlockY() + radius; y++) {
 				for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z++) {
