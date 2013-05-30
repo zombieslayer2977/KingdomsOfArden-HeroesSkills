@@ -70,6 +70,9 @@ public class SkillPvPSpecialization extends PassiveSkill {
 			if(spec == true) {
 				exp = exp + 6400;
 			}
+			if(h.getPlayer().getLocation().getWorld().getName().toLowerCase().contains("arena")) {
+				exp = (int) (exp*0.5);
+			}
 			h.getPlayer().sendMessage("§7You were awarded " + exp + " exp for killing a " + rank + " " + h2.getHeroClass().getName() + "!");
 			h.addExp(exp, h.getHeroClass(), h.getPlayer().getLocation());
 			
