@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import net.swagserv.andrew2060.heroestools.util.ImprovementUtil;
+import net.swagserv.andrew2060.toolhandler.util.ImprovementUtil;
 public class SkillForge extends PassiveSkill {
 	public SkillForge(Heroes plugin) {
 		super(plugin, "Forge");
@@ -45,7 +45,7 @@ public class SkillForge extends PassiveSkill {
 				return;
 			}
 			Material mat = b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType();
-			if(!(mat.equals(Material.FIRE)||mat.equals(Material.LAVA))) {
+			if(!(mat.equals(Material.FIRE))) {
 				return;
 			}
 			event.setCancelled(true);
@@ -225,7 +225,7 @@ public class SkillForge extends PassiveSkill {
 				threshold = 60;
 			} else if (level <= 40) {
 				threshold = 80;
-			} else if (level > 50) {
+			} else if (level > 40) {
 				threshold = 100;
 			}
 			double quality = ImprovementUtil.getQuality(handItem);

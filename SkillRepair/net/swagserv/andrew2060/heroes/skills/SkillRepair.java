@@ -250,7 +250,7 @@ public class SkillRepair extends PassiveSkill {
 				handItem.setDurability((short) 0);
 			}
 			/*Optional, add exp based on the item used to repair, remove the subsequent comment block if you want to use it*/
-			if (h.getLevel(h.getSecondClass()) <= 50) {
+			if (h.getLevel(h.getSecondClass()) <= 75) {
 				int exp = 0;
 				switch (requiredImprove) {
 				case DIAMOND:
@@ -264,6 +264,9 @@ public class SkillRepair extends PassiveSkill {
 					break;
 				case WOOD:
 					exp = 2;
+					break;
+				case COBBLESTONE:
+					exp = 4;
 					break;
 				case LEATHER:
 					exp = 4;

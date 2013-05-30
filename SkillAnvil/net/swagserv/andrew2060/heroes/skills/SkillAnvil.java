@@ -3,7 +3,7 @@ package net.swagserv.andrew2060.heroes.skills;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
-import net.minecraft.server.v1_4_R1.ContainerAnvil;
+import net.minecraft.server.v1_5_R3.ContainerAnvilInventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +25,7 @@ public class SkillAnvil extends PassiveSkill {
 		setDescription("You can use Anvils!");
 		Bukkit.getPluginManager().registerEvents(new AnvilListener(), this.plugin);
 		try {
-			Method method = ContainerAnvil.class.getDeclaredMethod("d", new Class[] {});
+			Method method = ContainerAnvilInventory.class.getDeclaredMethod("d", new Class[] {});
 			method.setAccessible(true);
 		} catch(Exception e) {
 			Bukkit.getLogger().log(Level.SEVERE, "SkillAnvil: Error overriding vanilla anvil behaviour! Behaviour may be erratic");
