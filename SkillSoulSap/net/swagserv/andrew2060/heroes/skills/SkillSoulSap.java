@@ -56,13 +56,11 @@ public class SkillSoulSap extends PassiveSkill {
 			if(!pI.contains(Material.EMERALD)) {
 				return;
 			}
-			k.sendMessage("DEBUG: Point 2 reached");
 			Iterator<Integer> emeralds = pI.all(Material.EMERALD).keySet().iterator();
 			while(emeralds.hasNext()) {
 				int next = emeralds.next();
 				ItemStack emerald = pI.getItem(next);
 				if(emerald.getAmount() > 1) {
-					k.sendMessage("DEBUG: Point 4 reached");
 
 					boolean creategem = createSoulGem(pI,p,skill.plugin);
 					if(!creategem) {
@@ -72,10 +70,17 @@ public class SkillSoulSap extends PassiveSkill {
 					emerald.setAmount(emerald.getAmount()-1);
 					break;
 				}
+				if(!emerald.getItemMeta().hasDisplayName()) {
+					boolean creategem = createSoulGem(pI,p,skill.plugin);
+					if(!creategem) {
+						k.sendMessage("Not enough space in your inventory for a new soul gem!");
+						return;
+					}
+					break;
+				}
 				if(emerald.getItemMeta().getDisplayName().toUpperCase().contains("GEM")) {
 					continue;
 				}
-				k.sendMessage("DEBUG: Point 4 reached");
 				boolean creategem = createSoulGem(pI,p,skill.plugin);
 				if(!creategem) {
 					k.sendMessage("Not enough space in your inventory for a new soul gem!");
@@ -121,7 +126,8 @@ public class SkillSoulSap extends PassiveSkill {
 			ItemMeta meta = emerald.getItemMeta();
 			meta.setDisplayName(rank + " Soul Gem");
 			List<String> lore = new ArrayList<String>();
-			lore.add("A gem that entraps the soul of a newly killed opponent, can be used to gamble for enhancement prefixes/suffixes");
+			lore.add(0,"A gem that entraps the soul of a newly killed opponent.");
+			lore.add(1,"Can be used to attempt to install a random item mod.");
 			meta.setLore(lore);
 			emerald.setItemMeta(meta);
 			pI.setItem(empty, emerald);
