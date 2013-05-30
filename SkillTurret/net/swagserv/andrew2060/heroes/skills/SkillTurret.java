@@ -78,6 +78,10 @@ public class SkillTurret extends ActiveSkill {
 		}
 		while(tE.getTurretNumber() >= number) {
 			Turret oldest = tE.getOldest();
+			if(oldest==null) {
+				System.out.println("Problem with turrets queue being empty");
+				break;
+			}
 			oldest.destroyTurretNonCancellable();
 			getTurrets().remove(oldest);
 			tE.removeOldestTurret();

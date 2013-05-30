@@ -1,6 +1,8 @@
 package net.swagserv.andrew2060.heroes.skills.turretModules;
 
 
+import java.util.LinkedList;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -68,7 +70,10 @@ public class Turret {
 					return false;
 				}
 			}
-			tE.getCreatedTurrets().remove(this);
+			LinkedList<Turret> queue = tE.getCreatedTurrets();
+			queue.remove(this);
+			tE.setTurretQueue(queue);
+			tE.setTurretNumber(tE.getTurretNumber()-1);
 		}
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);
@@ -119,7 +124,9 @@ public class Turret {
 	public void destroyTurretNonCancellable() {
 		TurretEffect tE = (TurretEffect)getCreator().getEffect("TurretEffect");
 		if(tE != null) {
-			tE.getCreatedTurrets().remove(this);
+			LinkedList<Turret> queue = tE.getCreatedTurrets();
+			queue.remove(this);
+			tE.setTurretQueue(queue);
 		}
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);

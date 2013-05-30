@@ -24,12 +24,22 @@ public class TurretEffect extends Effect {
 	public int getTurretNumber() {
 		return numberOfTurrets;
 	}
+	public void setTurretNumber(int i) {
+		this.numberOfTurrets = i;
+	}
 	public Turret getOldest() {
-		Turret first = queue.getFirst();
-		return first;		
+		if(queue.isEmpty()) {
+			return null;
+		} else {
+			Turret first = queue.getFirst();
+			return first;
+		}
 	}
 	public LinkedList<Turret> getCreatedTurrets() {
 		return queue;
+	}
+	public void setTurretQueue(LinkedList<Turret> queue) {
+		this.queue = queue;
 	}
 	public void removeOldestTurret() {
 		queue.removeFirst();
