@@ -1,83 +1,122 @@
 package net.swagserv.andrew2060.heroes.skills;
 
-import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
-import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.skill.PassiveSkill;
-import com.herocraftonline.heroes.characters.skill.Skill;
-import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
+import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
+import com.herocraftonline.heroes.characters.skill.PassiveSkill;
+
 public class SkillManaShield extends PassiveSkill {
+
 	public SkillManaShield(Heroes plugin) {
-		super(plugin, "ManaShield");
-		setDescription("When mana is above $1% full, a translucent barrier is erected that absorbs $2% of all incoming weapon damage. However, each hit taken also drains mana equivalent to $3% of damage taken.");
-		Bukkit.getServer().getPluginManager().registerEvents(new SkillListener(this), plugin);
+		super(plugin,"ManaShield");
+		setDescription("Passive: A shield that holds 3 charges is created. " +
+				"Every time damage is taken from combat, a charge will be consumed and the damage completely negated. " +
+				"Shield charges replenish at a rate of one per 20 seconds when out of combat.");
+		Bukkit.getPluginManager().registerEvents(new ManaShieldListener(this.plugin), plugin);
 	}
-	public String getDescription(Hero hero) {
-		return getDescription()
-				.replace("$1", SkillConfigManager.getUseSetting(hero, this, "deactivatePercentage", 50, false) +"")
-				.replace("$2", SkillConfigManager.getUseSetting(hero, this, "damagePercentageBlocked", 75, false) +"")
-				.replace("$3", SkillConfigManager.getUseSetting(hero, this, "percentDamageManaDrainonHit", 25, false) +"");
-	}
-
-	public ConfigurationSection getDefaultConfig() {
-		ConfigurationSection node = super.getDefaultConfig();
-		node.set("deactivatePercentage", Integer.valueOf(50));
-		node.set("damagePercentageBlocked", Integer.valueOf(75));
-		node.set("percentDamageManaDrainonHit", Integer.valueOf(25));
-		return node;
-	}
-
-	public void init() {
-		super.init();
-	}
-
-	public class SkillListener implements Listener {
-		private Skill skill;
-
-		public SkillListener(Skill skill) {
-			this.skill = skill;
+	
+	private class ManaShieldEffect extends PeriodicEffect {
+		private int stacks;
+		public ManaShieldEffect(Heroes plugin) {
+			super(plugin, "ManaShieldEffect", 20000L);
+			this.stacks = 3;
 		}
-
-		@EventHandler(priority=EventPriority.HIGHEST)
-		public void onWeaponDamage(WeaponDamageEvent event) {
-			if (!(event.getEntity() instanceof Player)) {
+		public boolean checkStackAndDecrease(Hero h) {
+			if(stacks > 0) {
+				switch(stacks) {
+				case 3:
+					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,1);
+					break;
+				case 2:
+					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,3);
+					break;
+				case 1:
+					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,2);
+					break;
+				}
+				stacks--;
+				return true;
+			} else {
+				return false;
+			}
+		}
+		private void regenerateStack() {
+			if(stacks >= 3) {
+				return;
+			} else {
+				stacks++;
 				return;
 			}
+		}
+		@Override
+		public void tickHero(Hero h) {
+			if(h.isInCombat()) {
+				return;
+			} else {
+				regenerateStack();
+			}
+		}
+		
+	}
+	@Override
+	public void apply(Hero hero) {
+		ManaShieldEffect eff = new ManaShieldEffect(this.plugin);
+		hero.addEffect(eff);	
+	}
+	
+	@Override
+	public String getDescription(Hero arg0) {
+		return getDescription();
+	}
+	public class ManaShieldListener implements Listener {
+		private Heroes plugin;
+		public ManaShieldListener(Heroes plugin) {
+			this.plugin = plugin;
+		}
+		//Weapon Damage
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+		public void onWeaponDamage(WeaponDamageEvent event) {
+			if(!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			Hero h = plugin.getCharacterManager().getHero((Player) event.getEntity());
+			if(!h.hasEffect("ManaShieldEffect")) {
+				return;
+			}
+			ManaShieldEffect eff = (ManaShieldEffect)h.getEffect("ManaShieldEffect");
 
-			Player p = (Player)event.getEntity();
-			Hero h = SkillManaShield.this.plugin.getCharacterManager().getHero(p);
-			int d = event.getDamage();
-			int m = h.getMana();
-
-			if (h.hasEffect("ManaShield")) {
-				int threshold = SkillConfigManager.getUseSetting(h, this.skill, "deactivatePercentage", 50, false);
-				if (m >= h.getMaxMana() * (threshold * 0.01D)) {
-					int percentageBlocked = SkillConfigManager.getUseSetting(h, this.skill, "damagePercentageBlocked", 75, false);
-					double damageMultiplier = 100 - percentageBlocked * 0.01;
-					event.setDamage((int)(d * damageMultiplier));
-					int manaLossPercentage = SkillConfigManager.getUseSetting(h, this.skill, "percentDamageManaDrainonHit", 25, false);
-					int manaLoss = (int)(d * (manaLossPercentage * 0.01));
-					h.setMana(h.getMana() - manaLoss);
-					Location loc = h.getPlayer().getLocation();
-					loc.getWorld().playEffect(loc, Effect.STEP_SOUND, Material.GLASS);
-					if ((event.getDamager().getEntity() instanceof Player)) {
-						double damageAbsorbed = d - d * damageMultiplier;
-						double r = m - h.getMaxMana() * (threshold * 0.01D);
-						((Player)event.getDamager().getEntity()).sendMessage(ChatColor.GRAY + p.getName() + "'s mana shield absorbed " + ChatColor.RED + damageAbsorbed + ChatColor.GRAY + " damage.");
-						((Player)event.getDamager().getEntity()).sendMessage(ChatColor.GRAY + "Remaining mana shield charge:" + ChatColor.AQUA + " " + r);
-					}
-				}
+			if(eff.checkStackAndDecrease(h)) {
+				event.setCancelled(true);
+				return;
+			} else {
+				return;
+			}
+		}
+		//Skill Damage
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+		public void onSkillDamage(SkillDamageEvent event) {
+			if(!(event.getEntity() instanceof Player)) {
+				return;
+			}
+			Hero h = plugin.getCharacterManager().getHero((Player) event.getEntity());
+			if(!h.hasEffect("ManaShieldEffect")) {
+				return;
+			}
+			if(((ManaShieldEffect)h.getEffect("ManaShieldEffect")).checkStackAndDecrease(h)) {
+				event.setCancelled(true);
+				return;
+			} else {
+				return;
 			}
 		}
 	}
