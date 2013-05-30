@@ -4,6 +4,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import net.swagserv.andrew2060.heroes.skills.aura.AuraEffect;
 import net.swagserv.andrew2060.heroes.skills.aura.AuraWrapper;
@@ -11,6 +14,9 @@ import net.swagserv.andrew2060.heroes.skills.aura.AuraWrapper;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
+import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
+import com.herocraftonline.heroes.characters.CharacterManager;
+import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.party.HeroParty;
@@ -18,9 +24,31 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 
 public class SkillAuraOfFortitude extends ActiveSkill {
 
+	public class AuraFortitudeListener implements Listener {
+		private CharacterManager charMan;
+
+		public AuraFortitudeListener(SkillAuraOfFortitude skill) {
+			this.charMan = skill.plugin.getCharacterManager();
+		}
+
+		@EventHandler(ignoreCancelled = true)
+		public void onWeaponDamage(WeaponDamageEvent event) {
+			if(!(event.getEntity() instanceof LivingEntity)) {
+				return;
+			}
+			CharacterTemplate cT = charMan.getCharacter((LivingEntity) event.getEntity());
+			if(cT.hasEffect("FortitudeEffect")) {
+				event.setDamage((int) (event.getDamage()*0.9D));
+			}
+		}
+	}
 	public SkillAuraOfFortitude(Heroes plugin) {
 		super(plugin, "AuraOfFortitude");
 		setDescription("Aura: Reduces damage taken by all party members within 10 blocks by 10%. Activation: Upon switching to this aura, the caster and the closest party member within 10 blocks is healed for 5 health.");
+		setIdentifiers("skill auraoffortitude");
+		setUsage("/skill auraoffortitude");
+		setArgumentRange(0,0);
+		Bukkit.getPluginManager().registerEvents(new AuraFortitudeListener(this), this.plugin);
 	}
 
 	@Override
@@ -31,8 +59,7 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 
 	@Override
 	public String getDescription(Hero arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return getDescription();
 	}
 	private class FortitudeAuraWrapper extends AuraWrapper {
 
