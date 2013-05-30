@@ -49,11 +49,10 @@
 	<classpathentry kind="src" path="SkillCommandSentry"/>
 	<classpathentry kind="src" path="SkillCommandStaticField"/>
 	<classpathentry kind="src" path="SkillAura"/>
-	<classpathentry kind="src" path="SkillAbsoluteZero"/>
 	<classpathentry kind="src" path="SkillAuraOfFortitude"/>
 	<classpathentry kind="src" path="SkillRepair"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Craftbukkit.jar">
+	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/CraftBukkit.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs"/>
 		</attributes>
