@@ -62,6 +62,9 @@ public class SkillCommandSlow extends ActiveSkill {
 				if(!(next instanceof LivingEntity)) {
 					continue;
 				}
+				if(!((LivingEntity)next).hasLineOfSight(a)) {
+					continue;
+				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
 
 					Iterator<PotionEffect> effects = ((LivingEntity)next).getActivePotionEffects().iterator();

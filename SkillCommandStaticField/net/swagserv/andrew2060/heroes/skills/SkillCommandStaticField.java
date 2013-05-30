@@ -28,10 +28,10 @@ public class SkillCommandStaticField extends ActiveSkill {
 
 	public SkillCommandStaticField(Heroes plugin) {
 		super(plugin, "CommandStaticField");
-		setDescription("Command: StaticField: Every ten firing cycles, the turret will fire out a static field dealing 80 physical damage (affected by armor) to everyone in its radius and paralyzing them for 2 seconds");
-		setUsage("/skill commandslow");
+		setDescription("Command: StaticField: Every ten firing cycles, the turret will fire out a static field dealing 40 physical damage (affected by armor) to everyone in its radius and paralyzing them for 2 seconds");
+		setUsage("/skill commandstaticfield");
 		setArgumentRange(0,0);
-		setIdentifiers("skill commandslow");
+		setIdentifiers("skill commandstaticfield");
 	}
 
 	@Override
@@ -71,8 +71,11 @@ public class SkillCommandStaticField extends ActiveSkill {
 				if(!(next instanceof LivingEntity)) {
 					continue;
 				}
+				if(!((LivingEntity)next).hasLineOfSight(a)) {
+					continue;
+				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
-					Skill.damageEntity((LivingEntity)next, h.getEntity(), 80, DamageCause.ENTITY_ATTACK);
+					Skill.damageEntity((LivingEntity)next, h.getEntity(), 40, DamageCause.ENTITY_ATTACK);
 					CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)next);
 					cT.addEffect(new RootEffect(null, 2000));
 				}

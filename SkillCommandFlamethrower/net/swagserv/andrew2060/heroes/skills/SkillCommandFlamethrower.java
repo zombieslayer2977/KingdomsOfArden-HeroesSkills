@@ -59,6 +59,9 @@ public class SkillCommandFlamethrower extends ActiveSkill {
 				if(!(next instanceof LivingEntity)) {
 					continue;
 				}
+				if(!((LivingEntity)next).hasLineOfSight(a)) {
+					continue;
+				}
 				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next)  && (LivingEntity)next != h.getEntity()) {
 					Skill.damageEntity((LivingEntity)next, h.getEntity(), 2, DamageCause.MAGIC);
 					next.setFireTicks(100);
