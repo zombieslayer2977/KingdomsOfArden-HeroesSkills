@@ -58,30 +58,31 @@ public class SkillArcaneStorm extends ActiveSkill  {
 							}
 						}
 			    		
-			    	}, ticksPerFirework*i);
-			    	Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
-
-						@Override
-						public void run() {
-							Iterator<Entity> nearby = p.getNearbyEntities(16, 5, 16).iterator();
-							while(nearby.hasNext()) {
-								Entity e = nearby.next();
-								if(!(e instanceof LivingEntity)) {
-									continue;
-								}
-								if(!Skill.damageCheck(p, (LivingEntity) e)) {
-									continue;
-								}
-								Skill.damageEntity((LivingEntity)e, p, 50, DamageCause.MAGIC);
-								p.getWorld().strikeLightningEffect(e.getLocation());
-							}
-						}
-			    		
-			    	}, 100);
+			    	}, ticksPerFirework*i);	    	
 			    }
+			    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
+
+					@Override
+					public void run() {
+						Iterator<Entity> nearby = p.getNearbyEntities(16, 5, 16).iterator();
+						while(nearby.hasNext()) {
+							Entity e = nearby.next();
+							if(!(e instanceof LivingEntity)) {
+								continue;
+							}
+							if(!Skill.damageCheck(p, (LivingEntity) e)) {
+								continue;
+							}
+							Skill.damageEntity((LivingEntity)e, p, 50, DamageCause.MAGIC);
+							p.getWorld().strikeLightningEffect(e.getLocation());
+						}
+					}
+		    		
+		    	}, 100);
 			}
 			@Override
 			public void removeFromHero(Hero hero) {
+				super.removeFromHero(hero);
 			    broadcast(hero.getPlayer().getLocation(), "§7[§2Skill§7] Arcane Storm Unleashed!", new Object[] {});
 			}
 			
