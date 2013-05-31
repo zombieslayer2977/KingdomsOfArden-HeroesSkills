@@ -2,15 +2,12 @@ package net.swagserv.andrew2060.heroes.skills;
 
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -19,7 +16,6 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
-import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillCommandSlow extends ActiveSkill {
 
@@ -53,36 +49,24 @@ public class SkillCommandSlow extends ActiveSkill {
 		int slowlevel;
 
 		@Override
-		public void fire(Hero h, Location loc, double range) {
-			Arrow a = loc.getWorld().spawnArrow(loc, new Vector(0,0,0), 0.6f, 1.6f);
-			Iterator<Entity> nearby = a.getNearbyEntities(range*2, range*2, range*2).iterator();
-
-			while(nearby.hasNext()) {
-				Entity next = nearby.next();
-				if(!(next instanceof LivingEntity)) {
-					continue;
-				}
-				if(!((LivingEntity)next).hasLineOfSight(a)) {
-					continue;
-				}
-				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
-
-					Iterator<PotionEffect> effects = ((LivingEntity)next).getActivePotionEffects().iterator();
-					slowlevel = 1;
-					while(effects.hasNext()) {
-						PotionEffect nextEffect = effects.next();
-						if(nextEffect.getType().equals(PotionEffectType.SLOW)) {
-							slowlevel += nextEffect.getAmplifier();
-							break;
-						}
+		public void fire(Hero h, Location loc, double range, List<LivingEntity> validTargets) {
+			Iterator<LivingEntity> validIt = validTargets.iterator();
+			while(validIt.hasNext()) {
+				LivingEntity next = validIt.next();
+				Iterator<PotionEffect> effects = ((LivingEntity)next).getActivePotionEffects().iterator();
+				slowlevel = 1;
+				while(effects.hasNext()) {
+					PotionEffect nextEffect = effects.next();
+					if(nextEffect.getType().equals(PotionEffectType.SLOW)) {
+						slowlevel += nextEffect.getAmplifier();
+						break;
 					}
-					if(slowlevel > 5) {
-						slowlevel = 5;
-					}
-					((LivingEntity)next).addPotionEffect(PotionEffectType.SLOW.createEffect(100, slowlevel));
 				}
+				if(slowlevel > 5) {
+					slowlevel = 5;
+				}
+				next.addPotionEffect(PotionEffectType.SLOW.createEffect(100, slowlevel));
 			}
-			a.remove();
 			return;
 		}
 	}

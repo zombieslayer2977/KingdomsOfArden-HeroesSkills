@@ -1,6 +1,9 @@
 package net.swagserv.andrew2060.heroes.skills.turretModules;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.herocraftonline.heroes.Heroes;
@@ -76,6 +79,14 @@ public class TurretEffect extends Effect {
 	public void addNewTurret(Turret newTurret) {
 		queue.addLast(newTurret);
 		numberOfTurrets++;
+	}
+	public void removeAllTurrets() {
+		List<Turret> syncQueue = Collections.synchronizedList(this.queue);
+		Iterator<Turret> queueIt = syncQueue.iterator();
+		while(queueIt.hasNext()) {
+			Turret next = queueIt.next();
+			next.destroyTurretNonCancellable();
+		}
 	}
 
 }

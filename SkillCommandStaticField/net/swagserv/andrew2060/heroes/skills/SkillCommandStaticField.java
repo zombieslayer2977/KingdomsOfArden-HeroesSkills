@@ -2,16 +2,11 @@ package net.swagserv.andrew2060.heroes.skills;
 
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -58,30 +53,19 @@ public class SkillCommandStaticField extends ActiveSkill {
 			this.charges = 10;
 		}
 		@Override
-		public void fire(Hero h, Location loc, double range) {
+		public void fire(Hero h, Location loc, double range, List<LivingEntity> validTargets) {
 			if(!(charges == 10)) {
 				charges++;
 				return;
 			}
-			Arrow a = loc.getWorld().spawnArrow(loc, new Vector(0,0,0), 0.6f, 1.6f);
-			Iterator<Entity> nearby = a.getNearbyEntities(range*2, range*2, range*2).iterator();
-
+			Iterator<LivingEntity> nearby = validTargets.iterator();
 			while(nearby.hasNext()) {
-				Entity next = nearby.next();
-				if(!(next instanceof LivingEntity)) {
-					continue;
-				}
-				if(!((LivingEntity)next).hasLineOfSight(a)) {
-					continue;
-				}
-				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next) && (LivingEntity)next != h.getEntity()) {
-					Skill.damageEntity((LivingEntity)next, h.getEntity(), 40, DamageCause.ENTITY_ATTACK);
-					CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)next);
-					cT.addEffect(new RootEffect(null, 2000));
-				}
+				LivingEntity next = nearby.next();
+				Skill.damageEntity((LivingEntity)next, h.getEntity(), 40, DamageCause.ENTITY_ATTACK);
+				CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)next);
+				cT.addEffect(new RootEffect(SkillCommandStaticField.this, 2000));
 			}
 			charges = 0;
-			a.remove();
 			return;
 		}
 	}

@@ -13,7 +13,6 @@ import org.bukkit.util.Vector;
 
 import net.swagserv.andrew2060.heroes.skills.turretModules.Turret;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
-import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -40,7 +39,6 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 		} else {
 			tE = (TurretEffect)h.getEffect("TurretEffect");
 		}
-		tE.setFireFunctionWrapper(new NullTurret());
 		ArrayList<Turret> turrets = ((SkillTurret)this.plugin.getSkillManager().getSkill("Turret")).getTurrets();
 		Iterator<Turret> turretIt = turrets.iterator();
 		while(turretIt.hasNext()) {
@@ -59,7 +57,7 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 					}
 					if(Skill.damageCheck(h.getPlayer(), (LivingEntity) nextEnt) && (LivingEntity)nextEnt != h.getEntity()) {
 						this.addSpellTarget(nextEnt, h);
-						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), 20, DamageCause.MAGIC);
+						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), 40, DamageCause.BLOCK_EXPLOSION);
 					}
 				}
 				a.remove();
@@ -74,12 +72,5 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 	public String getDescription(Hero h) {
 		return getDescription()
 				.replace("$1", h.getLevel() + "");
-	}
-	private class NullTurret extends TurretFireWrapper {
-
-		@Override
-		public void fire(Hero h, Location loc, double range) {
-			return;
-		}
 	}
 }

@@ -1,15 +1,29 @@
 package net.swagserv.andrew2060.heroes.skills.turretModules;
 
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
+import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class Turret {
 	private Location loc;
+	private Location checkFireLoc;
 	private Hero creator;
 	private long expirationTime;
 	double range;
@@ -25,6 +39,7 @@ public class Turret {
 		this.setLoc(loc);
 		this.setCreator(creator);
 		this.range = range;
+		this.checkFireLoc = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()).add(0,2,0);
 	}
 	/**
 	 * Creates a turret
@@ -32,7 +47,7 @@ public class Turret {
 	public boolean createTurret() {
 		World w = getCreator().getPlayer().getWorld();
 		//We want to get whatever block is here first so that we can replace it later (if its not air)
-		a = w.getBlockAt(getLoc());
+		a = w.getBlockAt(loc);
 		b = w.getBlockAt(new Location(w,getLoc().getX() + 1, getLoc().getY() , getLoc().getZ()));
 		c = w.getBlockAt(new Location(w,getLoc().getX() - 1, getLoc().getY() , getLoc().getZ()));
 		d = w.getBlockAt(new Location(w,getLoc().getX() , getLoc().getY() , getLoc().getZ() + 1));
@@ -79,19 +94,67 @@ public class Turret {
 		return true;
 	}
 	/**
+	 * Overrideable code that acquires turret targets
+	 * 
+	 * @return a list of valid targets
+	 */
+	public List<LivingEntity> acquireTargets() {
+		List<LivingEntity> validTargets = new LinkedList<LivingEntity>();
+		Arrow a = loc.getWorld().spawnArrow(checkFireLoc, new Vector(0,0,0), 0.6f, 1.6f);
+		List<Entity> debug = a.getNearbyEntities(range, 5, range);
+		Iterator<Entity> nearby = debug.iterator();
+		while(nearby.hasNext()) {
+			Entity next = nearby.next();
+			if(!(next instanceof LivingEntity)) {
+				continue;
+			}
+			LivingEntity lE = (LivingEntity) next;
+			if(lE instanceof Tameable) {
+				Player p = (Player)((Tameable)lE).getOwner();
+				if(p == null) {
+					if(!Skill.damageCheck(creator.getPlayer(), lE)) {
+						continue;
+					}
+				} else if(!p.isOnline()) {
+					continue;
+				} else if(p == creator.getPlayer()) {
+					continue;
+				} else {
+					if(!Skill.damageCheck(creator.getPlayer(), p)) {
+						continue;
+					}
+				}
+			}
+			Ocelot o = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
+			o.setOwner(creator.getPlayer());
+			o.setTarget(lE);
+			if(!o.hasLineOfSight(next)) {
+				o.remove();
+				continue;
+			}
+			if(Skill.damageCheck(creator.getPlayer(), lE) && lE != creator.getEntity()) {
+				validTargets.add(lE);
+			}
+			o.remove();
+		}
+		a.remove();
+		return validTargets;
+	}
+	/**
 	 * Fires the turret at any nearby entities
 	 */
 	public void fireTurret() {
-		if(!getCreator().hasEffect("TurretEffect")) {
+		if(!creator.hasEffect("TurretEffect")) {
 			return;
 		}
 		//Fire based on what is ordained within the hero's current TurretEffect
-		TurretEffect tE = (TurretEffect)getCreator().getEffect("TurretEffect");
+		TurretEffect tE = (TurretEffect)creator.getEffect("TurretEffect");
 		TurretFireWrapper fW = tE.getFireFunctionWrapper();
 		if(fW == null) {
 			return; //No active mode selected, so we just exit out. Note that this means that turrets will always fire based on the last active effect
 		}
-		fW.fire(getCreator(), getLoc(),range);
+		List<LivingEntity> validTargets = acquireTargets();
+		fW.fire(creator, getLoc(),range, validTargets);
 		return;
 	}
 

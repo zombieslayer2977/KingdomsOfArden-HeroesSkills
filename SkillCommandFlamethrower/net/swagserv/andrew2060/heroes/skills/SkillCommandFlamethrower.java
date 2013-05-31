@@ -2,14 +2,11 @@ package net.swagserv.andrew2060.heroes.skills;
 
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.util.Vector;
-
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -49,28 +46,16 @@ public class SkillCommandFlamethrower extends ActiveSkill {
 		return SkillResult.NORMAL;
 	}
 	private class FlameThrowerTurret extends TurretFireWrapper {
-
 		@Override
-		public void fire(Hero h, Location loc, double range) {
-			Arrow a = loc.getWorld().spawnArrow(loc, new Vector(0,0,0), 0.6f, 1.6f);
-			Iterator<Entity> nearby = a.getNearbyEntities(range*2, range*2, range*2).iterator();
-			while(nearby.hasNext()) {
-				Entity next = nearby.next();
-				if(!(next instanceof LivingEntity)) {
-					continue;
-				}
-				if(!((LivingEntity)next).hasLineOfSight(a)) {
-					continue;
-				}
-				if(Skill.damageCheck(h.getPlayer(), (LivingEntity) next)  && (LivingEntity)next != h.getEntity()) {
-					Skill.damageEntity((LivingEntity)next, h.getEntity(), 2, DamageCause.MAGIC);
-					next.setFireTicks(100);
-				}
+		public void fire(Hero h, Location loc, double range, List<LivingEntity> validTargets) {
+			Iterator<LivingEntity> valid = validTargets.iterator();
+			while(valid.hasNext()) {
+				LivingEntity next = valid.next();
+				addSpellTarget(next, h);
+				Skill.damageEntity(next, h.getEntity(), 2, DamageCause.CUSTOM);
+				next.setFireTicks(100);
 			}
-			a.remove();
-			return;
-		}
-		
+		}	
 	}
 	@Override
 	public String getDescription(Hero h) {

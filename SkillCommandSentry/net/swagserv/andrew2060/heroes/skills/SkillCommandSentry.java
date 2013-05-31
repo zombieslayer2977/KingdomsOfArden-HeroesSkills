@@ -2,6 +2,7 @@ package net.swagserv.andrew2060.heroes.skills;
 
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,6 +10,8 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.HumanEntity;
@@ -16,6 +19,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Wither;
 import org.bukkit.util.Vector;
 
 import net.swagserv.andrew2060.heroes.skills.turretModules.Turret;
@@ -27,7 +31,6 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
-import com.herocraftonline.heroes.characters.skill.Skill;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.Rel;
@@ -69,7 +72,7 @@ public class SkillCommandSentry extends ActiveSkill {
 			this.cycles = 0;
 		}
 		@Override
-		public void fire(Hero h, Location loc, double range) {
+		public void fire(Hero h, Location loc, double range, List<LivingEntity> validTargets) {
 			if(cycles < 5) {
 				cycles++;
 				return;
@@ -80,7 +83,7 @@ public class SkillCommandSentry extends ActiveSkill {
 			Iterator<Entity> nearby = a.getNearbyEntities(50, 10 , 50).iterator();
 			String head = ChatColor.YELLOW + "=======Sentry Report (" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")=======";
 			p.sendMessage(head);
-
+			int bosses = 0;
 			int monsters = 0;
 			FPlayer fP = FPlayers.i.get(p);
 			while(nearby.hasNext()) {
@@ -89,6 +92,10 @@ public class SkillCommandSentry extends ActiveSkill {
 					continue;
 				}
 				if(!(next instanceof  HumanEntity)) {
+					if(next instanceof Wither) {
+						bosses++;
+						continue;
+					}
 					if(next instanceof Monster) {
 						monsters++;
 						continue;
@@ -99,6 +106,14 @@ public class SkillCommandSentry extends ActiveSkill {
 					}
 					if(next instanceof Slime) {
 						monsters++;
+						continue;
+					}
+					if(next instanceof EnderDragon || next instanceof EnderDragonPart) {
+						bosses++;
+						continue;
+					}
+					if(next instanceof EnderDragon || next instanceof EnderDragonPart) {
+						bosses++;
 						continue;
 					}
 					if(next instanceof Creature) {
@@ -137,6 +152,7 @@ public class SkillCommandSentry extends ActiveSkill {
 			}
 			if(monsters > 0) {
 				p.sendMessage(ChatColor.GRAY + "There are " + monsters + " hostile monsters within the scan radius.");
+				p.sendMessage(ChatColor.RED + "There are " + bosses + " hostile boss mobs within the scan radius.");
 			}
 			a.remove();
 			return;

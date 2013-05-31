@@ -46,12 +46,7 @@ public class SkillTurret extends ActiveSkill {
 			Hero h = skill.plugin.getCharacterManager().getHero(event.getEntity());
 			if(h.hasEffect("TurretEffect")) {
 				TurretEffect tE = (TurretEffect) h.getEffect("TurretEffect");
-				Iterator<Turret> turrets = tE.getCreatedTurrets().iterator();
-				while(turrets.hasNext()) {
-					Turret t = turrets.next();
-					t.destroyTurretNonCancellable();
-					skill.turrets.remove(t);
-				}
+				tE.removeAllTurrets();
 			}
 		}
 
