@@ -57,7 +57,7 @@ public class SkillRepair extends PassiveSkill {
 			Player p = event.getPlayer();
 			Hero h = SkillRepair.this.plugin.getCharacterManager().getHero(p);
 			if (!h.hasEffect("Repair")) {
-				p.sendMessage(ChatColor.GRAY + "You lack the training to repair items with an anvil (use /hero choose blacksmith to become a blacksmith)!");
+				p.sendMessage(ChatColor.GRAY + "You lack the training to repair items with an anvil (use /hero prof blacksmith to become a blacksmith)!");
 				return;
 			}
 			int maxDurability = 0;
