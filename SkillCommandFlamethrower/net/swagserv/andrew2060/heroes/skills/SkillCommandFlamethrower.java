@@ -52,7 +52,7 @@ public class SkillCommandFlamethrower extends ActiveSkill {
 			while(valid.hasNext()) {
 				LivingEntity next = valid.next();
 				addSpellTarget(next, h);
-				Skill.damageEntity(next, h.getEntity(), 2, DamageCause.CUSTOM);
+				Skill.damageEntity(next, h.getEntity(), 2, DamageCause.CUSTOM, false);
 				next.setFireTicks(100);
 			}
 		}	

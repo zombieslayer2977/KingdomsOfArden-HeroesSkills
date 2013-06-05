@@ -75,6 +75,9 @@ public class SkillEarthquake extends ActiveSkill {
 						((Player)e).addPotionEffect(PotionEffectType.CONFUSION.createEffect(400,10));
 					}
 				}
+				if(skill.plugin.getCharacterManager().getCharacter(e).hasEffect("EarthquakeEffect")) {
+					continue;
+				}
 				e.setVelocity(applied);
 				e.getWorld().createExplosion(e.getLocation().subtract(0, 6, 0), 0F);
 				if(!SkillEarthquake.damageCheck(h.getPlayer(), e)) {
