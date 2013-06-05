@@ -85,8 +85,23 @@ public class Turret {
 			}
 			tE.removeTurret(this);
 		}
+		//We don't need to chunk check 'a'/'f' because its dead center anyways
+		if(!b.getChunk().isLoaded()) {
+			b.getChunk().load();
+		}
+		if(!c.getChunk().isLoaded()) {
+			c.getChunk().load();
+		}
+		if(!d.getChunk().isLoaded()) {
+			d.getChunk().load();
+		}
+		if(!e.getChunk().isLoaded()) {
+			e.getChunk().load();
+		}
+		
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);
+		
 		c.setType(Material.AIR);
 		d.setType(Material.AIR);
 		e.setType(Material.AIR);
@@ -183,6 +198,19 @@ public class Turret {
 		TurretEffect tE = (TurretEffect)getCreator().getEffect("TurretEffect");
 		if(tE != null) {
 			tE.removeTurret(this);
+		}
+		//We don't need to chunk check 'a'/'f' because its dead center anyways
+		if(!b.getChunk().isLoaded()) {
+			b.getChunk().load();
+		}
+		if(!c.getChunk().isLoaded()) {
+			c.getChunk().load();
+		}
+		if(!d.getChunk().isLoaded()) {
+			d.getChunk().load();
+		}
+		if(!e.getChunk().isLoaded()) {
+			e.getChunk().load();
 		}
 		a.setType(Material.AIR);
 		b.setType(Material.AIR);
