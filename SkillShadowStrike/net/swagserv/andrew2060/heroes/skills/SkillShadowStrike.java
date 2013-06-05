@@ -47,6 +47,9 @@ public class SkillShadowStrike extends TargettedSkill {
 
 	@Override
 	public SkillResult use(Hero h, LivingEntity lE, String[] args) {
+		if(lE == h.getEntity()) {
+			return SkillResult.INVALID_TARGET;
+		}
 		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(lE);
 		h.getPlayer().teleport(lE.getLocation(), TeleportCause.UNKNOWN);
 		cT.addEffect(new ExpirableEffect(this, plugin, "ShadowStrikeSilence", 4000));

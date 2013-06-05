@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
@@ -14,7 +15,6 @@ import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
-import com.herocraftonline.heroes.characters.effects.common.QuickenEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.util.Messaging;
@@ -22,12 +22,6 @@ import com.herocraftonline.heroes.util.Messaging;
 public class SkillShadowAssault extends ActiveSkill {
 
 	public class ShadowAssaultListener implements Listener {
-
-		private Skill skill;
-
-		public ShadowAssaultListener(Skill skill) {
-			this.skill = skill;
-		}
 		@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST) 
 		public void onWeaponDamage(WeaponDamageEvent event) {
 			CharacterTemplate cT = event.getDamager();
@@ -70,7 +64,7 @@ public class SkillShadowAssault extends ActiveSkill {
 				p.showPlayer(toShow);
 			}
 			if(!h.isInCombat()) {
-				skill.damageEntity(h.getEntity(), h.getEntity(), (int) (h.getPlayer().getMaxHealth()*0.5));
+				Skill.damageEntity(h.getEntity(), h.getEntity(), (int) (h.getPlayer().getMaxHealth()*0.5), DamageCause.MAGIC);
 				Messaging.send(h.getPlayer(), "The energy used for this assault turns against you as you have not expended it on a target", new Object[0]);
 			}
 		}
@@ -84,7 +78,7 @@ public class SkillShadowAssault extends ActiveSkill {
 		setIdentifiers("skill shadowassault");
 		setUsage("/skill shadowassault");
 		setArgumentRange(0,0);
-		Bukkit.getPluginManager().registerEvents(new ShadowAssaultListener(this), this.plugin);
+		Bukkit.getPluginManager().registerEvents(new ShadowAssaultListener(), this.plugin);
 	}
 
 	@Override
