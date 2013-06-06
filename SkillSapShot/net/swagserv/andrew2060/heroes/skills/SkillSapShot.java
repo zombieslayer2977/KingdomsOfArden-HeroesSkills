@@ -16,11 +16,8 @@ import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -110,11 +107,7 @@ public class SkillSapShot extends ActiveSkill {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped to " + ChatColor.AQUA + "max" + ChatColor.GRAY + " health!");
 				p.setHealth(p.getMaxHealth());
 				event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
-
-				CraftPlayer cp = (CraftPlayer)h.getPlayer();
-				CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-				cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
-				o.remove();
+				//TODO: Change to use HeroRegainHealthEvent
 				return;
 			}
 			p.setHealth(modifiedHealth);
@@ -122,12 +115,8 @@ public class SkillSapShot extends ActiveSkill {
 			if ((event.getEntity() instanceof Player)) {
 				((Player)event.getEntity()).sendMessage(ChatColor.GRAY + h.getName() + " sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " health from you!");
 			}
-
-			CraftPlayer cp = (CraftPlayer)h.getPlayer();
-			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
 			event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
-			cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
-			o.remove();
+			//TODO: Chance to use HeroRegainHealthEvent
 		}
 
 		@SuppressWarnings("deprecation")

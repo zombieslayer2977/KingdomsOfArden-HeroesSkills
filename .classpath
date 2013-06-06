@@ -27,7 +27,6 @@
 	<classpathentry kind="src" path="SkillPurify"/>
 	<classpathentry kind="src" path="SkillEnchantmentBook"/>
 	<classpathentry kind="src" path="SkillMortarStrike"/>
-	<classpathentry kind="src" path="SkillAnvil"/>
 	<classpathentry kind="src" path="SkillEqualize"/>
 	<classpathentry kind="src" path="SkillFireworks"/>
 	<classpathentry kind="src" path="SkillCauldron"/>
@@ -52,12 +51,9 @@
 	<classpathentry kind="src" path="SkillAuraOfFortitude"/>
 	<classpathentry kind="src" path="SkillRepair"/>
 	<classpathentry kind="src" path="SkillArcaneStorm"/>
+	<classpathentry kind="src" path="SkillArcanoBlast"/>
+	<classpathentry kind="src" path="SkillPowerLocus"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/CraftBukkit.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Heroes.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://ci.herocraftonline.com/job/Heroes/javadoc"/>
@@ -65,5 +61,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Factions.jar"/>
 	<classpathentry kind="src" path="/Swagserv-ToolHandler"/>
+	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Libkit.jar" sourcepath="C:/Users/Andrew/Java Projects/lib/src/BukkitSRC.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Andrew/Java Projects/lib/Libkit-JD/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,9 +5,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
-import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -70,10 +67,6 @@ public class SkillRejuvinate extends ActiveSkill {
 				}
 				break;
 			}
-			CraftPlayer cp = (CraftPlayer)h.getPlayer();
-			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-			cp.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
-			o.remove();
 		}
 
 		@Override

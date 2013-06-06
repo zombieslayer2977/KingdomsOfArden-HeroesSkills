@@ -2,9 +2,6 @@ package net.swagserv.andrew2060.heroes.skills;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftOcelot;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
-import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -75,10 +72,7 @@ public class SkillSiphoningStrike extends ActiveSkill{
 			int level = h.getLevel();
 			int healthregain = (int) (dmg*level*0.01);
 			
-			CraftPlayer cP = (CraftPlayer)h.getPlayer();
-			CraftOcelot o = (CraftOcelot)p.getWorld().spawn(h.getPlayer().getLocation(), Ocelot.class);
-			cP.getHandle().world.broadcastEntityEffect(o.getHandle(), (byte)7);
-			o.remove();
+			//TODO: Change to use HeroRegainHealthEvent
 
 			h.getPlayer().sendMessage(ChatColor.GRAY + "Siphoned " + ChatColor.GREEN + healthregain + ChatColor.GRAY + " health!");
 			
