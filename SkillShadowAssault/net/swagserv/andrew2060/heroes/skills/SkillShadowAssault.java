@@ -43,7 +43,7 @@ public class SkillShadowAssault extends ActiveSkill {
 		@Override
 		public void applyToHero(Hero h) {
             super.applyToHero(h);
-			h.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(3000, 3));
+			h.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(3000, 3),true);
 			Player toHide = h.getPlayer();
 			Player[] online = Bukkit.getServer().getOnlinePlayers();
 			for(int i = 0; i < online.length; i++) {
@@ -84,7 +84,7 @@ public class SkillShadowAssault extends ActiveSkill {
 	@Override
 		public SkillResult use(Hero h, String[] args) {
 			h.addEffect(new ShadowAssaultEffect(this, this.plugin, 15000));
-			broadcastExecuteText(h);
+			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 started a Shadow Assault", new Object[] {h.getName()});
 			return SkillResult.NORMAL;
 		}
 
