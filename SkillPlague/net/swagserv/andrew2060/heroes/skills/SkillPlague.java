@@ -45,7 +45,7 @@ public class SkillPlague extends ActiveSkill {
 			}
 			cT.addEffect(new PlagueEffect(this, this.plugin, 2000L, 30000L, h));
 		}
-		this.broadcast(h.getPlayer().getLocation(), ChatColor.DARK_GRAY + h.getName() + " used Plague!");
+		this.broadcast(h.getPlayer().getLocation(),"§7[§2Skill§7]" + ChatColor.DARK_GRAY + h.getName() + " used Plague!");
 		return SkillResult.NORMAL;
 	}
 

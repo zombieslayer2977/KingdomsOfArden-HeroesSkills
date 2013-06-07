@@ -45,7 +45,7 @@ public class SkillDeathMark extends TargettedSkill {
 			return SkillResult.NORMAL;
 		}
 		cT.addEffect(new DeathMarkEffect(this,plugin,SkillConfigManager.getUseSetting(h, this, "explodeTime", 2000, false),h));
-		broadcast(h.getPlayer().getLocation(), h.getName() + " used deathmark on " + cT.getName(), new Object[0]);
+		broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 marked $2 for death", new Object[] {h.getName(),cT.getName()});
 		cT.addEffect(new ExpirableEffect(this, plugin, "DeathMarkExpiry", SkillConfigManager.getUseSetting(h, this, "reapplyTime", 30000, false)));
 		return SkillResult.NORMAL;
 	}
