@@ -84,6 +84,7 @@ public class SkillShadowAssault extends ActiveSkill {
 	@Override
 		public SkillResult use(Hero h, String[] args) {
 			h.addEffect(new ShadowAssaultEffect(this, this.plugin, 15000));
+			broadcastExecuteText(h);
 			return SkillResult.NORMAL;
 		}
 
