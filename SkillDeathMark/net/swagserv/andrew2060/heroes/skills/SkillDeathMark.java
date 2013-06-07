@@ -37,6 +37,9 @@ public class SkillDeathMark extends TargettedSkill {
 	@Override
 	public SkillResult use(Hero h, LivingEntity lE, String[] args) {
 		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(lE);
+		if(lE == h.getEntity()) {
+			return SkillResult.INVALID_TARGET;
+		}
 		if(cT.hasEffect("DeathMarkExpiry")) {
 			h.getPlayer().sendMessage("This target has been affected by a death mark too recently");
 			return SkillResult.NORMAL;
