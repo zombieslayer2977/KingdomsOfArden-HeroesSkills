@@ -55,6 +55,7 @@ public class SkillShadowStrike extends TargettedSkill {
 		cT.addEffect(new ExpirableEffect(this, plugin, "ShadowStrikeSilence", 4000));
 		lE.addPotionEffect(PotionEffectType.SLOW.createEffect(60, 2));
 		Skill.damageEntity(lE, h.getEntity(), (int) (lE.getMaxHealth()*5*0.01), DamageCause.ENTITY_ATTACK);
+		broadcastExecuteText(h, lE);
 		return SkillResult.NORMAL;
 	}
 
