@@ -52,7 +52,7 @@ public class SkillForge extends PassiveSkill {
 			Hero h = SkillForge.this.plugin.getCharacterManager().getHero(event.getPlayer());
 			Player p = event.getPlayer();
 			if (!h.hasEffect("Forge")) {
-				p.sendMessage(ChatColor.GRAY + "You lack the training to improve items with an anvil (use /hero choose blacksmith to become a blacksmith)!");
+				p.sendMessage(ChatColor.GRAY + "You lack the training to improve items with an anvil (use /hero prof blacksmith to become a blacksmith)!");
 				return;
 			}
 			Material requiredImprove = Material.IRON_INGOT;
