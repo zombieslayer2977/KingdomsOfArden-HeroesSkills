@@ -54,6 +54,7 @@ public class SkillCommandSentry extends ActiveSkill {
 			h.getPlayer().sendMessage("You must wait 10 seconds between using different command skills!");
 			return SkillResult.NORMAL;
 		}
+		broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 activated sentry turret", new Object[] {h.getName()});
 		h.addEffect(new ExpirableEffect(this,this.plugin,"TurretEffectCooldown",10000));
 		TurretEffect tE;
 		if(!h.hasEffect("TurretEffect")) {
