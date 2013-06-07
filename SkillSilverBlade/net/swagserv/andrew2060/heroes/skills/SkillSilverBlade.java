@@ -37,7 +37,7 @@ public class SkillSilverBlade extends PassiveSkill {
 
 	public SkillSilverBlade(Heroes plugin) {
 		super(plugin, "SilverBlade");
-		setDescription("Passive: basic attacks deal bonus $1% true damage every hit");
+		setDescription("Passive: basic attacks deal bonus $1% damage every hit");
 		setIdentifiers("skill silverblade");
 		setUsage("/skill silverblade");
 		setArgumentRange(0,0);
