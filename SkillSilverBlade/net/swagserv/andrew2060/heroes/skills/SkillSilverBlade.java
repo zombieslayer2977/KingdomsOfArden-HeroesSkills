@@ -4,10 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
@@ -24,7 +21,7 @@ public class SkillSilverBlade extends PassiveSkill {
 			this.skill = skill;
 		}
 
-		@EventHandler(ignoreCancelled = true,priority = EventPriority.MONITOR) 
+		@EventHandler(ignoreCancelled = true) 
 		public void onWeaponDamage(WeaponDamageEvent event) {
 			if(event.getDamager().hasEffect("SilverBlade")) {
 				if(event.getEntity() instanceof LivingEntity) {
@@ -32,7 +29,7 @@ public class SkillSilverBlade extends PassiveSkill {
 					double percent = SkillConfigManager.getUseSetting(h, skill, "amountMax" , 1.00, false);
 					percent += SkillConfigManager.getUseSetting(h,skill,"amountMaxPerLevel",0.05,false)*h.getLevel();
 					LivingEntity target = (LivingEntity)event.getEntity();
-					Skill.damageEntity(target, h.getEntity(), (int) (target.getMaxHealth() * percent * 0.01), DamageCause.MAGIC);
+					event.setDamage((int) (event.getDamage()+(target.getMaxHealth() * percent * 0.01)));
 				}
 			}
 		}
