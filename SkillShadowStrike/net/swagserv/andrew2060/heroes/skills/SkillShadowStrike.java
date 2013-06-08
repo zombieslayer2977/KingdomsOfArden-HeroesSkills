@@ -3,6 +3,7 @@ package net.swagserv.andrew2060.heroes.skills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -55,7 +56,11 @@ public class SkillShadowStrike extends TargettedSkill {
 		cT.addEffect(new ExpirableEffect(this, plugin, "ShadowStrikeSilence", 4000));
 		lE.addPotionEffect(PotionEffectType.SLOW.createEffect(60, 2));
 		Skill.damageEntity(lE, h.getEntity(), (int) (lE.getMaxHealth()*5*0.01), DamageCause.ENTITY_ATTACK);
-		broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),lE.getType().getName()});
+		if(!(lE instanceof Player)) {
+			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),lE.getType().getName()});
+		} else {
+			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),((Player)lE).getName()});
+		}
 		return SkillResult.NORMAL;
 	}
 
