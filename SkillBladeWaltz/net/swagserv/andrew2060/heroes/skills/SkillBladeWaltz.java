@@ -35,7 +35,7 @@ public class SkillBladeWaltz extends ActiveSkill {
 		setUsage("/skill bladewaltz");
 		setArgumentRange(0, 0);
 		setIdentifiers(new String[] { "skill bladewaltz" });
-		setTypes(new SkillType[] { SkillType.PHYSICAL, SkillType.DAMAGING });
+		setTypes(new SkillType[] { SkillType.PHYSICAL, SkillType.DAMAGING }); 
 	}
 	public void init() {
 		super.init();
