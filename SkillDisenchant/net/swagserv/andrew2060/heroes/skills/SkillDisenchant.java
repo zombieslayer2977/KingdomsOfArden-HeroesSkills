@@ -1,5 +1,6 @@
 package net.swagserv.andrew2060.heroes.skills;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,15 +55,17 @@ public class SkillDisenchant extends ActiveSkill {
 			ItemMeta meta = expbottle.getItemMeta();
 			meta.setDisplayName("Essence of enchantment");
 			List<String> lore = new ArrayList<String>();
-			lore.add("Contains a fraction of extracted enchantment energy.");
-			lore.add("Can be used to recharge existing enchantments");
+			lore.add(ChatColor.GRAY + "Contains a fraction of extracted enchantment energy.");
+			lore.add(ChatColor.GRAY + "Can be used to power the combination of soul gems");
+			lore.add(ChatColor.GRAY + "Store enchantments within scrolls");
+			lore.add(ChatColor.GRAY + "Or empower a tool with additional mod slots");
 			meta.setLore(lore);
 			expbottle.setItemMeta(meta);
 			h.getPlayer().getWorld().dropItem(h.getPlayer().getLocation(), expbottle);
 			//Handle breaking
 			if(randgen.nextInt(100) < Math.pow(h.getLevel(h.getSecondClass()),-1)*100) {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Oh no your item broke :("); //Like we actually give a fuck
-				hand.setAmount(0);
+				hand.setType(Material.AIR);
 				h.getPlayer().updateInventory();
 				break;
 			}
@@ -72,7 +75,8 @@ public class SkillDisenchant extends ActiveSkill {
 
 	@Override
 	public String getDescription(Hero h) {
-		return getDescription().replace("$1", Math.pow(h.getLevel(h.getSecondClass()),-1)*100 + "");
+		DecimalFormat dF = new DecimalFormat("##.##");
+		return getDescription().replace("$1", dF.format(Math.pow(h.getLevel(h.getSecondClass()),-1)*100) + "");
 	}
 	
 
