@@ -126,8 +126,8 @@ public class SkillSoulSap extends PassiveSkill {
 			ItemMeta meta = emerald.getItemMeta();
 			meta.setDisplayName(rank + " Soul Gem");
 			List<String> lore = new ArrayList<String>();
-			lore.add(0,"A gem that entraps the soul of a newly killed opponent.");
-			lore.add(1,"Can be used to attempt to install a random item mod.");
+			lore.add(0,ChatColor.GRAY + "A gem that entraps the soul of a newly killed opponent.");
+			lore.add(1,ChatColor.GRAY + "Can be used to attempt to install a random item mod.");
 			meta.setLore(lore);
 			emerald.setItemMeta(meta);
 			pI.setItem(empty, emerald);
