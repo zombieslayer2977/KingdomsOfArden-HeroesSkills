@@ -75,7 +75,7 @@ public class SkillEnchantmentBook extends ActiveSkill {
 			try {
 				tool.addEnchantments(struct.enchant);
 				p.sendMessage(ChatColor.GRAY + "§7[§2Skill§7] Enchantment Successfully applied from book!");
-				struct.hand.setType(Material.AIR);
+				p.getInventory().remove(struct.hand);
 				p.updateInventory(); //Blah blah deprecated but bukkit doesn't include new functionality for it
 			} catch (IllegalArgumentException e) {
 				p.sendMessage(ChatColor.GRAY + "§7[§2Skill§7] Enchantment cannot be applied to this type of item!");
