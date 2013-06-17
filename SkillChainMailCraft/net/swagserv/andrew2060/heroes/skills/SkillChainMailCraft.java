@@ -66,7 +66,7 @@ public class SkillChainMailCraft extends PassiveSkill {
 						event.setCancelled(true);
 						h.getPlayer().sendMessage(ChatColor.GRAY + "You lack the blacksmithing expertise required to craft chainmail!");
 					}
-					h.addExp(50.0D, h.getSecondClass(), h.getPlayer().getLocation());
+					h.addExp(100.0D, h.getSecondClass(), h.getPlayer().getLocation());
 					return;
 				}
 			}
