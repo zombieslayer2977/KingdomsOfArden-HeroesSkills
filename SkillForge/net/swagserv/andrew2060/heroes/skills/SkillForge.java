@@ -264,19 +264,19 @@ public class SkillForge extends PassiveSkill {
 					int exp = 0;
 					switch (requiredImprove) {
 					case IRON_INGOT:
-						exp = 30;
+						exp = 60;
 						break; 
 					case GOLD_INGOT:
-						exp = 10;
+						exp = 20;
 						break;
 					case LEATHER:
-						exp = 6;
+						exp = 12;
 						break;
 					case WOOD:
-						exp = 2;
+						exp = 4;
 						break;
 					case FLINT:
-						exp = 4;
+						exp = 8;
 						break;
 					default:
 						exp = 0;

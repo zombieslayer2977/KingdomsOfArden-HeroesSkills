@@ -254,22 +254,22 @@ public class SkillRepair extends PassiveSkill {
 				int exp = 0;
 				switch (requiredImprove) {
 				case DIAMOND:
-					exp = 20;
+					exp = 40;
 					break;
 				case IRON_INGOT:
-					exp = 10;
+					exp = 20;
 					break;
 				case GOLD_INGOT:
-					exp = 6;
+					exp = 12;
 					break;
 				case WOOD:
-					exp = 2;
+					exp = 4;
 					break;
 				case COBBLESTONE:
-					exp = 4;
+					exp = 8;
 					break;
 				case LEATHER:
-					exp = 4;
+					exp = 8;
 					break;
 				default:
 					exp = 0;
