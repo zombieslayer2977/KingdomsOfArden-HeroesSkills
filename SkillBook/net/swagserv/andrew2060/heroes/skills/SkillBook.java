@@ -71,13 +71,11 @@ public class SkillBook extends ActiveSkill {
 			if(p.getInventory().getItem(struct.heldSlot) == null || (!p.getInventory().getItem(struct.heldSlot).equals(struct.hand))) {
 				p.sendMessage(ChatColor.GRAY + "§7[§2Skill§7] Cannot find the original enchantment book inside your inventory anymore! Did you move it?");
 				return SkillResult.FAIL;
-			}
-			ItemStack item = p.getInventory().getItem(struct.heldSlot);
-		
+			}		
 			try {
 				tool.addEnchantments(struct.enchant);
 				p.sendMessage(ChatColor.GRAY + "§7[§2Skill§7] Enchantment Successfully applied from book!");
-				item.setType(Material.AIR);
+				struct.hand.setType(Material.AIR);
 				p.updateInventory(); //Blah blah deprecated but bukkit doesn't include new functionality for it
 			} catch (IllegalArgumentException e) {
 				p.sendMessage(ChatColor.GRAY + "§7[§2Skill§7] Enchantment cannot be applied to this type of item!");
