@@ -65,7 +65,7 @@ public class SkillDisenchant extends ActiveSkill {
 			//Handle breaking
 			if(randgen.nextInt(100) < Math.pow(h.getLevel(h.getSecondClass()),-1)*100) {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Oh no your item broke :("); //Like we actually give a fuck
-				hand.setType(Material.AIR);
+				h.getPlayer().getInventory().clear(h.getPlayer().getInventory().getHeldItemSlot());
 				h.getPlayer().updateInventory();
 				break;
 			}
