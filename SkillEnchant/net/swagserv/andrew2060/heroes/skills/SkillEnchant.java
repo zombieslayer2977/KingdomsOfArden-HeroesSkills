@@ -5,14 +5,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
@@ -38,11 +41,18 @@ public class SkillEnchant extends PassiveSkill {
 			this.skill = skill;
 		}
 		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-		public void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
-			Hero h = skill.plugin.getCharacterManager().getHero(event.getEnchanter());
+		public void onPlayerInteract(PlayerInteractEvent event) {
+			if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+				return;
+			}
+			if(!event.getClickedBlock().getType().equals(Material.ENCHANTMENT_TABLE)) {
+				return;
+			}
+			Hero h = skill.plugin.getCharacterManager().getHero(event.getPlayer());
 			if(!h.hasEffect("Enchant")) {
-				Messaging.send(h.getPlayer(), "You need to be an enchanter to use the enchanting table!", new Object[0]);
+				Messaging.send(h.getPlayer(), "You need to be an enchanter to use the enchanting table (/hero prof Enchanter)!", new Object[0]);
 				event.setCancelled(true);
+				return;
 			}
 			boolean hasEnchantDeductable = h.getHeroClass().hasExperiencetype(ExperienceType.ENCHANTING);
 			if(!hasEnchantDeductable) {
