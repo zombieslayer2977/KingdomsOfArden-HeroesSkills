@@ -16,7 +16,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.util.Util;
 
-public class SkillEnchantmentBook extends ActiveSkill {
+public class SkillBook extends ActiveSkill {
 	HashMap<Player,PlayerExecuteData> executors;
 	
 	private class PlayerExecuteData {
@@ -32,10 +32,11 @@ public class SkillEnchantmentBook extends ActiveSkill {
 		}
 		
 	}
-	public SkillEnchantmentBook(Heroes plugin) {
-		super(plugin, "EnchantmentBook");
-		setUsage("/skill enchantmentbook");
-		setDescription("Consumes an enchantment book and applies it to an item upon second use.");
+	public SkillBook(Heroes plugin) {
+		super(plugin, "Book");
+		setUsage("/skill Book");
+		setDescription("Applies enchantment books.");
+		setIdentifiers("skill book");
 		setArgumentRange(0,0);
 		executors = new LinkedHashMap<Player, PlayerExecuteData>();
 	}
@@ -51,13 +52,14 @@ public class SkillEnchantmentBook extends ActiveSkill {
 				return SkillResult.INVALID_TARGET_NO_MSG;
 			}
 			Map<Enchantment, Integer> enchant = ((EnchantmentStorageMeta)hand.getItemMeta()).getStoredEnchants();
-			executors.put(p, new PlayerExecuteData(enchant, System.currentTimeMillis() + 10000 , hand, p.getInventory().getHeldItemSlot()));
+			executors.put(p, new PlayerExecuteData(enchant, System.currentTimeMillis() + 30000 , hand, p.getInventory().getHeldItemSlot()));
 			p.sendMessage(ChatColor.GRAY + "Select an item to enchant by using this skill again!");
 			return SkillResult.INVALID_TARGET_NO_MSG; //Prevent cooldowns/reagent use from triggering
 		} else {
 			if(executors.get(p).expirationTime <= System.currentTimeMillis()) {
 				p.sendMessage(ChatColor.GRAY + "Your selection has expired, please try again");
 				executors.remove(p);
+				return SkillResult.INVALID_TARGET_NO_MSG;
 			}
 			ItemStack tool = p.getItemInHand();
 			if(!(Util.isArmor(tool.getType()) || Util.isWeapon(tool.getType()))) {
@@ -66,11 +68,12 @@ public class SkillEnchantmentBook extends ActiveSkill {
 			}
 			PlayerExecuteData struct = executors.get(p);
 			executors.remove(p);
-			if(!p.getInventory().getItem(struct.heldSlot).equals(struct.hand)) {
+			if(p.getInventory().getItem(struct.heldSlot) == null || (!p.getInventory().getItem(struct.heldSlot).equals(struct.hand))) {
 				p.sendMessage(ChatColor.GRAY + "Cannot find the original enchantment book inside your inventory anymore! Did you move it?");
 				return SkillResult.FAIL;
 			}
-			p.getInventory().getItem(struct.heldSlot).setAmount(0);
+			ItemStack item = p.getInventory().getItem(struct.heldSlot);
+			item.setType(Material.AIR);
 			p.updateInventory(); //Blah blah deprecated but bukkit doesn't include new functionality for it
 			tool.addEnchantments(struct.enchant);
 		}
