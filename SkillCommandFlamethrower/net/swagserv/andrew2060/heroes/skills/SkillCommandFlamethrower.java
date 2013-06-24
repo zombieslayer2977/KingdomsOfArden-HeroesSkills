@@ -1,11 +1,15 @@
 package net.swagserv.andrew2060.heroes.skills;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.swagserv.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
@@ -17,14 +21,16 @@ import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
-public class SkillCommandFlamethrower extends ActiveSkill {
+public class SkillCommandFlamethrower extends ActiveSkill implements Listener {
 
-	public SkillCommandFlamethrower(Heroes plugin) {
+	public List<LivingEntity> exemptFire;
+    public SkillCommandFlamethrower(Heroes plugin) {
 		super(plugin, "CommandFlamethrower");
 		setDescription("Command: Flamethrower: Puts all active turrets in flamethrower state - Turrets will set all enemies in range on fire");
 		setUsage("/skill commandflamethrower");
 		setArgumentRange(0,0);
 		setIdentifiers("skill commandflamethrower");
+		this.exemptFire = new ArrayList<LivingEntity>();
 	}
 
 	@Override
@@ -42,25 +48,51 @@ public class SkillCommandFlamethrower extends ActiveSkill {
 		} else {
 			tE = (TurretEffect) h.getEffect("TurretEffect");
 		}
-		FlameThrowerTurret fireFunc = new FlameThrowerTurret();
+		FlameThrowerTurret fireFunc = new FlameThrowerTurret(this);
 		tE.setFireFunctionWrapper(fireFunc);
 		return SkillResult.NORMAL;
 	}
 	private class FlameThrowerTurret extends TurretFireWrapper {
-		@Override
+		
+	    private SkillCommandFlamethrower skill;
+
+        public FlameThrowerTurret(SkillCommandFlamethrower skill) {
+		    this.skill = skill;
+		}
+
+        @Override
 		public void fire(Hero h, Location loc, double range, List<LivingEntity> validTargets) {
 			Iterator<LivingEntity> valid = validTargets.iterator();
 			while(valid.hasNext()) {
 				LivingEntity next = valid.next();
 				addSpellTarget(next, h);
-				Skill.damageEntity(next, h.getEntity(), 2, DamageCause.CUSTOM, false);
-				next.setFireTicks(100);
+				Skill.damageEntity(next, h.getEntity(), 3, DamageCause.CUSTOM, false);
+				if(next.getFireTicks() > 19) {
+				    return;
+				} else {
+				    next.setFireTicks(19);
+				    skill.exemptFire.add(next);
+				}
 			}
 		}	
 	}
 	@Override
 	public String getDescription(Hero h) {
 		return getDescription();
+	}
+	
+	@EventHandler(ignoreCancelled = true) 
+	public void onFireDamage(EntityDamageEvent event) {
+	    if(event.getEntity() instanceof LivingEntity) {
+	        LivingEntity lE = (LivingEntity) event.getEntity();
+	        if(this.exemptFire.contains(lE)) {
+	            if(event.getCause() == DamageCause.FIRE_TICK) {
+	                event.setCancelled(true);
+	                this.exemptFire.remove(lE);
+	                return;
+	            }
+	        }
+	    }
 	}
 
 }
