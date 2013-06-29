@@ -28,7 +28,6 @@
 	<classpathentry kind="src" path="SkillEnchantmentBook"/>
 	<classpathentry kind="src" path="SkillMortarStrike"/>
 	<classpathentry kind="src" path="SkillEqualize"/>
-	<classpathentry kind="src" path="SkillFireworks"/>
 	<classpathentry kind="src" path="SkillCauldron"/>
 	<classpathentry kind="src" path="SkillTurret"/>
 	<classpathentry kind="src" path="SkillDisenchant"/>
