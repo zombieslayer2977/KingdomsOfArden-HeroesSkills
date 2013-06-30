@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -33,11 +34,15 @@ public class SkillPowerLocus extends ActiveSkill {
 			if(!h.hasEffect("PowerLocusEffect")) {
 				return; 
 			}
+			if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+			    return;
+			}
 			if(!p.getItemInHand().getType().equals(Material.BLAZE_ROD)){
 				return;
 			}
 			PowerLocusEffect locusEffect = (PowerLocusEffect)h.getEffect("PowerLocusEffect");
 			locusEffect.toggleZoom();
+			event.setCancelled(true);
 		}
 		
 	}
