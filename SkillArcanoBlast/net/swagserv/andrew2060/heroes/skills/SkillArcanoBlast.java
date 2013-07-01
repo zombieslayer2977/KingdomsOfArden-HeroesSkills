@@ -1,10 +1,10 @@
 package net.swagserv.andrew2060.heroes.skills;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -13,14 +13,16 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
@@ -30,13 +32,13 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillArcanoBlast extends ActiveSkill implements Listener {
-    private HashMap<WitherSkull,Long> trackedSkulls;
+    private ConcurrentHashMap<WitherSkull,Long> trackedSkulls;
     public SkillArcanoBlast(Heroes plugin) {
         super(plugin, "ArcanoBlast");
-        setDescription("On use, calls down magical artillery that strikes target location after 1.5 seconds");
+        setDescription("On use, calls down magical artillery that strikes target location after 1 second");
         setIdentifiers("skill arcanoblast");
         setUsage("/skill arcanoblast");
-        this.trackedSkulls = new HashMap<WitherSkull,Long>();
+        this.trackedSkulls = new ConcurrentHashMap<WitherSkull,Long>();
         //Auto-Despawn skulls after 30 seconds
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable(){
 
@@ -59,52 +61,64 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
+    @Override 
     public SkillResult use(final Hero h, String[] args) {
         List<Block> los = null;
         boolean inPowerLocus = h.hasEffect("PowerLocusEffect");
         if(inPowerLocus) {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         } else {
-            los = h.getPlayer().getLastTwoTargetBlocks(null, 10);
+            los = h.getPlayer().getLastTwoTargetBlocks(null, 15);
         }
         final Location loc = los.get(los.size()-1).getLocation();
-        List<Location> circleLoc = circle(h.getPlayer(), loc, 2, 1, false, false, 1);
+        List<Location> circleLoc = circle(loc, 2, 1, false, false, 1);
         for(Location effectLoc : circleLoc) {
-            effectLoc.getWorld().playEffect(effectLoc, Effect.MOBSPAWNER_FLAMES, 1);
+            effectLoc.getWorld().playEffect(effectLoc, Effect.MOBSPAWNER_FLAMES, 0);
         }
-        Location spawnLoc = los.get(los.size()-1).getLocation().add(0,10,0);
-        loc.getWorld().playSound(spawnLoc, Sound.ENDERMAN_TELEPORT, 1, 1);
+        final Location spawnLoc = los.get(los.size()-1).getLocation().add(0,10,0); 
+        loc.getWorld().playSound(spawnLoc, Sound.ENDERMAN_TELEPORT, 5, 1);
         spawnLoc.getWorld().playEffect(spawnLoc, Effect.ENDER_SIGNAL, 1);
-        List<Location> circleEnderLoc = circle(h.getPlayer(), loc, 2, 1, false, false, 0);
+        List<Location> circleEnderLoc = circle(spawnLoc, 2, 1, false, false, 0);
         for(Location effectLoc : circleEnderLoc) {
             effectLoc.getWorld().playEffect(effectLoc, Effect.ENDER_SIGNAL, 1);
         }
-        WitherSkull skull = h.getPlayer().launchProjectile(WitherSkull.class);
-        skull.setShooter(h.getEntity());
-        skull.teleport(spawnLoc);
-        Vector v = loc.subtract(spawnLoc).toVector().normalize().multiply(1.0);
-        skull.setVelocity(v);
-        trackedSkulls.put(skull, System.currentTimeMillis());
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                Ocelot o = spawnLoc.getWorld().spawn(spawnLoc, Ocelot.class);
+                WitherSkull skull = o.launchProjectile(WitherSkull.class);
+                o.remove();
+                skull.setShooter(h.getEntity());
+                Vector v = new Vector();
+                v.setY(-100).normalize().multiply(3.0);
+                skull.setVelocity(v);
+                trackedSkulls.put(skull, System.currentTimeMillis());
+            }
+            
+        },20);
+       
         broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 used ArcanoBlast!", new Object[] {h.getPlayer().getName()});
         return SkillResult.NORMAL;
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onProjectileHit(ProjectileHitEvent event) {
+    public void onProjectileHit(EntityExplodeEvent event) {
         Entity e = event.getEntity();
         if(!(e instanceof WitherSkull)) {
             return;
         }
+        
         WitherSkull w = (WitherSkull)e;
         if(!trackedSkulls.containsKey(w)) {
             return;
         }
+        event.setCancelled(true);
         trackedSkulls.remove(w);
-        w.setYield(0);
         Location loc = w.getLocation();
         Hero h = plugin.getCharacterManager().getHero((Player) w.getShooter());
         Arrow a = loc.getWorld().spawnArrow(loc,new Vector(0,0,0), 0.6f, 1.6f);
-        Iterator<Entity> near = a.getNearbyEntities(3, 3, 3).iterator();
+        Iterator<Entity> near = a.getNearbyEntities(5, 5, 5).iterator();
+        a.remove();
         boolean inPowerLocus = h.hasEffect("PowerLocusEffect");
         while(near.hasNext()) {
             Entity next = near.next();
@@ -122,14 +136,15 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
                 dmg = 40;
             }
             Skill.damageEntity(lE, h.getEntity(), dmg, DamageCause.MAGIC, false);
+            lE.addPotionEffect(PotionEffectType.WITHER.createEffect(100, 5));
         }
-        a.remove();
     }
     @Override
     public String getDescription(Hero arg0) {
         return getDescription();
     }
-    private List<Location> circle(Player player, Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
+
+    private List<Location> circle(Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
         List<Location> circleblocks = new ArrayList<Location>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
