@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
@@ -41,7 +42,7 @@ public class SkillPowerLocus extends ActiveSkill {
 				return;
 			}
 			PowerLocusEffect locusEffect = (PowerLocusEffect)h.getEffect("PowerLocusEffect");
-			locusEffect.toggleZoom();
+			locusEffect.toggleZoom(h);
 			event.setCancelled(true);
 		}
 		
@@ -82,29 +83,38 @@ public class SkillPowerLocus extends ActiveSkill {
 		public PowerLocusEffect(Skill skill) {
 			super(skill, "PowerLocusEffect",1000);
 			this.zoomed = false;
+			this.addPotionEffect(PotionEffectType.SLOW.createEffect(200000,50),false);
+	        this.addPotionEffect(PotionEffectType.JUMP.createEffect(200000,-50),false);
 		}
 		
 		@Override
 		public void tickHero(Hero h) {
-			if(!zoomed) {
-				h.getEntity().addPotionEffect(PotionEffectType.SLOW.createEffect(30, 1), true);
-			} else {
-				h.getEntity().addPotionEffect(PotionEffectType.SLOW.createEffect(30,99999), true);
-			}
-			h.getEntity().addPotionEffect(PotionEffectType.JUMP.createEffect(30, -5), true);
 		}
 		
 		@Override
 		public void removeFromHero(Hero h) {
 			super.removeFromHero(h);
+			h.getEntity().removePotionEffect(PotionEffectType.SLOW);
+			h.getEntity().removePotionEffect(PotionEffectType.JUMP);
 			h.getEntity().addPotionEffect(PotionEffectType.SPEED.createEffect(100, 2),true);
 		}
 		
 		public boolean isZoomed() {
 			return this.zoomed;
 		}
-		public void toggleZoom() {
+		public void toggleZoom(Hero h) {
 			this.zoomed = !this.zoomed;
+			int amplifier = 100;
+			if(this.zoomed) {
+			    amplifier = -1000100;
+			}
+			for(PotionEffect pE : h.getEntity().getActivePotionEffects()) {
+                if(pE.getType().equals(PotionEffectType.SLOW)) {
+                    if(pE.getAmplifier() != amplifier) {
+                        h.getEntity().addPotionEffect(PotionEffectType.SLOW.createEffect(200000, amplifier),true);
+                    }
+                }
+             }
 		}
 	}
 }
