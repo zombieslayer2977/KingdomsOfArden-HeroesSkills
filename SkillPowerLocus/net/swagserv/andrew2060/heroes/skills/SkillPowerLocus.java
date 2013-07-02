@@ -28,23 +28,7 @@ public class SkillPowerLocus extends ActiveSkill {
 			this.skill = skill;
 		}
 		
-		@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true) 
-		public void onInteract(PlayerInteractEvent event) {
-			Player p = event.getPlayer();
-			Hero h = skill.plugin.getCharacterManager().getHero(p);
-			if(!h.hasEffect("PowerLocusEffect")) {
-				return; 
-			}
-			if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-			    return;
-			}
-			if(!p.getItemInHand().getType().equals(Material.BLAZE_ROD)){
-				return;
-			}
-			PowerLocusEffect locusEffect = (PowerLocusEffect)h.getEffect("PowerLocusEffect");
-			locusEffect.toggleZoom(h);
-			event.setCancelled(true);
-		}
+		
 		
 	}
 
@@ -59,15 +43,15 @@ public class SkillPowerLocus extends ActiveSkill {
 	}
 	@Override
 	public SkillResult use(Hero h, String[] arg1) {
-		broadcastExecuteText(h);
 		if(h.hasEffect("PowerLocusEffect")) {
 			broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 has stopped drawing from a locus of power!", new Object[] {h.getPlayer().getName()});
 			h.removeEffect(h.getEffect("PowerLocusEffect"));
+			return SkillResult.NORMAL;
 		} else {
 			broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 has begun drawing from a locus of power!", new Object[] {h.getPlayer().getName()});
 			h.addEffect(new PowerLocusEffect(this));
+			return SkillResult.SKIP_POST_USAGE;
 		}
-		return SkillResult.NORMAL;
 	}
 
 	@Override
@@ -78,11 +62,9 @@ public class SkillPowerLocus extends ActiveSkill {
 	
 	public class PowerLocusEffect extends PeriodicEffect {
 		
-		private boolean zoomed;
 
 		public PowerLocusEffect(Skill skill) {
 			super(skill, "PowerLocusEffect",1000);
-			this.zoomed = false;
 			this.addPotionEffect(PotionEffectType.SLOW.createEffect(200000,50),false);
 	        this.addPotionEffect(PotionEffectType.JUMP.createEffect(200000,-50),false);
 		}
@@ -99,22 +81,6 @@ public class SkillPowerLocus extends ActiveSkill {
 			h.getEntity().addPotionEffect(PotionEffectType.SPEED.createEffect(100, 2),true);
 		}
 		
-		public boolean isZoomed() {
-			return this.zoomed;
-		}
-		public void toggleZoom(Hero h) {
-			this.zoomed = !this.zoomed;
-			int amplifier = 100;
-			if(this.zoomed) {
-			    amplifier = -1000100;
-			}
-			for(PotionEffect pE : h.getEntity().getActivePotionEffects()) {
-                if(pE.getType().equals(PotionEffectType.SLOW)) {
-                    if(pE.getAmplifier() != amplifier) {
-                        h.getEntity().addPotionEffect(PotionEffectType.SLOW.createEffect(200000, amplifier),true);
-                    }
-                }
-             }
-		}
+		
 	}
 }
