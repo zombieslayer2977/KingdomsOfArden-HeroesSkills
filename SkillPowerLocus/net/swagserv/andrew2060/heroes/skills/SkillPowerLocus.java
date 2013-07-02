@@ -1,18 +1,14 @@
 package net.swagserv.andrew2060.heroes.skills;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
@@ -28,7 +24,25 @@ public class SkillPowerLocus extends ActiveSkill {
 			this.skill = skill;
 		}
 		
-		
+		@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+		public void onSkillUse(SkillUseEvent event) {
+		    final Hero h = event.getHero();
+		    if(!h.hasEffect("PowerLocusEffect")) {
+		        return;
+		    }
+		    final String skillName = event.getSkill().getName();
+		    final double multiplier = 0.5 - (event.getHero().getLevel(event.getHero().getHeroClass())*0.005);
+		    event.setManaCost(0);
+		    //Must be scheduled due to cooldown being added after this
+		    Bukkit.getScheduler().runTaskLater(skill.plugin,new Runnable() {
+
+                @Override
+                public void run() {
+                    h.setCooldown(skillName, (long) ((h.getCooldown(skillName)-System.currentTimeMillis())*multiplier));
+                }
+		        
+		    },1L);
+		}
 		
 	}
 
@@ -38,7 +52,7 @@ public class SkillPowerLocus extends ActiveSkill {
 		setArgumentRange(0,0);
 		setIdentifiers("skill powerlocus");
 		setUsage("/skill powerlocus");
-		setDescription("Roots User in Place. While power locus is active spells gain massively increased range, cooldown reduction, and cost less mana, but also deal less damage. Exiting power locus grants a 5 second speed boost");
+		setDescription("Roots User in Place. While power locus is active spells gain massively increased range, cooldown reduction, and cost no mana, but also deal less damage. Exiting power locus grants a 5 second speed boost");
 		Bukkit.getPluginManager().registerEvents(new PowerLocusListener(this), this.plugin);
 	}
 	@Override
