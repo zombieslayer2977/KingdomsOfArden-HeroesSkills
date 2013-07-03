@@ -115,8 +115,9 @@ public class Turret {
 	 */
 	public List<LivingEntity> acquireTargets() {
 		List<LivingEntity> validTargets = new LinkedList<LivingEntity>();
-		Arrow a = loc.getWorld().spawnArrow(checkFireLoc, new Vector(0,0,0), 0.6f, 1.6f);
-		List<Entity> debug = a.getNearbyEntities(range, 5, range);
+        Ocelot o = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
+        o.setOwner(creator.getPlayer());
+		List<Entity> debug = o.getNearbyEntities(range, 5, range);
 		Iterator<Entity> nearby = debug.iterator();
 		while(nearby.hasNext()) {
 			Entity next = nearby.next();
@@ -140,19 +141,15 @@ public class Turret {
 					}
 				}
 			}
-			Ocelot o = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
-			o.setOwner(creator.getPlayer());
 			o.setTarget(lE);
 			if(!o.hasLineOfSight(next)) {
-				o.remove();
 				continue;
 			}
 			if(Skill.damageCheck(creator.getPlayer(), lE) && lE != creator.getEntity()) {
 				validTargets.add(lE);
 			}
-			o.remove();
 		}
-		a.remove();
+		o.remove();
 		return validTargets;
 	}
 	/**
