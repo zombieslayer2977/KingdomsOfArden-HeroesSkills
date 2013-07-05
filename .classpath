@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Heroes.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://ci.herocraftonline.com/job/Heroes/javadoc"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Factions.jar"/>
-	<classpathentry kind="src" path="/Swagserv-ToolHandler"/>
-	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Libkit.jar" sourcepath="C:/Users/Andrew/Java Projects/lib/src/BukkitSRC.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Andrew/Java Projects/lib/Libkit-JD/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="SkillAgonysEmbrace"/>
 	<classpathentry kind="src" path="SkillArcaneStorm"/>
 	<classpathentry kind="src" path="SkillArcanoBlast"/>
@@ -63,12 +52,13 @@
 	<classpathentry kind="src" path="SkillSoulSap"/>
 	<classpathentry kind="src" path="SkillSurge"/>
 	<classpathentry kind="src" path="SkillTurret"/>
+	<classpathentry kind="src" path="SkillNetherSteel"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>

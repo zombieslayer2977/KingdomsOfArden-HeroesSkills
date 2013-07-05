@@ -66,8 +66,8 @@ public class SkillAgonysEmbrace extends ActiveSkill{
 			double splash = SkillConfigManager.getUseSetting(h, skill, "splashPercent", 50, false);
 			double heal = SkillConfigManager.getUseSetting(h, skill, "healPercent", 50, false);
 			Iterator<Entity> nearby = event.getEntity().getNearbyEntities(5, 5, 5).iterator();
-			int damage = (int) (event.getDamage()*splash*0.01);
-			int healAmount = (int) (damage*heal*0.01);
+			double damage = event.getDamage()*splash*0.01;
+			double healAmount = damage*heal*0.01;
 			while(nearby.hasNext()) {
 				Entity next = nearby.next();
 				if(!(next instanceof LivingEntity)) {
@@ -83,8 +83,8 @@ public class SkillAgonysEmbrace extends ActiveSkill{
 				if(healthEvent.isCancelled()) {
 					continue;
 				}
-				int actualHeal = healthEvent.getAmount();
-				int newHealth = p.getHealth()+actualHeal;
+				double actualHeal = healthEvent.getAmount();
+				double newHealth = p.getHealth()+actualHeal;
 				if(newHealth > p.getMaxHealth()) {
 					p.setHealth(p.getMaxHealth());
 					continue;

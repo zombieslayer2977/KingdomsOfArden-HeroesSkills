@@ -92,7 +92,7 @@ public class SkillSurge extends ActiveSkill{
 				if(!(event.getEntity() instanceof LivingEntity)) {
 					return;
 				}
-				event.setDamage((int) (event.getDamage()*1.25));
+				event.setDamage(event.getDamage()*1.25);
 				CharacterTemplate ct = SkillSurge.this.plugin.getCharacterManager().getCharacter((LivingEntity)event.getEntity());
 				if(h.hasEffect("FrostShotEffect")) {
 					ct.addEffect(new SurgeFrostEffect(this.skill, this.skill.plugin, 2000));
@@ -134,7 +134,7 @@ public class SkillSurge extends ActiveSkill{
 			}
 			CharacterTemplate ct = event.getDamager();
 			if(ct.hasEffect("SurgeFrostEffect")) {
-				event.setDamage((int) (event.getDamage()*0.7));
+				event.setDamage(event.getDamage()*0.7);
 				if(ct instanceof Hero) {
 					((Hero)ct).getPlayer().sendMessage(ChatColor.GRAY + "Damage Decreased by a Surged Frostshot!");
 				}
@@ -148,7 +148,7 @@ public class SkillSurge extends ActiveSkill{
 			}
 			CharacterTemplate ct = event.getDamager();
 			if(ct.hasEffect("SurgeFrostEffect")) {
-				event.setDamage((int) (event.getDamage()*0.7));
+				event.setDamage(event.getDamage()*0.7);
 				if(ct instanceof Hero) {
 					((Hero)ct).getPlayer().sendMessage(ChatColor.GRAY + "Damage Decreased by a Surged Frostshot!");
 				}
@@ -158,7 +158,7 @@ public class SkillSurge extends ActiveSkill{
 		@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
 		public void onHealthRegen(HeroRegainHealthEvent event) {
 			if(event.getHero().hasEffect("SurgePoisonEffect")) {
-				event.setAmount(event.getAmount()/2);
+				event.setAmount(event.getAmount()*0.5);
 			}
 			return;
 		}

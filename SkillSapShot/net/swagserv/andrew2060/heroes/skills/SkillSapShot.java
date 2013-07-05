@@ -99,10 +99,10 @@ public class SkillSapShot extends ActiveSkill {
 			if (!h.hasEffect("SapShotEffect")) {
 				return;
 			}
-			int d = event.getDamage();
-			int health = p.getHealth();
+			double d = event.getDamage();
+			double health = p.getHealth();
 			int sapPercentage = SkillConfigManager.getUseSetting(h, this.skill, "sapPercentage", 20, false);
-			int modifiedHealth = (int)(health + d * sapPercentage * 0.01D);
+			double modifiedHealth = (health + d * sapPercentage * 0.01D);
 			if (modifiedHealth > p.getMaxHealth()) {
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped to " + ChatColor.AQUA + "max" + ChatColor.GRAY + " health!");
 				p.setHealth(p.getMaxHealth());

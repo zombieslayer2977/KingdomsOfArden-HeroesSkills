@@ -69,7 +69,7 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 
 		@Override
 		public void onApply(Hero h) {
-			HeroRegainHealthEvent selfHealEvent = new HeroRegainHealthEvent(h, 5, SkillAuraOfFortitude.this, h);
+			HeroRegainHealthEvent selfHealEvent = new HeroRegainHealthEvent(h, 5D, SkillAuraOfFortitude.this, h);
 			Bukkit.getPluginManager().callEvent(selfHealEvent);
 			h.getPlayer().setHealth(h.getPlayer().getHealth()+selfHealEvent.getAmount());
 			if(h.getPlayer().getHealth() > h.getPlayer().getMaxHealth()) {

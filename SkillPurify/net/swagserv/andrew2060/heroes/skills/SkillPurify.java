@@ -102,7 +102,7 @@ public class SkillPurify extends TargettedSkill {
 			}
 			continue;
 		}
-		this.damageEntity(p, h.getEntity(), h.getLevel()/2);
+		this.damageEntity(p, h.getEntity(), h.getLevel()*0.5);
 		return;
 	}
 
@@ -132,9 +132,9 @@ public class SkillPurify extends TargettedSkill {
 			((Hero)ct).getPlayer().sendMessage(ChatColor.GRAY + "Purified by " + h.getName() + "!");
 		}
 		LivingEntity lE = ct.getEntity();
-		HeroRegainHealthEvent event = new HeroRegainHealthEvent((Hero)ct, h.getLevel(), this, h);
+		HeroRegainHealthEvent event = new HeroRegainHealthEvent((Hero)ct, h.getLevel()*1.0D, this, h);
 		Bukkit.getPluginManager().callEvent(event);
-		int finalAmount = lE.getHealth()+event.getAmount();
+		double finalAmount = lE.getHealth()+event.getAmount();
 		if(finalAmount > lE.getMaxHealth()) {
 			finalAmount = lE.getMaxHealth();
 		}

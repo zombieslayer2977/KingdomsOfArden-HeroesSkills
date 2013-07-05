@@ -59,7 +59,7 @@ public class SkillMarksman extends PassiveSkill {
 			int minrange = SkillConfigManager.getUseSetting(h, skill, "activationThreshold", 16, false);
 			dist -= minrange;
 			int multiplier = SkillConfigManager.getUseSetting(h, skill, "damagePerBlock", 5, false);
-			int addDamage = (int) (dist*multiplier);
+			double addDamage = dist*multiplier;
 			event.setDamage(event.getDamage() + addDamage);
 
 		}

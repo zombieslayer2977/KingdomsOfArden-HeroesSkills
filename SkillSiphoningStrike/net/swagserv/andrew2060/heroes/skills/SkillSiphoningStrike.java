@@ -66,11 +66,11 @@ public class SkillSiphoningStrike extends ActiveSkill{
 			}
 			h.removeEffect(h.getEffect("SiphoningEffect"));
 			Player p = h.getPlayer();
-			int max = p.getMaxHealth();
-			int cur = p.getHealth();
-			int dmg = event.getDamage();
+			double max = p.getMaxHealth();
+			double cur = p.getHealth();
+			double dmg = event.getDamage();
 			int level = h.getLevel();
-			int healthregain = (int) (dmg*level*0.01);
+			double healthregain = (dmg*level*0.01);
 			
 			//TODO: Change to use HeroRegainHealthEvent
 
