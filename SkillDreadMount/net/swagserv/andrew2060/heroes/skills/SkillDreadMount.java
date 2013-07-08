@@ -65,7 +65,7 @@ public class SkillDreadMount extends ActiveSkill {
         m.setMaxHealth(1000D);
         m.addEffect(new DreadMountEffect(this.plugin));
         horse.setPassenger(hero.getPlayer());      
-        int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(300),false);
+        int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
         m.addEffect(new ExpirableEffect(this, plugin, "HorseExpiry", summonDuration*20) {
             @Override
             public void removeFromMonster(Monster m) {
@@ -103,7 +103,7 @@ public class SkillDreadMount extends ActiveSkill {
     }
     @Override
     public String getDescription(Hero hero) {
-        int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(300),false);
+        int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
         return getDescription().replace("$1", summonDuration + "");
     }
     private class SkillDreadMountEntityHorse extends EntityHorse {
