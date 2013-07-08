@@ -41,7 +41,7 @@ public class SkillExecutioner extends PassiveSkill {
 			}
 			LivingEntity e = (LivingEntity)event.getEntity();
 			double dmgpercent = 1 + (((e.getMaxHealth() - e.getHealth())/e.getMaxHealth()) * 0.2);
-			event.setDamage((int) (event.getDamage() * dmgpercent));
+			event.setDamage(event.getDamage() * dmgpercent);
 		}
 	}
 

@@ -25,10 +25,10 @@ public class SkillShadowAssault extends ActiveSkill {
 		@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST) 
 		public void onWeaponDamage(WeaponDamageEvent event) {
 			CharacterTemplate cT = event.getDamager();
-			event.setDamage((int) (event.getDamage()*1.25));
+			event.setDamage(event.getDamage()*1.25);
 			if(cT.hasEffect("ShadowAssaultEffect")) {
 				cT.removeEffect(cT.getEffect("ShadowAssaultEffect"));
-				event.setDamage((int) (event.getDamage()*1.25));
+				event.setDamage(event.getDamage()*1.25);
 			}
 		}
 

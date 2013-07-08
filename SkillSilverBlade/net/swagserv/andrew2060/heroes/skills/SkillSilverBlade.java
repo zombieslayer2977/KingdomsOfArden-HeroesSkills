@@ -29,7 +29,7 @@ public class SkillSilverBlade extends PassiveSkill {
 					double percent = SkillConfigManager.getUseSetting(h, skill, "amountMax" , 1.00, false);
 					percent += SkillConfigManager.getUseSetting(h,skill,"amountMaxPerLevel",0.05,false)*h.getLevel();
 					LivingEntity target = (LivingEntity)event.getEntity();
-					event.setDamage((int) (event.getDamage()+(target.getMaxHealth() * percent * 0.01)));
+					event.setDamage(event.getDamage()+(target.getMaxHealth() * percent * 0.01));
 				}
 			}
 		}
