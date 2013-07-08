@@ -30,7 +30,7 @@ public class SkillDreadMount extends ActiveSkill {
     public SkillDreadMount(Heroes plugin) {
         super(plugin, "DreadMount");
         try {   //Attempt creating a new NMS Horse instance, disable and remove skill if an exception occurs
-            new NMSHorse(new Location(Bukkit.getWorlds().get(0), 0, 0, 0, 0, 0));
+            new NMSHorse(SkillDreadMountEntityHorse.class, new Location(Bukkit.getWorlds().get(0), 0, 0, 0, 0, 0));
         } catch (Exception e) {
             Heroes.log(Level.SEVERE, "SkillDreadMount: failed to start: the NMS Horse Utility is out of date!!");
             e.printStackTrace();
@@ -106,15 +106,6 @@ public class SkillDreadMount extends ActiveSkill {
         int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
         return getDescription().replace("$1", summonDuration + "");
     }
-    private class SkillDreadMountEntityHorse extends EntityHorse {
-
-        public SkillDreadMountEntityHorse(World world) {
-            super(world);
-            this.fireProof = true;
-        }
-        
-        
-
-    }
+    
     
 }

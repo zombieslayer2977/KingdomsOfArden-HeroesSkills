@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -60,20 +61,9 @@ public class NMSHorse {
     public NMSHorse(Class<? extends EntityHorse> clazz, Location loc, SpawnReason spawnReason) {
         this.nmsHorse = null;
         this.nbtTagCompound = null;
-        if(!clazz.getName().equals(EntityHorse.class.getName())) {   //Same as nms, don't need to add to valid EntityTypes
-            try {
-                Method a = EntityTypes.class.getDeclaredMethod("a", new Class<?>[] {Class.class, String.class, int.class});
-                a.setAccessible(true);
-                a.invoke(a, clazz, "EntityHorse", 100);
-            } catch (Exception e) {
-                System.out.println("There was an error creating a horse with custom entity class " + clazz.getName() + ": It could not be registered with the NMS EntityType handler!");
-                e.printStackTrace();
-                return;
-            }
-        }
         World nmsWorld = null;
         try {
-            nmsWorld = (World)loc.getClass().getMethod("getHandle", new Class[0]).invoke(loc, new Object[0]);
+            nmsWorld = ((CraftWorld)loc.getWorld()).getHandle();
             this.nmsHorse = clazz.getConstructor(World.class).newInstance(nmsWorld);
         } catch (Exception e) {
             System.out.println("There was an error creating a horse");
@@ -81,7 +71,7 @@ public class NMSHorse {
             return;
         }
         this.nbtTagCompound = new NBTTagCompound();
-        nmsHorse.a(nbtTagCompound);
+        nmsHorse.b(nbtTagCompound);
         if(!verifyNBTIntegrity(nbtTagCompound)) {
             throw new IllegalArgumentException("This NBT Tag Compound is not valid for a Horse!");
         }
@@ -89,7 +79,18 @@ public class NMSHorse {
         nmsWorld.addEntity(nmsHorse, spawnReason);
         
     }
-    
+    public boolean registerCustomHorseClass(Class<? extends EntityHorse> clazz) {
+        try {
+            Method a = EntityTypes.class.getDeclaredMethod("a", new Class<?>[] {Class.class, String.class, int.class});
+            a.setAccessible(true);
+            a.invoke(a, clazz, "EntityHorse", 100);
+            return true;
+        } catch (Exception e) {
+            System.out.println("There was an error creating a horse with custom entity class " + clazz.getName() + ": It could not be registered with the NMS EntityType handler!");
+            e.printStackTrace();
+            return false;
+        }
+    }
     private boolean hasKey(String key) {
         try {
             return nbtTagCompound.hasKey(key);
