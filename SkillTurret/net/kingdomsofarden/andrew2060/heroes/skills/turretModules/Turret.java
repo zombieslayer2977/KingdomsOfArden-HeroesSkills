@@ -9,15 +9,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
-import org.bukkit.util.Vector;
-
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
@@ -115,10 +112,11 @@ public class Turret {
 	 */
 	public List<LivingEntity> acquireTargets() {
 		List<LivingEntity> validTargets = new LinkedList<LivingEntity>();
-        Ocelot o = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
-        o.setOwner(creator.getPlayer());
-		List<Entity> debug = o.getNearbyEntities(range, 5, range);
+        Ocelot nearbySearch = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
+        nearbySearch.setOwner(creator.getPlayer());
+		List<Entity> debug = nearbySearch.getNearbyEntities(range, 5, range);
 		Iterator<Entity> nearby = debug.iterator();
+		nearbySearch.remove();
 		while(nearby.hasNext()) {
 			Entity next = nearby.next();
 			if(!(next instanceof LivingEntity)) {
@@ -141,15 +139,16 @@ public class Turret {
 					}
 				}
 			}
+	        Ocelot o = (Ocelot) loc.getWorld().spawnEntity(checkFireLoc, EntityType.OCELOT);
 			o.setTarget(lE);
 			if(!o.hasLineOfSight(next)) {
 				continue;
 			}
+			o.remove();
 			if(Skill.damageCheck(creator.getPlayer(), lE) && lE != creator.getEntity()) {
 				validTargets.add(lE);
 			}
 		}
-		o.remove();
 		return validTargets;
 	}
 	/**
