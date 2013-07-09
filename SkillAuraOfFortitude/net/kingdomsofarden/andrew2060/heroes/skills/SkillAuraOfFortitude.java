@@ -38,7 +38,7 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 			}
 			CharacterTemplate cT = charMan.getCharacter((LivingEntity) event.getEntity());
 			if(cT.hasEffect("FortitudeEffect")) {
-				event.setDamage((int) (event.getDamage()*0.9D));
+				event.setDamage(event.getDamage()*0.9D);
 			}
 		}
 	}

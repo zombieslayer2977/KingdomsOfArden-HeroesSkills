@@ -57,7 +57,7 @@ public class SkillCommandSelfDestruct extends ActiveSkill {
 					}
 					if(Skill.damageCheck(h.getPlayer(), (LivingEntity) nextEnt) && (LivingEntity)nextEnt != h.getEntity()) {
 						this.addSpellTarget(nextEnt, h);
-						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), 40, DamageCause.BLOCK_EXPLOSION);
+						Skill.damageEntity((LivingEntity) nextEnt, h.getEntity(), 40D, DamageCause.BLOCK_EXPLOSION);
 					}
 				}
 				a.remove();
