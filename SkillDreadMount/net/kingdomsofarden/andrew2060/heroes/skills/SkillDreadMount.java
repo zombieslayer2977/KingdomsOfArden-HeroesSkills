@@ -2,9 +2,6 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import java.util.logging.Level;
 
-import net.kingdomsofarden.andrew2060.heroes.skills.NMSHorse.HorseType;
-import net.kingdomsofarden.andrew2060.heroes.skills.NMSHorse.HorseVariant;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
