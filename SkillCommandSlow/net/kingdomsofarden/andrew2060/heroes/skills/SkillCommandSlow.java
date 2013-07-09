@@ -29,7 +29,14 @@ public class SkillCommandSlow extends ActiveSkill {
 		setUsage("/skill commandslow"); 
 		setArgumentRange(0,0);
 		setIdentifiers("skill commandslow");
-        this.pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
+		//Set this on a 10 second delay to prevent load order problems
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();                
+            }
+		}, 200L);
 	}
 
 	@Override
