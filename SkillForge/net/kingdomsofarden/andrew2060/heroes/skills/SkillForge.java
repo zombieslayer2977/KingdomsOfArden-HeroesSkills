@@ -4,6 +4,9 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
+
+import net.kingdomsofarden.andrew2060.toolhandler.util.ImprovementUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +22,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import net.swagserv.andrew2060.toolhandler.util.ImprovementUtil;
 public class SkillForge extends PassiveSkill {
 	public SkillForge(Heroes plugin) {
 		super(plugin, "Forge");
