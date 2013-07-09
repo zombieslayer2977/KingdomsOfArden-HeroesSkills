@@ -4,12 +4,16 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin; 
+import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -17,14 +21,15 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 
-public class SkillCommandSlow extends ActiveSkill {
-
+public class SkillCommandSlow extends ActiveSkill { 
+    PotionEffectManager pEMan;
 	public SkillCommandSlow(Heroes plugin) {
 		super(plugin, "CommandSlow");
 		setDescription("Command: Slow: Turrets will slow all enemies in range starting at a 15% slow. For each additional firing cycle that one remains in the turrets radius, the effect of the slow will be increased by 15% up to a maximum of 90%");
-		setUsage("/skill commandslow");
+		setUsage("/skill commandslow"); 
 		setArgumentRange(0,0);
 		setIdentifiers("skill commandslow");
+        this.pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
 	}
 
 	@Override
@@ -42,11 +47,16 @@ public class SkillCommandSlow extends ActiveSkill {
 		} else {
 			tE = (TurretEffect)h.getEffect("TurretEffect");
 		}
-		SlowTurret fireFunc = new SlowTurret();
+		SlowTurret fireFunc = new SlowTurret(this.pEMan);
 		tE.setFireFunctionWrapper(fireFunc);
 		return SkillResult.NORMAL;
 	}
 	private class SlowTurret extends TurretFireWrapper {
+	    
+	    private PotionEffectManager pEMan;
+        public SlowTurret(PotionEffectManager pEMan) {
+	        this.pEMan = pEMan;
+	    }
 		int slowlevel;
 
 		@Override
@@ -66,7 +76,7 @@ public class SkillCommandSlow extends ActiveSkill {
 				if(slowlevel > 5) {
 					slowlevel = 5;
 				}
-				next.addPotionEffect(PotionEffectType.SLOW.createEffect(100, slowlevel));
+				pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(100, slowlevel),next);
 			}
 			return;
 		}
