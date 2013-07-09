@@ -1,5 +1,8 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -76,13 +79,21 @@ public class SkillPowerLocus extends ActiveSkill {
 	
 	public class PowerLocusEffect extends PeriodicEffect {
 		
+	    PotionEffectManager pEMan;
 
 		public PowerLocusEffect(Skill skill) {
 			super(skill, "PowerLocusEffect",1000);
 			this.addPotionEffect(PotionEffectType.SLOW.createEffect(200000,50),false);
 	        this.addPotionEffect(PotionEffectType.JUMP.createEffect(200000,-50),false);
+	        this.setPersistent(false);
+	        pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
 		}
-		
+		@Override
+		public void applyToHero(Hero h) {
+		    super.applyToHero(h);
+		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(Integer.MAX_VALUE, Integer.MAX_VALUE), h.getEntity());
+            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(Integer.MAX_VALUE, Integer.MAX_VALUE), h.getEntity());
+		}
 		@Override
 		public void tickHero(Hero h) {
 		}
@@ -90,9 +101,11 @@ public class SkillPowerLocus extends ActiveSkill {
 		@Override
 		public void removeFromHero(Hero h) {
 			super.removeFromHero(h);
-			h.getEntity().removePotionEffect(PotionEffectType.SLOW);
-			h.getEntity().removePotionEffect(PotionEffectType.JUMP);
-			h.getEntity().addPotionEffect(PotionEffectType.SPEED.createEffect(100, 2),true);
+			pEMan.removePotionEffect(PotionEffectType.SLOW,h.getEntity());
+			pEMan.removePotionEffect(PotionEffectType.JUMP,h.getEntity());
+			if(!h.getEntity().isDead()) {
+			    pEMan.addPotionEffectStacking(PotionEffectType.SPEED.createEffect(100, 2), h.getEntity());
+			}
 		}
 		
 		
