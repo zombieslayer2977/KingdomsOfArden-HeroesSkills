@@ -25,9 +25,7 @@
 	<classpathentry kind="src" path="SkillEnchantmentBook"/>
 	<classpathentry kind="src" path="SkillEqualize"/>
 	<classpathentry kind="src" path="SkillExecutioner"/>
-	<classpathentry kind="src" path="SkillFireball"/>
 	<classpathentry kind="src" path="SkillForge"/>
-	<classpathentry kind="src" path="SkillGeyser"/>
 	<classpathentry kind="src" path="SkillHardenedSkin"/>
 	<classpathentry kind="src" path="SkillManaShield"/>
 	<classpathentry kind="src" path="SkillMarksman"/>
@@ -53,7 +51,7 @@
 	<classpathentry kind="src" path="SkillSurge"/>
 	<classpathentry kind="src" path="SkillTurret"/>
 	<classpathentry kind="src" path="SkillNetherSteel"/>
-	<classpathentry kind="src" path="SkillDreadCharge"/>
+	<classpathentry kind="src" path="SkillDreadMount"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
