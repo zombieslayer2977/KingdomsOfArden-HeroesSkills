@@ -62,7 +62,7 @@ public class SkillCommandStaticField extends ActiveSkill {
 			Iterator<LivingEntity> nearby = validTargets.iterator();
 			while(nearby.hasNext()) {
 				LivingEntity next = nearby.next();
-				Skill.damageEntity((LivingEntity)next, h.getEntity(), 40, DamageCause.ENTITY_ATTACK);
+				Skill.damageEntity((LivingEntity)next, h.getEntity(), 40D, DamageCause.ENTITY_ATTACK);
 				CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)next);
 				cT.addEffect(new RootEffect(SkillCommandStaticField.this, 2000));
 			}
