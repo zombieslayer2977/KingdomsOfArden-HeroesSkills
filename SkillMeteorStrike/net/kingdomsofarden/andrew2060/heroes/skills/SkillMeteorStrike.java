@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.AbstractProjectile;
+import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R2.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LargeFireball;
@@ -20,14 +20,17 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.DamageSource;
-import net.minecraft.server.EntityLargeFireball;
-import net.minecraft.server.EntityTypes;
-import net.minecraft.server.MovingObjectPosition;
-import net.minecraft.server.World;
-import net.minecraft.server.WorldServer;
+import net.minecraft.server.v1_6_R2.DamageSource;
+import net.minecraft.server.v1_6_R2.EntityLargeFireball;
+import net.minecraft.server.v1_6_R2.EntityTypes;
+import net.minecraft.server.v1_6_R2.MovingObjectPosition;
+import net.minecraft.server.v1_6_R2.World;
+import net.minecraft.server.v1_6_R2.WorldServer;
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -36,7 +39,9 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillMeteorStrike extends ActiveSkill implements Listener {
-
+    
+    PotionEffectManager pEMan;
+    
     public SkillMeteorStrike(Heroes plugin) {
         super(plugin, "MeteorStrike");
         try {
@@ -54,6 +59,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         setIdentifiers("skill meteorstrike");
         setUsage("/skill meteorstrike");
         setArgumentRange(0,0);
+        this.pEMan = ((ToolHandlerPlugin)plugin.getServer().getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
     }
 
     @Override
@@ -93,9 +99,12 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 LivingEntity lE = (LivingEntity)e;
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), 150D, DamageCause.ENTITY_ATTACK);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(200, 1), lE);
                     continue;
                 } else {
                     lE.damage(150D);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(200, 1), lE);
+                    continue;
                 }
             }
             a.remove();
@@ -136,7 +145,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 }
 
                 // CraftBukkit start
-                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.entity.CraftEntity.getEntity(this.world.getServer(), this));
+                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity.getEntity(this.world.getServer(), this));
                 this.world.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
