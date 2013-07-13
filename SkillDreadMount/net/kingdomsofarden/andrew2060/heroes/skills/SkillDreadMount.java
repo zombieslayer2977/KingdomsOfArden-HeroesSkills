@@ -1,15 +1,15 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Style;
+import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.herocraftonline.heroes.Heroes;
@@ -26,26 +26,7 @@ public class SkillDreadMount extends ActiveSkill {
 
     public SkillDreadMount(Heroes plugin) {
         super(plugin, "DreadMount");
-        try {   //Attempt creating a new NMS Horse instance, disable and remove skill if an exception occurs
-            NMSHorse.registerCustomHorseClass(SkillDreadMountEntityHorse.class);
-            new NMSHorse(SkillDreadMountEntityHorse.class, new Location(Bukkit.getWorlds().get(0), 0, 0, 0, 0, 0));
-        } catch (Exception e) {
-            Heroes.log(Level.SEVERE, "SkillDreadMount: failed to start: the NMS Horse Utility is out of date!!");
-            e.printStackTrace();
-            final Skill skillInstance = this;
-            //Run this on a delay to allow for skill to show up in skill manager first
-            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-
-                @Override
-                public void run() {
-                    ((Heroes) Bukkit.getPluginManager().getPlugin("Heroes")).getSkillManager().removeSkill(skillInstance);
-                    
-                }
-                
-            }, 20L);
-            return;
-        }
-        setDescription("Summons a fiery mount for $1 seconds that tramples nearby enemies");
+        setDescription("Summons an undead mount for $1 seconds that tramples nearby enemies");
         setIdentifiers("skill dreadmount");
         setUsage("/skill dreadmount");
         setArgumentRange(0,0);
@@ -54,15 +35,18 @@ public class SkillDreadMount extends ActiveSkill {
     @Override
     public SkillResult use(Hero hero, String[] args) {
         Location loc = hero.getPlayer().getLocation();
-        NMSHorse nmsHorse = new NMSHorse(SkillDreadMountEntityHorse.class,loc,SpawnReason.CUSTOM);
-        nmsHorse.setTamed(true);
-        nmsHorse.setSaddled(true);
-        nmsHorse.setArmorItem(new ItemStack(Material.DIAMOND_BARDING));
-        LivingEntity horse = nmsHorse.getBukkitEntity();
+        Horse horse = loc.getWorld().spawn(loc, Horse.class);
         Monster m = plugin.getCharacterManager().getMonster(horse);
         m.setMaxHealth(1000D);
         m.addEffect(new DreadMountEffect(this.plugin));
+        horse.setStyle(Style.BLACK_DOTS);
+        HorseInventory hInv = horse.getInventory();
+        hInv.setArmor(new ItemStack(Material.DIAMOND_BARDING));
+        hInv.setSaddle(new ItemStack(Material.SADDLE));
+        horse.setTamed(true);
+        horse.setVariant(Variant.UNDEAD_HORSE);
         horse.setPassenger(hero.getPlayer());      
+        
         int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
         m.addEffect(new ExpirableEffect(this, plugin, "HorseExpiry", summonDuration*1000) {
             @Override
@@ -80,7 +64,6 @@ public class SkillDreadMount extends ActiveSkill {
         
         @Override
         public void tickMonster(Monster m) {
-            m.getEntity().setFireTicks(200);
             Entity passengerEntity = m.getEntity().getPassenger();
             if(passengerEntity == null) {
                 return;
