@@ -83,16 +83,13 @@ public class SkillPowerLocus extends ActiveSkill {
 
 		public PowerLocusEffect(Skill skill) {
 			super(skill, "PowerLocusEffect",1000);
-			this.addPotionEffect(PotionEffectType.SLOW.createEffect(200000,50),false);
-	        this.addPotionEffect(PotionEffectType.JUMP.createEffect(200000,-50),false);
-	        this.setPersistent(false);
 	        pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
 		}
 		@Override
 		public void applyToHero(Hero h) {
 		    super.applyToHero(h);
-		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(Integer.MAX_VALUE, Integer.MAX_VALUE), h.getEntity());
-            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(Integer.MAX_VALUE, Integer.MAX_VALUE), h.getEntity());
+		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(200000, 50), h.getEntity());
+            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(200000, -50), h.getEntity());
 		}
 		@Override
 		public void tickHero(Hero h) {
