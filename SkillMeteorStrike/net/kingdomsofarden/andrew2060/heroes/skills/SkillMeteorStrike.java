@@ -99,11 +99,13 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 LivingEntity lE = (LivingEntity)e;
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), 150D, DamageCause.ENTITY_ATTACK);
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(200, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
                     continue;
                 } else {
                     lE.damage(150D);
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(200, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
                     continue;
                 }
             }
