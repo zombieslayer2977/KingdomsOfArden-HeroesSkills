@@ -35,7 +35,7 @@ public class SkillPowerLocus extends ActiveSkill {
 		    }
 		    final String skillName = event.getSkill().getName();
 		    final double multiplier = 0.5 - (event.getHero().getLevel(event.getHero().getHeroClass())*0.005);
-		    event.setManaCost(0);
+		    event.setManaCost((int) (event.getManaCost()*0.5));
 		    //Must be scheduled due to cooldown being added after this
 		    Bukkit.getScheduler().runTaskLater(skill.plugin,new Runnable() {
 
