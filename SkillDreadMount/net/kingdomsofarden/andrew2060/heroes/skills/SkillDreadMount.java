@@ -44,7 +44,6 @@ public class SkillDreadMount extends ActiveSkill {
         hInv.setArmor(new ItemStack(Material.DIAMOND_BARDING));
         hInv.setSaddle(new ItemStack(Material.SADDLE));
         horse.setTamed(true);
-        horse.setVariant(Variant.UNDEAD_HORSE);
         horse.setPassenger(hero.getPlayer());      
         
         int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
