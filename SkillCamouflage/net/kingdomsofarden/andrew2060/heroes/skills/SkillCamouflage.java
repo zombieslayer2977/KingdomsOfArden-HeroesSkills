@@ -21,24 +21,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.api.events.ClassChangeEvent;
-import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
 import com.herocraftonline.heroes.api.events.HeroEnterCombatEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.characters.skill.SkillSetting;
 public class SkillCamouflage extends PassiveSkill {
 	//An HashMap is essentially a list linking two variables, in this case a Player along with a Boolean value (whether they are currently vanished), which will be initialized in SkillCamouflage's Constructor.
-	HashMap<Player,Boolean> camouflaged;
+	public HashMap<Player,Boolean> camouflaged;
 	/*
 	 * A hashmap of players that can TEMPORARILY see each other due to being within the 3 block range
 	 * HashMap<Player movingPlayer, List<Player> camouflagedPlayers>
@@ -82,6 +77,35 @@ public class SkillCamouflage extends PassiveSkill {
 			}
 			
 		}, 0, 60L);
+	}
+	@Override
+	public void apply(Hero hero) {
+	    final CamouflageEffect effect = new CamouflageEffect(this.plugin, this, getName(), new EffectType[] {});
+        effect.setPersistent(true);
+        hero.addEffect(effect);
+	}
+	
+	private class CamouflageEffect extends Effect {
+
+        private SkillCamouflage camoskill;
+        public CamouflageEffect(Heroes plugin, SkillCamouflage skill, String name, EffectType[] types) {
+            super(plugin, skill, name, types);
+            this.camoskill = skill;
+        }
+        
+        @Override
+        public void applyToHero(Hero h) {
+            camoskill.camouflaged.put(h.getPlayer(), false);
+            super.applyToHero(h);
+        }
+        @Override
+        public void removeFromHero(Hero h) {
+            if(camoskill.camouflaged.containsKey(h.getPlayer())) {
+                camoskill.camouflaged.remove(h.getPlayer());
+            }
+            super.removeFromHero(h);
+        }
+	    
 	}
 	@Override
 	public String getDescription(Hero h) {
@@ -154,43 +178,6 @@ public class SkillCamouflage extends PassiveSkill {
 			//We've done all we want to do->return.
 			return;
 		}
-		//Indicate to bukkit event registrar that we have another listener being implemented on the line after this
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		//Listen in on Player logout: we want to remove if they're in the camouflaged list, as they are no longer ingame
-		//Note that I can name the function (currently onPlayerQuit) whatever I want->However it is generally considered
-		//The best idea to have your function names describe what you will be doing in that function.
-		public void onPlayerQuit(PlayerQuitEvent event) {
-			Player p = event.getPlayer();
-			//This is simple, if it is contained within the HashMap, remove.
-			if(camouflaged.containsKey(p)) {
-				camouflaged.remove(p);
-			}
-			return;
-			//And we're done!
-		}
-		//You should know what this is by now
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		//This will listen in on when players change levels, as we want to add them/remove them from the HashMap if they gain/lose access to the skill
-		public void onHeroChangeLevel(HeroChangeLevelEvent event) {
-			Hero h = event.getHero();
-			Player p = h.getPlayer();
-			if(h.hasEffect("Camouflage")) {
-				if(camouflaged.containsKey(p)) {
-					//our HashMap already contains this player, we don't need to do anything
-					return;
-				} else {
-					//the previous if statement returned false->we want to add the player to our list
-					camouflaged.put(p,false);
-					return;
-				}
-			} else {
-				//The player should not have access to skill
-				if(camouflaged.containsKey(p)) {
-					camouflaged.remove(p);
-					return;
-				}
-			}
-		}
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) 
 		public void onHeroEnterCombat(HeroEnterCombatEvent event) {
 			Player p = event.getHero().getPlayer();
@@ -201,35 +188,6 @@ public class SkillCamouflage extends PassiveSkill {
 				camouflaged.put(p, false);
 				for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 					online.showPlayer(p);
-				}
-			}
-		}
-
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-		public void onClassChange(ClassChangeEvent event) {
-			Hero h = event.getHero();
-			int toLevel = h.getLevel(event.getTo());
-			HeroClass to = event.getTo();
-			Player p = h.getPlayer();
-			if(!to.hasSkill("Camouflage")) {
-				if(camouflaged.containsKey(p)) {
-					//Don't need to send the shown message here because this should never happen/is a bugfix case
-					camouflaged.remove(p);
-					for(Player online : Bukkit.getServer().getOnlinePlayers()) {
-						online.showPlayer(p);
-					}
-				}
-			} else {
-				int levelReq = (Integer) SkillConfigManager.getSetting(to, skill, SkillSetting.LEVEL.node());
-				if(camouflaged.containsKey(p)) {
-					if(toLevel < levelReq) {
-						camouflaged.remove(p);
-						for(Player online : Bukkit.getServer().getOnlinePlayers()) {
-							online.showPlayer(p);
-						}
-					}
-				} else {
-					camouflaged.put(p, false);
 				}
 			}
 		}
