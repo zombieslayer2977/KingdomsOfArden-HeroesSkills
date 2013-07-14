@@ -65,13 +65,13 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
     public SkillResult use(Hero h, String[] args) {
         this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] $1 used MeteorStrike!", new Object[] {h.getName()});
         List<Block> los;
-        if(!h.hasEffect("PowerLocusEffect")) {
+        if(h.hasEffect("PowerLocusEffect")) {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 16);
         } else {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         }
         Location targetLoc = los.get(los.size()-1).getLocation();
-        Location spawnLoc = targetLoc.clone().add(0,100,0);
+        Location spawnLoc = h.getPlayer().getLocation().add(0,100,0);
         spawnMeteorAndTarget(targetLoc, spawnLoc).setCaster(h);
         return SkillResult.NORMAL;
     }
@@ -120,7 +120,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         public EntityMeteor(World world) {
             super(world);
             a(1.0F,1.0F);
-            this.velMultiplier = 1.05F;
+            this.velMultiplier = 0.95F;
             this.explosionRadius = 70F;
             this.trailPower = 10F;
             this.caster = null;
