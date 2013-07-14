@@ -223,7 +223,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         eMeteor.setDirection(translation);
 
         Vector velocity = new Vector(vx, vy, vz);
-        eMeteor.setVelocity(velocity.normalize().multiply(0.75)); //make a bit slower
+        eMeteor.setVelocity(velocity.normalize().multiply(0.5)); //make a bit slower
         
         return eMeteor;
     }
