@@ -129,8 +129,8 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
 
         @Override
         public void l_() {
-            final LargeFireball meteor = (LargeFireball) this.getBukkitEntity();
-            meteor.getWorld().createExplosion(meteor.getLocation(), trailPower);
+            
+            this.world.createExplosion(this, this.locX, this.locY, this.locZ, trailPower, false, false);
 
             motX *= velMultiplier;
             motY *= velMultiplier;
@@ -151,7 +151,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 this.world.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
-                    this.world.createExplosion(this, this.locX, this.locY, this.locZ, explosionRadius, false, true);
+                    this.world.createExplosion(this, this.locX, this.locY, this.locZ, explosionRadius, false, false);
                 }
                 this.die();
             }
