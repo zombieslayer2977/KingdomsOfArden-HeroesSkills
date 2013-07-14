@@ -37,10 +37,10 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
-public class SkillMeteorStrike extends ActiveSkill {
-
+public class SkillMeteorStrike extends ActiveSkill implements Listener {
+    
     PotionEffectManager pEMan;
-
+    
     public SkillMeteorStrike(Heroes plugin) {
         super(plugin, "MeteorStrike");
         try {
@@ -57,7 +57,15 @@ public class SkillMeteorStrike extends ActiveSkill {
         setIdentifiers("skill meteorstrike");
         setUsage("/skill meteorstrike");
         setArgumentRange(0,0);
-        Bukkit.getPluginManager().registerEvents(new SkillListener(), plugin);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                pEMan = ((ToolHandlerPlugin)Bukkit.getServer().getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
+            }
+            
+        }, 200L);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
@@ -79,41 +87,35 @@ public class SkillMeteorStrike extends ActiveSkill {
     public String getDescription(Hero hero) {
         return getDescription();
     }
-    private class SkillListener implements Listener {
-        private final PotionEffectManager pEMan;
-        public SkillListener() {
-            this.pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent event) {
+        if(!(event.getEntity() instanceof AbstractProjectile)) {
+            return;
         }
-        @EventHandler
-        public void onProjectileHit(ProjectileHitEvent event) {
-            if(!(event.getEntity() instanceof AbstractProjectile)) {
-                return;
-            }
-
-            if(((AbstractProjectile)event.getEntity()).getHandle() instanceof EntityMeteor) {
-                EntityMeteor meteor = (EntityMeteor) ((AbstractProjectile)event.getEntity()).getHandle();
-                Location hitLoc = event.getEntity().getLocation();
-                Hero h = meteor.getCaster();
-                Arrow a = hitLoc.getWorld().spawn(hitLoc, Arrow.class);
-                for(Entity e : a.getNearbyEntities(16, 16, 16)) {
-                    if(!(e instanceof LivingEntity)) {
-                        continue;
-                    }
-                    LivingEntity lE = (LivingEntity)e;
-                    if(Skill.damageCheck(h.getPlayer(), lE)) {
-                        Skill.damageEntity(lE, h.getPlayer(), 150D, DamageCause.ENTITY_ATTACK);
-                        pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
-                        pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
-                        continue;
-                    } else {
-                        lE.damage(150D,event.getEntity());
-                        pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
-                        pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
-                        continue;
-                    }
+        
+        if(((AbstractProjectile)event.getEntity()).getHandle() instanceof EntityMeteor) {
+            EntityMeteor meteor = (EntityMeteor) ((AbstractProjectile)event.getEntity()).getHandle();
+            Location hitLoc = event.getEntity().getLocation();
+            Hero h = meteor.getCaster();
+            Arrow a = hitLoc.getWorld().spawn(hitLoc, Arrow.class);
+            for(Entity e : a.getNearbyEntities(16, 16, 16)) {
+                if(!(e instanceof LivingEntity)) {
+                    continue;
                 }
-                a.remove();
+                LivingEntity lE = (LivingEntity)e;
+                if(Skill.damageCheck(h.getPlayer(), lE)) {
+                    Skill.damageEntity(lE, h.getPlayer(), 150D, DamageCause.ENTITY_ATTACK);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
+                    continue;
+                } else {
+                    lE.damage(150D,event.getEntity());
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
+                    continue;
+                }
             }
+            a.remove();
         }
     }
     public class EntityMeteor extends EntityLargeFireball {
@@ -133,7 +135,7 @@ public class SkillMeteorStrike extends ActiveSkill {
 
         @Override
         public void l_() {
-
+            
             this.world.createExplosion(this, this.locX, this.locY, this.locZ, trailPower, false, false);
 
             motX *= velMultiplier;
@@ -193,11 +195,11 @@ public class SkillMeteorStrike extends ActiveSkill {
             this.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
             return true;
         }
-
+        
         public void setCaster(Hero hero) {
             this.caster = hero;
         }
-
+        
         public Hero getCaster() {
             return this.caster;
         }
@@ -230,7 +232,7 @@ public class SkillMeteorStrike extends ActiveSkill {
 
         Vector velocity = new Vector(vx, vy, vz);
         eMeteor.setVelocity(velocity.normalize().multiply(0.5)); //make a bit slower
-
+        
         return eMeteor;
     }
 }
