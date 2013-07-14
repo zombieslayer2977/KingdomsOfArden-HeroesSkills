@@ -72,7 +72,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         }
         Location targetLoc = los.get(los.size()-1).getLocation();
-        Location spawnLoc = h.getPlayer().getLocation().add(0,50,0);
+        Location spawnLoc = h.getPlayer().getLocation().add(0,100,0);
         spawnMeteorAndTarget(targetLoc, spawnLoc).setCaster(h);
         return SkillResult.NORMAL;
     }
