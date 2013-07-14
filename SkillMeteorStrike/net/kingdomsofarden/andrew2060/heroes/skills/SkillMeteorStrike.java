@@ -54,24 +54,24 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             return;
         }
         setDescription("Summons a devastating meteor to strike at the target location, harming friend and foe alike.");
-        Bukkit.getPluginManager().registerEvents(this, plugin);
         setIdentifiers("skill meteorstrike");
         setUsage("/skill meteorstrike");
         setArgumentRange(0,0);
         this.pEMan = ((ToolHandlerPlugin)plugin.getServer().getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
     public SkillResult use(Hero h, String[] args) {
         this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] $1 used MeteorStrike!", new Object[] {h.getName()});
         List<Block> los;
-        if(h.hasEffect("PowerLocusEffect")) {
+        if(!h.hasEffect("PowerLocusEffect")) {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 16);
         } else {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         }
         Location targetLoc = los.get(los.size()-1).getLocation();
-        Location spawnLoc = h.getPlayer().getLocation().add(0,100,0);
+        Location spawnLoc = targetLoc.clone().add(0,100,0);
         spawnMeteorAndTarget(targetLoc, spawnLoc).setCaster(h);
         return SkillResult.NORMAL;
     }
@@ -102,7 +102,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                     pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
                     continue;
                 } else {
-                    lE.damage(150D);
+                    lE.damage(150D,event.getEntity());
                     pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
                     pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
                     continue;
@@ -120,7 +120,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         public EntityMeteor(World world) {
             super(world);
             a(1.0F,1.0F);
-            this.velMultiplier = 1.10F;
+            this.velMultiplier = 1.05F;
             this.explosionRadius = 70F;
             this.trailPower = 10F;
             this.caster = null;
