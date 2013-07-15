@@ -74,8 +74,8 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
     public SkillResult use(final Hero h, String[] args) {
         this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] $1 used MeteorStrike!", new Object[] {h.getName()});
         List<Block> los;
-        if(h.hasEffect("PowerLocusEffect")) {
-            los = h.getPlayer().getLastTwoTargetBlocks(null, 16);
+        if(!h.hasEffect("PowerLocusEffect")) {
+            los = h.getPlayer().getLastTwoTargetBlocks(null, 32);
         } else {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         }
