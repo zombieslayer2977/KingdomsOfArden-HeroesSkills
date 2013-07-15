@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -103,15 +104,17 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                     continue;
                 }
                 LivingEntity lE = (LivingEntity)e;
+                double distanceSquared = lE.getLocation().distanceSquared(hitLoc);
+                double multiplier = 1 - (distanceSquared / 512D);  //Scale damage based on distance to epicenter down to a minimum of 50% damage
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
-                    Skill.damageEntity(lE, h.getPlayer(), 150D, DamageCause.ENTITY_ATTACK);
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
-                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
+                    Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
                     continue;
                 } else {
-                    lE.damage(150D,event.getEntity());
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(400, 1), lE);
-                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(200, 1), lE);
+                    lE.damage(lE.getMaxHealth() * 1.5 * multiplier,event.getEntity());
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
                     continue;
                 }
             }
