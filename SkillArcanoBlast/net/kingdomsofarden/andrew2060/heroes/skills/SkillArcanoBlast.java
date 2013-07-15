@@ -112,13 +112,13 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         if(!trackedSkulls.containsKey(w)) {
             return;
         }
-        event.setCancelled(true);
         trackedSkulls.remove(w);
         Location loc = w.getLocation();
         Hero h = plugin.getCharacterManager().getHero((Player) w.getShooter());
         Arrow a = loc.getWorld().spawnArrow(loc,new Vector(0,0,0), 0.6f, 1.6f);
         Iterator<Entity> near = a.getNearbyEntities(5, 5, 5).iterator();
         a.remove();
+        w.setYield(7F);
         boolean inPowerLocus = h.hasEffect("PowerLocusEffect");
         while(near.hasNext()) {
             Entity next = near.next();
