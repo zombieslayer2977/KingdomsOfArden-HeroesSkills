@@ -21,6 +21,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import net.minecraft.server.v1_6_R2.DamageSource;
@@ -70,7 +71,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
     }
 
     @Override
-    public SkillResult use(Hero h, String[] args) {
+    public SkillResult use(final Hero h, String[] args) {
         this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] $1 used MeteorStrike!", new Object[] {h.getName()});
         List<Block> los;
         if(h.hasEffect("PowerLocusEffect")) {
@@ -78,9 +79,14 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         } else {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         }
-        Location targetLoc = los.get(los.size()-1).getLocation();
-        Location spawnLoc = h.getPlayer().getLocation().add(0,100,0);
-        spawnMeteorAndTarget(targetLoc, spawnLoc).setCaster(h);
+        final Location targetLoc = los.get(los.size()-1).getLocation();
+        final Location spawnLoc = h.getPlayer().getLocation().add(0,75,0);
+        plugin.getServer().getScheduler().runTaskLater(plugin, new BukkitRunnable() {
+            @Override
+            public void run() {
+                spawnMeteorAndTarget(targetLoc, spawnLoc).setCaster(h);
+            }
+        }, 40);
         return SkillResult.NORMAL;
     }
 
