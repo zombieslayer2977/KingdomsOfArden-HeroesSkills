@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -114,11 +113,13 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 double multiplier = 1 - (distanceSquared / 512D);  //Scale damage based on distance to epicenter down to a minimum of 50% damage
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
+                    lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
                     pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
                     pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
                     continue;
                 } else {
                     lE.damage(lE.getMaxHealth() * 1.5 * multiplier,event.getEntity());
+                    lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
                     pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
                     pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
                     continue;
