@@ -135,7 +135,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             
             for(int i = 0; i < 32 ; i++) {
                 final int radius = i;
-                Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+                (new BukkitRunnable() {
 
                     private int run = 0;
                     @Override
@@ -152,12 +152,12 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                         }
                     }
                     
-                }, 0, 20*radius);
+                }).runTaskTimer(plugin, 0, 20*radius);
             }
             
             for(int i = 0; i < 32; i++) {
                 final int height = i;
-                Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+                (new BukkitRunnable() {
                     
                     private int run = 0;
                     @Override
@@ -174,7 +174,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                         }
                     }
                     
-                }, 0, 40*height);
+                }).runTaskTimer(plugin, 0, 40*height);
             }
         }
     }
