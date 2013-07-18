@@ -103,7 +103,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             EntityMeteor meteor = (EntityMeteor) ((AbstractProjectile)event.getEntity()).getHandle();
             Location hitLoc = event.getEntity().getLocation();
             Hero h = meteor.getCaster();
-            Arrow a = hitLoc.getWorld().spawn(hitLoc, Arrow.class);
+            Arrow a = hitLoc.getWorld().spawn(hitLoc.clone().add(0,16,0), Arrow.class);
             for(Entity e : a.getNearbyEntities(32, 32, 32)) {
                 if(!(e instanceof LivingEntity)) {
                     continue;
