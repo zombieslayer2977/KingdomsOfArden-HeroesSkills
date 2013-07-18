@@ -139,7 +139,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             a(1.0F,1.0F);
             this.velMultiplier = 0.95F;
             this.explosionRadius = 70F;
-            this.trailPower = 10F;
+            this.trailPower = 0F;
             this.caster = null;
         }
 
