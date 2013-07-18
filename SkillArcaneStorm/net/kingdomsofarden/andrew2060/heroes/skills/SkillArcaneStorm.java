@@ -41,7 +41,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 				super.applyToHero(h);
 			    final Player p = h.getPlayer();
 			    broadcast(h.getEntity().getLocation(), "§7[§2Skill§7] $1 has begun channeling an arcane storm!", new Object[] {h.getPlayer().getName()});
-			    List<Location> fireworkLocations = circle(h.getPlayer(),h.getPlayer().getLocation(),10,1,false,false,15);
+			    List<Location> fireworkLocations = circle(h.getPlayer().getLocation(),10,1,false,false,15);
 			    long ticksPerFirework = (int) (100.00/((double)fireworkLocations.size()));
 			    final VisualEffect fireworkUtil = new VisualEffect();
 			    for(int i = 0; i < fireworkLocations.size(); i++) {
@@ -89,7 +89,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 		});
 		return SkillResult.NORMAL;
 	}
-	protected List<Location> circle(Player player, Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
+	protected List<Location> circle(Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
 		List<Location> circleblocks = new ArrayList<Location>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
