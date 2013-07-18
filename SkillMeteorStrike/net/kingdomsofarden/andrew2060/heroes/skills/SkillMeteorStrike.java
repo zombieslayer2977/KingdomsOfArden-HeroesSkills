@@ -1,10 +1,12 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
@@ -12,6 +14,7 @@ import org.bukkit.craftbukkit.v1_6_R2.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -101,7 +104,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         
         if(((AbstractProjectile)event.getEntity()).getHandle() instanceof EntityMeteor) {
             EntityMeteor meteor = (EntityMeteor) ((AbstractProjectile)event.getEntity()).getHandle();
-            Location hitLoc = event.getEntity().getLocation();
+            final Location hitLoc = event.getEntity().getLocation();
             Hero h = meteor.getCaster();
             Arrow a = hitLoc.getWorld().spawn(hitLoc.clone().add(0,16,0), Arrow.class);
             for(Entity e : a.getNearbyEntities(32, 32, 32)) {
@@ -129,6 +132,50 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 }
             }
             a.remove();
+            
+            for(int i = 0; i < 32 ; i++) {
+                final int radius = i;
+                Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+
+                    private int run = 0;
+                    @Override
+                    public void run() {
+                        if(run > 20) {
+                            Bukkit.getScheduler().cancelTask(this.getTaskId());
+                            return;
+                        } else {
+                            for(Location loc : circle(hitLoc, radius, 10, true, true, -5)) {
+                                loc.getWorld().playEffect(loc, Effect.SMOKE, null);
+                            }
+                            run++;
+                            return;
+                        }
+                    }
+                    
+                }, 0, 20*radius);
+            }
+            
+            for(int i = 0; i < 32; i++) {
+                final int height = i;
+                Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+                    
+                    private int run = 0;
+                    @Override
+                    public void run() {
+                        if(run > 10) {
+                            Bukkit.getScheduler().cancelTask(this.getTaskId());
+                            return;
+                        } else {
+                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, true, height)) {
+                                loc.getWorld().playEffect(loc, Effect.SMOKE, null);
+                            }
+                            run++;
+                            return;
+                        }
+                    }
+                    
+                }, 0, 40*height);
+            }
         }
     }
     public class EntityMeteor extends EntityLargeFireball {
@@ -247,5 +294,22 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         eMeteor.setVelocity(velocity.normalize().multiply(0.5)); //make a bit slower
         
         return eMeteor;
+    }
+    protected List<Location> circle(Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
+        List<Location> circleblocks = new ArrayList<Location>();
+        int cx = loc.getBlockX();
+        int cy = loc.getBlockY();
+        int cz = loc.getBlockZ();
+        for (int x = cx - r; x <= cx +r; x++)
+            for (int z = cz - r; z <= cz +r; z++)
+                for (int y = (sphere ? cy - r : cy); y < (sphere ? cy + r : cy + h); y++) {
+                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
+                    if (dist < r*r && !(hollow && dist < (r-1)*(r-1))) {
+                        Location l = new Location(loc.getWorld(), x, y + plus_y, z);
+                        circleblocks.add(l);
+                        }
+                    }
+     
+        return circleblocks;
     }
 }
