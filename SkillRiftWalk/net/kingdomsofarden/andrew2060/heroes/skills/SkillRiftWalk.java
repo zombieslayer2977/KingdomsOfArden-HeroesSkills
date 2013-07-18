@@ -110,7 +110,7 @@ public class SkillRiftWalk extends ActiveSkill {
 					for (int x = 0; x < nearbyDel.size(); x++) {
 						if ((nearbyDel.get(x) instanceof LivingEntity)) {
 							if (SkillRiftWalk.damageCheck(pDelayed, (LivingEntity)nearbyDel.get(x))) {
-								SkillRiftWalk.damageEntity((LivingEntity)nearbyDel.get(x), pDelayed, (int)(hDelayed.getLevel() * 0.25D), DamageCause.MAGIC);
+								SkillRiftWalk.damageEntity((LivingEntity)nearbyDel.get(x), pDelayed, hDelayed.getLevel() * 0.25D, DamageCause.MAGIC);
 							}
 						}
 					}
