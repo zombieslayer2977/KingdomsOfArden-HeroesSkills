@@ -104,13 +104,16 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             Location hitLoc = event.getEntity().getLocation();
             Hero h = meteor.getCaster();
             Arrow a = hitLoc.getWorld().spawn(hitLoc, Arrow.class);
-            for(Entity e : a.getNearbyEntities(16, 16, 16)) {
+            for(Entity e : a.getNearbyEntities(32, 32, 32)) {
                 if(!(e instanceof LivingEntity)) {
                     continue;
                 }
                 LivingEntity lE = (LivingEntity)e;
                 double distanceSquared = lE.getLocation().distanceSquared(hitLoc);
-                double multiplier = 1 - (distanceSquared / 512D);  //Scale damage based on distance to epicenter down to a minimum of 50% damage
+                double multiplier = 1 - (distanceSquared / 1024D);  //Scale damage based on distance to epicenter down to a minimum of 50% damage
+                if(multiplier <= 0) {
+                    return;
+                }
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
                     lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
