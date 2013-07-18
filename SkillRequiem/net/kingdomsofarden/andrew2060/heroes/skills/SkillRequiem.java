@@ -83,7 +83,7 @@ public class SkillRequiem extends PassiveSkill {
 			LivingEntity finalHit = event.getDamager().getEntity();
 
 			final LivingEntity finalDamager = finalHit;
-			event.setDamage(0);
+			event.setDamage(0D);
 			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
 			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
 			h.addEffect(reqEffect);
@@ -114,7 +114,7 @@ public class SkillRequiem extends PassiveSkill {
 			LivingEntity finalHit = event.getDamager().getEntity();
 
 			final LivingEntity finalDamager = finalHit;
-			event.setDamage(0);
+			event.setDamage(0D);
 			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
 			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
 			h.addEffect(reqEffect);
@@ -183,7 +183,7 @@ public class SkillRequiem extends PassiveSkill {
 				return;
 			}
 			if (this.skill.plugin.getCharacterManager().getHero((Player) event.getEntity()).hasEffect("RequiemEffect")) {
-				event.setDamage(0);
+				event.setDamage(0D);
 				if(event.getDamager() instanceof Hero) {
 					((Hero)event.getDamager()).getPlayer().sendMessage(ChatColor.GRAY + "Invulnerable!");
 				}
@@ -195,7 +195,7 @@ public class SkillRequiem extends PassiveSkill {
 				return;
 			}
 			if (this.skill.plugin.getCharacterManager().getHero((Player) event.getEntity()).hasEffect("RequiemEffect")) {
-				event.setDamage(0);
+				event.setDamage(0D);
 				if(event.getDamager() instanceof Hero) {
 					((Hero)event.getDamager()).getPlayer().sendMessage(ChatColor.GRAY + "Invulnerable!");
 				}
@@ -210,7 +210,7 @@ public class SkillRequiem extends PassiveSkill {
 			public void run() {
 				h.removeEffect(h.getEffect("RequiemEffect"));
 				p.getWorld().createExplosion(p.getLocation(), 0.0F);
-				int dmg = h.getMana();
+				double dmg = h.getMana();
 				if (dmg < 20) {
 					dmg = 20;
 				}
@@ -225,7 +225,7 @@ public class SkillRequiem extends PassiveSkill {
 					Skill.damageEntity((LivingEntity)nearby.get(x), h.getEntity(), dmg, DamageCause.ENTITY_ATTACK);
 				}
 				if(finalDamager != null) {
-					Skill.damageEntity(h.getEntity(), finalDamager, 50000, dmgCause);
+					Skill.damageEntity(h.getEntity(), finalDamager, 50000D, dmgCause);
 				} else {
 					p.setHealth(0);
 					h.syncExperience();
