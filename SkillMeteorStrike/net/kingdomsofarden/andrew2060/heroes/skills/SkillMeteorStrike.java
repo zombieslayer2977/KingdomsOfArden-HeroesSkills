@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R2.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
@@ -144,15 +145,15 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                             Bukkit.getScheduler().cancelTask(this.getTaskId());
                             return;
                         } else {
-                            for(Location loc : circle(hitLoc, radius, 10, true, true, -5)) {
-                                loc.getWorld().playEffect(loc, Effect.SMOKE, null);
+                            for(Location loc : circle(hitLoc, radius, 10, false, false, -5)) {
+                                loc.getWorld().playEffect(loc, Effect.SMOKE, BlockFace.UP);
                             }
                             run++;
                             return;
                         }
                     }
                     
-                }).runTaskTimer(plugin, 0, 20*radius);
+                }).runTaskTimer(plugin, 0, 5*radius);
             }
             
             for(int i = 0; i < 32; i++) {
@@ -166,15 +167,15 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                             Bukkit.getScheduler().cancelTask(this.getTaskId());
                             return;
                         } else {
-                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, true, height)) {
-                                loc.getWorld().playEffect(loc, Effect.SMOKE, null);
+                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, false, false, height)) {
+                                loc.getWorld().playEffect(loc, Effect.SMOKE, BlockFace.UP);
                             }
                             run++;
                             return;
                         }
                     }
                     
-                }).runTaskTimer(plugin, 0, 40*height);
+                }).runTaskTimer(plugin, 10*height, 5);
             }
         }
     }
