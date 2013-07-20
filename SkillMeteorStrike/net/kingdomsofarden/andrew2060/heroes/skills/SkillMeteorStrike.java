@@ -116,7 +116,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 double distanceSquared = lE.getLocation().distanceSquared(hitLoc);
                 double multiplier = 1 - (distanceSquared / 1024D);  //Scale damage based on distance to epicenter down to a minimum of 50% damage
                 if(multiplier <= 0) {
-                    return;
+                    continue;
                 }
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
