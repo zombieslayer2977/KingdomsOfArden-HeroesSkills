@@ -138,22 +138,17 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 final int radius = i;
                 (new BukkitRunnable() {
 
-                    private int run = 0;
                     @Override
                     public void run() {
-                        if(run > 20) {
-                            Bukkit.getScheduler().cancelTask(this.getTaskId());
-                            return;
-                        } else {
-                            for(Location loc : circle(hitLoc, radius, 10, false, false, -5)) {
-                                loc.getWorld().playEffect(loc, Effect.SMOKE, BlockFace.UP);
-                            }
-                            run++;
-                            return;
+                            
+                        for(Location loc : circle(hitLoc, radius, 10, true, false, -5)) {
+                            loc.getWorld().createExplosion(loc, 0F, false);
                         }
+                        return;
+      
                     }
                     
-                }).runTaskTimer(plugin, 0, 5*radius);
+                }).runTaskLater(plugin, 1*radius);
             }
             
             for(int i = 0; i < 32; i++) {
@@ -167,15 +162,15 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                             Bukkit.getScheduler().cancelTask(this.getTaskId());
                             return;
                         } else {
-                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, false, false, height)) {
-                                loc.getWorld().playEffect(loc, Effect.SMOKE, BlockFace.UP);
+                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
+                                loc.getWorld().createExplosion(loc, 0F, false);
                             }
                             run++;
                             return;
                         }
                     }
                     
-                }).runTaskTimer(plugin, 10*height, 5);
+                }).runTaskLater(plugin, 1*height);
             }
         }
     }
