@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="C:/Users/Andrew/Java Projects/lib/Factions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Andrew/Projects/lib/Factions.jar"/>
 	<classpathentry kind="src" path="SkillAgonysEmbrace"/>
 	<classpathentry kind="src" path="SkillArcaneStorm"/>
 	<classpathentry kind="src" path="SkillArcanoBlast"/>

@@ -6,16 +6,13 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R2.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -43,9 +40,9 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillMeteorStrike extends ActiveSkill implements Listener {
-    
+
     PotionEffectManager pEMan;
-    
+
     public SkillMeteorStrike(Heroes plugin) {
         super(plugin, "MeteorStrike");
         try {
@@ -68,7 +65,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             public void run() {
                 pEMan = ((ToolHandlerPlugin)Bukkit.getServer().getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
             }
-            
+
         }, 200L);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -102,7 +99,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         if(!(event.getEntity() instanceof AbstractProjectile)) {
             return;
         }
-        
+
         if(((AbstractProjectile)event.getEntity()).getHandle() instanceof EntityMeteor) {
             EntityMeteor meteor = (EntityMeteor) ((AbstractProjectile)event.getEntity()).getHandle();
             final Location hitLoc = event.getEntity().getLocation();
@@ -133,44 +130,40 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 }
             }
             a.remove();
-            
+
             for(int i = 0; i < 32 ; i++) {
                 final int radius = i;
                 (new BukkitRunnable() {
 
                     @Override
                     public void run() {
-                            
-                        for(Location loc : circle(hitLoc, radius, 10, true, false, -5)) {
+
+                        for(Location loc : circle(hitLoc, radius, 5, true, false, -1)) {
                             loc.getWorld().createExplosion(loc, 0F, false);
                         }
+
                         return;
-      
+
                     }
-                    
-                }).runTaskLater(plugin, 1*radius);
+
+                }).runTaskLater(plugin, Math.round(0.25*radius));
             }
-            
+
             for(int i = 0; i < 32; i++) {
                 final int height = i;
                 (new BukkitRunnable() {
-                    
-                    private int run = 0;
+
                     @Override
                     public void run() {
-                        if(run > 10) {
-                            Bukkit.getScheduler().cancelTask(this.getTaskId());
-                            return;
-                        } else {
-                            for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
-                                loc.getWorld().createExplosion(loc, 0F, false);
-                            }
-                            run++;
-                            return;
+                        
+                        for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
+                            loc.getWorld().createExplosion(loc, 0F, false);
                         }
+                        return;
+
                     }
-                    
-                }).runTaskLater(plugin, 1*height);
+
+                }).runTaskLater(plugin, Math.round(0.25*height));
             }
         }
     }
@@ -191,7 +184,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
 
         @Override
         public void l_() {
-            
+
             this.world.createExplosion(this, this.locX, this.locY, this.locZ, trailPower, false, false);
 
             motX *= velMultiplier;
@@ -251,11 +244,11 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             this.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
             return true;
         }
-        
+
         public void setCaster(Hero hero) {
             this.caster = hero;
         }
-        
+
         public Hero getCaster() {
             return this.caster;
         }
@@ -288,7 +281,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
 
         Vector velocity = new Vector(vx, vy, vz);
         eMeteor.setVelocity(velocity.normalize().multiply(0.5)); //make a bit slower
-        
+
         return eMeteor;
     }
     protected List<Location> circle(Location loc, Integer r, Integer h, boolean hollow, boolean sphere, int plus_y) {
@@ -303,9 +296,9 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                     if (dist < r*r && !(hollow && dist < (r-1)*(r-1))) {
                         Location l = new Location(loc.getWorld(), x, y + plus_y, z);
                         circleblocks.add(l);
-                        }
                     }
-     
+                }
+
         return circleblocks;
     }
 }
