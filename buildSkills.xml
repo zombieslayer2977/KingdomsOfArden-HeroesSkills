@@ -1,0 +1,50 @@
+<project name="KingdomsOfArden-HeroesSkills" default="build" basedir=".">
+    <description>
+        Heroes Skills Ant File Compiler
+    </description>
+    <!-- set global properties for this build -->
+    <property environment="env"/>
+    <property name="build.compiler" value="extJavac" />
+    <property name="dir.bin" value="bin" />
+    <property name="dir.dist" value="build" />
+    <property name="dir.bin.skills" value="net/kingdomsofarden/andrew2060/heroes/skills" />
+    <property name="dir.dist.skills" value="${ant.project.name}/skills" />
+    <property name="heroes" value="../Heroes/target" />
+    <property name="heroeslibs" value="../Heroes/libs" />
+    <property name="toolhandler" value="../KingdomsOfArden-ToolHandler/target" />
+
+    <path id="classpath">
+        <fileset dir="${heroes}" includes="**/*.jar" />
+        <fileset dir="${heroeslibs}" includes="**/*.jar" />
+        <fileset dir="${toolhandler}" includes="**/*.jar" />
+        <fileset dir="../lib" includes="Factions.jar" />
+    </path>
+   
+    <taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<target name="build">
+	    <mkdir dir="${dir.dist}" />
+        <mkdir dir="${dir.dist}/${dir.dist.skills}" />
+        <mkdir dir="${dir.bin}" />
+  	    <mkdir dir="${dir.bin}/${dir.dist.skills}" />
+    	<javac srcdir="." debug="on" destdir="bin" classpathref="classpath" includeantruntime="false"/>
+        <antcall target="jar-skills" />
+    	<delete dir="${dir.bin}" includes="**/*.class" excludes="**/*.jar" />
+	</target>
+	
+	<target name="jar-skills">
+	    <foreach target="jar-skill" param="files">
+	        <fileset dir="${dir.bin}/${dir.bin.skills}" includes="*.class" excludes="Skill*$*.class" />
+	    </foreach>
+		<delete file="${dir.bin}/skill.info" />
+	    </target>
+
+	    <target name="jar-skill">
+	        <basename file="${files}" suffix=".class" property="basename" />
+	        <echo message="${basename}" />
+	        <echo file="${dir.bin}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
+	        <jar jarfile="${dir.dist}/${dir.dist.skills}/${basename}.jar" basedir="${dir.bin}" includes="${dir.bin.skills}/${basename}*.class skill.info">
+	        </jar>
+	    </target>
+
+</project>
