@@ -12,6 +12,8 @@
     <property name="heroes" value="../Heroes/target" />
     <property name="heroeslibs" value="../Heroes/libs" />
     <property name="toolhandler" value="../KingdomsOfArden-ToolHandler/target" />
+	<property name="priorityskills" value="SkillAura SkillTurret" />
+	<property name="unsupportedSkills" value="SkillCauldron" />
 
     <path id="classpath">
         <fileset dir="${heroes}" includes="**/*.jar" />
@@ -28,14 +30,22 @@
         <mkdir dir="${dir.dist}/${dir.dist.skills}" />
         <mkdir dir="${dir.bin}" />
   	    <mkdir dir="${dir.bin}/${dir.dist.skills}" />
-		<antcall target="get-source-dirs" />
+		<antcall target="build-priority-skills" />
+		<antcall target="build-main-skills" />
 		<delete dir="${dir.bin}" />
-		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar" />
+		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .*" />
 	</target>
-	<target name="get-source-dirs">
+	<target name="build-priority-skills">
 		<foreach target="compile-dirs" param="dir.name">
 			<path>
-				<dirset dir="${basedir}" includes="Skill*" excludes="SkillCauldron"/>
+				<dirset dir="${basedir}" includes="${priorityskills}" />
+			</path>
+		</foreach>
+	</target>
+	<target name="build-main-skills">
+		<foreach target="compile-dirs" param="dir.name">
+			<path>
+				<dirset dir="${basedir}" includes="Skill*" excludes="${unsupportedSkills} ${priorityskills}"/>
 			</path>
 		</foreach>
 	</target>
