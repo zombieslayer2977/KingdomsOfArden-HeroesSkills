@@ -1,4 +1,4 @@
-package net.kingdomsofarden.andrew2060.heroes.skills.aura;
+package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import com.herocraftonline.heroes.characters.Hero;
 

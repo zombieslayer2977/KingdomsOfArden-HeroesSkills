@@ -8,9 +8,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraEffect;
-import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraWrapper;
-
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
