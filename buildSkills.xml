@@ -29,6 +29,8 @@
         <mkdir dir="${dir.bin}" />
   	    <mkdir dir="${dir.bin}/${dir.dist.skills}" />
 		<antcall target="get-source-dirs" />
+		<delete dir="${dir.bin}" />
+		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar" />
 	</target>
 	<target name="get-source-dirs">
 		<foreach target="compile-dirs" param="dir.name">
