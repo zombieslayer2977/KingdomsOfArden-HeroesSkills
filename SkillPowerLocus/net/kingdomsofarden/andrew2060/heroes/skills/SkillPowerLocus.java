@@ -83,7 +83,7 @@ public class SkillPowerLocus extends ActiveSkill {
 
 		public PowerLocusEffect(Skill skill) {
 			super(skill, "PowerLocusEffect",1000);
-	        pEMan = ((ToolHandlerPlugin)Bukkit.getPluginManager().getPlugin("KingdomsOfArden-ToolHandler")).getPotionEffectHandler();
+	        pEMan = ToolHandlerPlugin.instance.getPotionEffectHandler();
 		}
 		@Override
 		public void applyToHero(Hero h) {
