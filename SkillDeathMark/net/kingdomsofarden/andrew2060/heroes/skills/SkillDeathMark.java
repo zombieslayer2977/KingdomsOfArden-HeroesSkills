@@ -92,14 +92,14 @@ public class SkillDeathMark extends TargettedSkill {
 		public void removeFromHero(Hero h) {
 			Player p = h.getPlayer();
 			double damage = p.getMaxHealth()*i*0.01;
-			Skill.damageEntity(h.getEntity(), attacker.getEntity(), (int) damage, DamageCause.ENTITY_ATTACK);
+			Skill.damageEntity(h.getEntity(), attacker.getEntity(), damage, DamageCause.ENTITY_ATTACK);
 			h.getPlayer().sendMessage(ChatColor.GRAY + "The death mark from " + attacker.getName() + " exploded, dealing " + ChatColor.RED + damage + ChatColor.GRAY + " damage.");
 		}
 		@Override
 		public void removeFromMonster(Monster m) {
 			LivingEntity lE = m.getEntity();
 			double damage = lE.getMaxHealth()*i*0.01;
-			Skill.damageEntity(lE, attacker.getEntity(), (int) damage, DamageCause.ENTITY_ATTACK);
+			Skill.damageEntity(lE, attacker.getEntity(), damage, DamageCause.ENTITY_ATTACK);
 		}
 		public void incrementStack() {
 			++i;

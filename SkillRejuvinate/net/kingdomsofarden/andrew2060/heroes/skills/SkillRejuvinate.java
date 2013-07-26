@@ -44,7 +44,7 @@ public class SkillRejuvinate extends ActiveSkill {
 			Player p = h.getPlayer();
 			switch(mode) {
 			case 0:
-				HeroRegainHealthEvent event = new HeroRegainHealthEvent(h, (int) amountHealed, skill);
+				HeroRegainHealthEvent event = new HeroRegainHealthEvent(h, amountHealed, skill);
 				Bukkit.getPluginManager().callEvent(event);
 				if(!event.isCancelled()) {
 					p.setHealth(p.getHealth() + event.getAmount());
@@ -52,7 +52,7 @@ public class SkillRejuvinate extends ActiveSkill {
 				break;
 			case 1:
 				double multiplier = amountHealed*0.01;
-				HeroRegainHealthEvent event1 = new HeroRegainHealthEvent(h, (int) (p.getMaxHealth()*multiplier), skill);
+				HeroRegainHealthEvent event1 = new HeroRegainHealthEvent(h, p.getMaxHealth()*multiplier, skill);
 				Bukkit.getPluginManager().callEvent(event1);
 				if(!event1.isCancelled()) {
 					p.setHealth(p.getHealth() + event1.getAmount());
@@ -60,7 +60,7 @@ public class SkillRejuvinate extends ActiveSkill {
 				break;
 			case 2:
 				double multiplier1 = amountHealed*0.01;
-				HeroRegainHealthEvent event2 = new HeroRegainHealthEvent(h, (int) ((p.getMaxHealth()-p.getHealth())*multiplier1), skill);
+				HeroRegainHealthEvent event2 = new HeroRegainHealthEvent(h, (p.getMaxHealth()-p.getHealth())*multiplier1, skill);
 				Bukkit.getPluginManager().callEvent(event2);
 				if(!event2.isCancelled()) {
 					p.setHealth(p.getHealth() + event2.getAmount());

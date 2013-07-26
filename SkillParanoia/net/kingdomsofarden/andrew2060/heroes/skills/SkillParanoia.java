@@ -38,7 +38,6 @@ public class SkillParanoia extends ActiveSkill {
 		int timebeforeheal = SkillConfigManager.getUseSetting(hero, this, "timebeforeheal", 5, false);
 		final int heal = SkillConfigManager.getUseSetting(hero, this, "heal", 5, false);
 		final Player p = hero.getPlayer();
-		final Hero h = hero;
 		p.getWorld().playSound(p.getLocation(), Sound.AMBIENCE_THUNDER, 300, 0);
 		Iterator<Entity> nearby = p.getNearbyEntities(radius1, radius1, radius1).iterator();
 		while(nearby.hasNext()) {

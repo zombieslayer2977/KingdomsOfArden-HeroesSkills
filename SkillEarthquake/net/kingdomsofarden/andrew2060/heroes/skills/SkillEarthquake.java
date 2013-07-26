@@ -83,7 +83,7 @@ public class SkillEarthquake extends ActiveSkill {
 				if(!SkillEarthquake.damageCheck(h.getPlayer(), e)) {
 					continue;
 				}
-				SkillEarthquake.damageEntity(e, h.getEntity(), SkillConfigManager.getUseSetting(h, skill, "damage", 10, false), DamageCause.ENTITY_ATTACK);
+				SkillEarthquake.damageEntity(e, h.getEntity(), SkillConfigManager.getUseSetting(h, skill, "damage", 10D, false), DamageCause.ENTITY_ATTACK);
 				SlowEffect slowEffect = new SlowEffect(this.skill, 20, 2, false, "", "", h);
 				CharacterTemplate character = this.plugin.getCharacterManager().getCharacter(e);
 				character.addEffect(slowEffect);

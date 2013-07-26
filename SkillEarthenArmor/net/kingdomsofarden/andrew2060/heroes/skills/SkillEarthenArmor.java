@@ -117,7 +117,7 @@ public class SkillEarthenArmor extends ActiveSkill {
 			return;
 		}
 		double levelMultiplier = (100.0D - h.getLevel() * 0.5D) * 0.01D;
-		event.setDamage((int)(event.getDamage() * levelMultiplier));
+		event.setDamage(event.getDamage() * levelMultiplier);
 		}
 	}
 }

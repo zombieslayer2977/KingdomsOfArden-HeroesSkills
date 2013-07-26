@@ -3,6 +3,9 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 import java.util.Iterator;
 import java.util.Set;
 
+import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraEffect;
+import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraWrapper;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -96,7 +99,7 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 			if(closest == null) {
 				return;
 			} else {
-				HeroRegainHealthEvent allyHealEvent = new HeroRegainHealthEvent(closest, 5, SkillAuraOfFortitude.this, h);
+				HeroRegainHealthEvent allyHealEvent = new HeroRegainHealthEvent(closest, 5D, SkillAuraOfFortitude.this, h);
 				Bukkit.getPluginManager().callEvent(allyHealEvent);
 				closest.getPlayer().setHealth(closest.getPlayer().getHealth()+selfHealEvent.getAmount());
 				if(closest.getPlayer().getHealth() > closest.getPlayer().getMaxHealth()) {

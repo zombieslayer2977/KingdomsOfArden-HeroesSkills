@@ -1,5 +1,8 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraEffect;
+import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraWrapper;
+
 import org.bukkit.ChatColor;
 
 import com.herocraftonline.heroes.Heroes;

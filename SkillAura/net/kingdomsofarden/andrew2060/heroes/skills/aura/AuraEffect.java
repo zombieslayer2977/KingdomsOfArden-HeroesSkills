@@ -1,12 +1,12 @@
 
-package net.kingdomsofarden.andrew2060.heroes.skills;
+package net.kingdomsofarden.andrew2060.heroes.skills.aura;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
 
 public class AuraEffect extends PeriodicEffect {
-	AuraWrapper fWrapper;
+	public AuraWrapper fWrapper;
 	public AuraEffect(Heroes plugin, AuraWrapper funcWrapper) {
 		super(plugin, "AuraEffect", 20L);
 		fWrapper = funcWrapper;
