@@ -24,6 +24,7 @@
 	<classpathentry kind="src" path="SkillEarthquake"/>
 	<classpathentry kind="src" path="SkillEnchant"/>
 	<classpathentry kind="src" path="SkillEnchantmentBook"/>
+	<classpathentry kind="src" path="SkillEnhancedAgility"/>
 	<classpathentry kind="src" path="SkillEqualize"/>
 	<classpathentry kind="src" path="SkillExecutioner"/>
 	<classpathentry kind="src" path="SkillForge"/>
