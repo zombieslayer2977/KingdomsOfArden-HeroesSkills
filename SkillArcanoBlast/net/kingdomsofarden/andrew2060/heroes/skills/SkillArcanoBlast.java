@@ -6,25 +6,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.server.v1_6_R2.EntityWitherSkull;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
@@ -77,59 +75,39 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         for(Location effectLoc : circleLoc) {
             effectLoc.getWorld().playEffect(effectLoc, Effect.MOBSPAWNER_FLAMES, 0);
         }
-        final Location spawnLoc = loc.clone().add(0,20,0); 
+        final Location spawnLoc = los.get(los.size()-1).getLocation().add(0,10,0); 
         loc.getWorld().playSound(spawnLoc, Sound.ENDERMAN_TELEPORT, 5, 1);
         spawnLoc.getWorld().playEffect(spawnLoc, Effect.ENDER_SIGNAL, 1);
         List<Location> circleEnderLoc = circle(spawnLoc, 2, 1, false, false, 0);
         for(Location effectLoc : circleEnderLoc) {
             effectLoc.getWorld().playEffect(effectLoc, Effect.ENDER_SIGNAL, 1);
         }
-        trackedSkulls.put((WitherSkull) spawnMeteorAndTarget(loc,spawnLoc).getBukkitEntity(), System.currentTimeMillis());
-       
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+
+            @Override
+            public void run() {
+                Ocelot o = spawnLoc.getWorld().spawn(spawnLoc, Ocelot.class);
+                WitherSkull skull = o.launchProjectile(WitherSkull.class);
+                o.remove();
+                skull.setShooter(h.getEntity());
+                Vector v = new Vector();
+                v.setY(-100).normalize().multiply(3.0);
+                skull.setVelocity(v);
+                trackedSkulls.put(skull, System.currentTimeMillis());
+            }
+
+        },20);
+
         broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 used ArcanoBlast!", new Object[] {h.getPlayer().getName()});
         return SkillResult.NORMAL;
     }
-    public EntityWitherSkull spawnMeteorAndTarget(Location targetLoc, Location spawnLoc) {
-        // Target coords
-        final double x1 = targetLoc.getX();
-        final double y1 = targetLoc.getY();
-        final double z1 = targetLoc.getZ();
-
-        // Spawn coords
-        final double x0 = spawnLoc.getX();
-        final double y0 = spawnLoc.getY();
-        final double z0 = spawnLoc.getZ();
-
-        final double vx = (x1 - x0) / 10;
-        final double vy = (y1 - y0) / 10;
-        final double vz = (z1 - z0) / 10;
-
-        CraftWorld cWorld = (CraftWorld) targetLoc.getWorld();
-
-        EntityWitherSkull wSkull = new EntityWitherSkull(cWorld.getHandle());
-
-        cWorld.getHandle().addEntity(wSkull, SpawnReason.NATURAL);
-
-        wSkull.setPosition(x0, y0, z0);
-
-        wSkull.setDirection(x1 - x0, y1 - y0, z1 - z0);
-
-        Vector velocity = new Vector(vx, vy, vz).normalize(); //make a bit slower
-        wSkull.motX = velocity.getX(); 
-        wSkull.motY = velocity.getY();
-        wSkull.motZ = velocity.getZ();
-        wSkull.velocityChanged = true;
-        
-        return wSkull;
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProjectileHit(EntityExplodeEvent event) {
         Entity e = event.getEntity();
         if(!(e instanceof WitherSkull)) {
             return;
         }
-        
+
         WitherSkull w = (WitherSkull)e;
         if(!trackedSkulls.containsKey(w)) {
             return;
@@ -152,12 +130,13 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
                 continue;
             } 
             this.addSpellTarget(lE, h);
-            
+
             int dmg = 75;
             if(inPowerLocus) {
                 dmg = 40;
             }
             Skill.damageEntity(lE, h.getEntity(), dmg, DamageCause.MAGIC, false);
+            lE.addPotionEffect(PotionEffectType.WITHER.createEffect(100, 5));
         }
     }
     @Override
