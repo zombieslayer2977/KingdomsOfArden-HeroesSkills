@@ -35,7 +35,7 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
     private ConcurrentHashMap<WitherSkull,Long> trackedSkulls;
     public SkillArcanoBlast(Heroes plugin) {
         super(plugin, "ArcanoBlast");
-        setDescription("On use, calls down magical artillery that strikes target location after 1 second");
+        setDescription("Normal Use: Fires a withering projectile in a straight line on use. In Power Locus: Calls down magical artillery that strikes target location after 1 second");
         setIdentifiers("skill arcanoblast");
         setUsage("/skill arcanoblast");
         this.trackedSkulls = new ConcurrentHashMap<WitherSkull,Long>();
