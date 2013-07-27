@@ -68,7 +68,10 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         if(inPowerLocus) {
             los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
         } else {
-            los = h.getPlayer().getLastTwoTargetBlocks(null, 15);
+            WitherSkull w = h.getPlayer().launchProjectile(WitherSkull.class);
+            trackedSkulls.put(w, System.currentTimeMillis());
+            broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 used ArcanoBlast!", new Object[] {h.getPlayer().getName()});
+            return SkillResult.NORMAL;
         }
         final Location loc = los.get(los.size()-1).getLocation();
         List<Location> circleLoc = circle(loc, 2, 1, false, false, 1);
@@ -131,9 +134,9 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
             } 
             this.addSpellTarget(lE, h);
 
-            int dmg = 75;
+            double dmg = 80;
             if(inPowerLocus) {
-                dmg = 40;
+                dmg = 20;
             }
             Skill.damageEntity(lE, h.getEntity(), dmg, DamageCause.MAGIC, false);
             lE.addPotionEffect(PotionEffectType.WITHER.createEffect(100, 5));
