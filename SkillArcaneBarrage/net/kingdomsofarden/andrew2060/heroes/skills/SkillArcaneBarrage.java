@@ -134,6 +134,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
             } else {
                 los = h.getPlayer().getLastTwoTargetBlocks(null, 16);
                 fire(h.getPlayer().getLocation(),los.get(los.size()-1).getLocation(),h);
+                return SkillResult.NORMAL;
             }
             return SkillResult.INVALID_TARGET_NO_MSG;
         }
