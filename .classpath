@@ -32,6 +32,7 @@
 	<classpathentry kind="src" path="SkillManaShield"/>
 	<classpathentry kind="src" path="SkillMarksman"/>
 	<classpathentry kind="src" path="SkillMeteorStrike"/>
+	<classpathentry kind="src" path="SkillMirage"/>
 	<classpathentry kind="src" path="SkillMortarStrike"/>
 	<classpathentry kind="src" path="SkillNetherSteel"/>
 	<classpathentry kind="src" path="SkillParanoia"/>
