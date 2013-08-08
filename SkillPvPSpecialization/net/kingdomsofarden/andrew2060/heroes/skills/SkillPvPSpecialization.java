@@ -72,6 +72,10 @@ public class SkillPvPSpecialization extends PassiveSkill {
 			}
 			if(h.getPlayer().getLocation().getWorld().getName().toLowerCase().contains("arena")) {
 				exp = (int) (exp*0.5);
+				if(h2.getHeroClass().hasNoParents()) {
+		            h.getPlayer().sendMessage("§7You gain no exp for killing a " + h2.getHeroClass().getName() + " in the arena: specializations only gain EXP in arena from other specializations!");
+		            return;
+				}
 			}
 			h.getPlayer().sendMessage("§7You were awarded " + exp + " exp for killing a " + rank + " " + h2.getHeroClass().getName() + "!");
 			h.addExp(exp, h.getHeroClass(), h.getPlayer().getLocation());
