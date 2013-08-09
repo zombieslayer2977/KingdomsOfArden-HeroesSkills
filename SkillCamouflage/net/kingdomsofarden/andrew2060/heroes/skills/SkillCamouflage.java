@@ -19,8 +19,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.HeroEnterCombatEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
@@ -326,6 +328,21 @@ public class SkillCamouflage extends PassiveSkill {
 			int bonusdmg = SkillConfigManager.getUseSetting((Hero)cT, skill, "bonuspercent", 50, false);
 			Skill.damageEntity((LivingEntity)event.getEntity(), cT.getEntity(), bonusdmg*0.01*event.getDamage(), DamageCause.CUSTOM);
 			//And we're done!
+		}
+		//Prevent entity targetting while camo'd
+		@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true) 
+		public void onEntityTarget(EntityTargetEvent event) {
+		    if(!(event.getTarget() instanceof Player)) {
+		        return;
+		    }
+		    Player p = (Player) event.getTarget();
+		    if(camouflaged.containsKey(p)) {
+		        if(camouflaged.get(p)) {
+		            if(!event.getEntity().getNearbyEntities(4, 3, 4).contains(p)) {
+		                event.setCancelled(true);
+		            }
+		        }
+		    }
 		}
 	}
 	//Function I wrote a while ago to check area around a person for a block, not going to go into detail about how it works but if you can't figure it out I'll be happy to help
