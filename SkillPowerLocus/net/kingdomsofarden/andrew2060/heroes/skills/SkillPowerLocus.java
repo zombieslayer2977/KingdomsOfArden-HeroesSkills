@@ -41,7 +41,7 @@ public class SkillPowerLocus extends ActiveSkill {
 
                 @Override
                 public void run() {
-                    h.setCooldown(skillName, (long) ((h.getCooldown(skillName)-System.currentTimeMillis())*multiplier));
+                    h.setCooldown(skillName, (long) (((h.getCooldown(skillName)-System.currentTimeMillis())*multiplier) + System.currentTimeMillis()));
                 }
 		        
 		    },1L);
@@ -63,6 +63,7 @@ public class SkillPowerLocus extends ActiveSkill {
 		if(h.hasEffect("PowerLocusEffect")) {
 			broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 has stopped drawing from a locus of power!", new Object[] {h.getPlayer().getName()});
 			h.removeEffect(h.getEffect("PowerLocusEffect"));
+			h.setCooldown(this.getName(), System.currentTimeMillis() + 60000);
 			return SkillResult.NORMAL;
 		} else {
 			broadcast(h.getEntity().getLocation(),"§7[§2Skill§7] $1 has begun drawing from a locus of power!", new Object[] {h.getPlayer().getName()});
