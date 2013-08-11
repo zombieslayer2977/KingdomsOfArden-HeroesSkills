@@ -89,8 +89,8 @@ public class SkillPowerLocus extends ActiveSkill {
 		@Override
 		public void applyToHero(Hero h) {
 		    super.applyToHero(h);
-		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(200000, 50), h.getEntity());
-            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(200000, -50), h.getEntity());
+		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(72000, 50), h.getEntity());
+            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(72000, -50), h.getEntity());
 		}
 		@Override
 		public void tickHero(Hero h) {

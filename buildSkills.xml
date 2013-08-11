@@ -7,6 +7,7 @@
     <property name="build.compiler" value="extJavac" />
     <property name="dir.bin" value="temp" />
     <property name="dir.dist" value="target" />
+	<property name="dir.prioritybuild" value="priority" />
     <property name="dir.bin.skills" value="net/kingdomsofarden/andrew2060/heroes/skills" />
     <property name="dir.dist.skills" value="." />
     <property name="heroes" value="../Heroes/target" />
@@ -20,7 +21,7 @@
         <fileset dir="${heroeslibs}" includes="**/*.jar" />
         <fileset dir="${toolhandler}" includes="**/*.jar" />
         <fileset dir="../lib" includes="Factions.jar" />
-    	<fileset dir="${dir.dist}" />
+    	<fileset dir="${dir.prioritybuild}" />
     </path>
    
     <taskdef resource="net/sf/antcontrib/antlib.xml" />
@@ -30,13 +31,18 @@
         <mkdir dir="${dir.dist}/${dir.dist.skills}" />
         <mkdir dir="${dir.bin}" />
   	    <mkdir dir="${dir.bin}/${dir.dist.skills}" />
+		<mkdir dir="${dir.prioritybuild}" />
 		<antcall target="build-priority-skills" />
 		<antcall target="build-main-skills" />
+		<copy todir="${dir.dist}" >  
+		    <fileset dir="${dir.prioritybuild}" includes="**"/>  
+		</copy>
 		<delete dir="${dir.bin}" />
+		<delete dir="${dir.prioritybuild}" />
 		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .*" />
 	</target>
 	<target name="build-priority-skills">
-		<foreach target="compile-dirs" param="dir.name">
+		<foreach target="compile-dirs-priority" param="dir.name">
 			<path>
 				<dirset dir="${basedir}" includes="${priorityskills}" />
 			</path>
@@ -68,6 +74,30 @@
         <echo message="${basename}" />
         <echo file="${dir.bin}/${basename}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
         <jar jarfile="${dir.dist}/${dir.dist.skills}/${basename}.jar" basedir="${dir.bin}/${basename}" includes="${dir.bin.skills}/**/*.class skill.info">
+        	<manifest>
+	                <attribute name="Class-Path" value="../../Heroes.jar" />
+            </manifest>
+        </jar>
+    </target>
+	<target name = "compile-dirs-priority">
+		<echo message="${dir.name}" />
+		<basename file="${dir.name}" property="skillBuildDir" />
+		<mkdir dir="${dir.bin}/${skillBuildDir}" />
+		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true"/>
+		<antcall target="jar-skilldir-priority" />
+	</target>
+	<target name="jar-skilldir-priority">
+	    <foreach target="jar-files-priority" param="files">
+	    	<fileset dir="${dir.bin}/${skillBuildDir}/${dir.bin.skills}" includes="**/Skill*.class" excludes="Skill*$*.class" />
+	    </foreach>
+	    <delete file="${dir.bin}/${dir.bin.skills}/skill.info" />
+		
+	</target>
+	<target name="jar-files-priority">
+        <basename file="${files}" suffix=".class" property="basename" />
+        <echo message="${basename}" />
+        <echo file="${dir.bin}/${basename}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
+        <jar jarfile="${dir.prioritybuild}/${dir.dist.skills}/${basename}.jar" basedir="${dir.bin}/${basename}" includes="${dir.bin.skills}/**/*.class skill.info">
         	<manifest>
 	                <attribute name="Class-Path" value="../../Heroes.jar" />
             </manifest>
