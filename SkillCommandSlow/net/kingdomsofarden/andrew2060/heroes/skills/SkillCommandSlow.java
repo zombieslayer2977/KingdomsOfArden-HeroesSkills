@@ -86,7 +86,7 @@ public class SkillCommandSlow extends ActiveSkill {
 				if(pEMan == null) {
 				    
 				}
-				pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(100, slowlevel),next);
+				pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(100, slowlevel),next, false);
 			}
 			return;
 		}

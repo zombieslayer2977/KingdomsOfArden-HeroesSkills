@@ -89,8 +89,8 @@ public class SkillPowerLocus extends ActiveSkill {
 		@Override
 		public void applyToHero(Hero h) {
 		    super.applyToHero(h);
-		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(72000, 127), h.getEntity());
-            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(72000, -127), h.getEntity());
+		    pEMan.addPotionEffectStacking(PotionEffectType.SLOW.createEffect(72000, 127), h.getEntity(), false);
+            pEMan.addPotionEffectStacking(PotionEffectType.JUMP.createEffect(72000, -127), h.getEntity(), false);
 		}
 		@Override
 		public void tickHero(Hero h) {
@@ -102,7 +102,7 @@ public class SkillPowerLocus extends ActiveSkill {
 			pEMan.removePotionEffect(PotionEffectType.SLOW,h.getEntity());
 			pEMan.removePotionEffect(PotionEffectType.JUMP,h.getEntity());
 			if(!h.getEntity().isDead()) {
-			    pEMan.addPotionEffectStacking(PotionEffectType.SPEED.createEffect(100, 2), h.getEntity());
+			    pEMan.addPotionEffectStacking(PotionEffectType.SPEED.createEffect(100, 2), h.getEntity(), false);
 			}
 		}
 		

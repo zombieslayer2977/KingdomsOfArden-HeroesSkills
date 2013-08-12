@@ -195,7 +195,7 @@ public class SkillCompress extends ActiveSkill {
 				Hero hero = (Hero) event.getDamager();
 				if (hero.hasEffect("Compress")) {
 					LivingEntity targetEntity = (LivingEntity)event.getEntity();
-					ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(40,2), targetEntity);
+					ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(40,2), targetEntity, true);
 				}
 				return;
 			}
