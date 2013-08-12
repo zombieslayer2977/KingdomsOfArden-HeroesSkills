@@ -55,7 +55,7 @@ public class SkillNetherSteel extends PassiveSkill implements Listener {
             case GOLD_HOE:
             case STONE_HOE:
             case WOOD_HOE: {
-                pEMan.addPotionEffectStacking(PotionEffectType.WITHER.createEffect(40, 3), (LivingEntity) event.getEntity());
+                pEMan.addPotionEffectStacking(PotionEffectType.WITHER.createEffect(40, 3), (LivingEntity) event.getEntity(), false);
                 return;
             }
             default: {
