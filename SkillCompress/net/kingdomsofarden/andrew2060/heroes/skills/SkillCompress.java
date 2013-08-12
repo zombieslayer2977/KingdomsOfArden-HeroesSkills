@@ -8,13 +8,14 @@ import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
-import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Messaging;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
+
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,11 +28,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 
 public class SkillCompress extends ActiveSkill {
-	private String applyText;
-	private String expireText;
-	private String pvpapplyText;
 
 	public SkillCompress(Heroes plugin) {
 		super(plugin, "Compress");
@@ -41,7 +40,7 @@ public class SkillCompress extends ActiveSkill {
 		setIdentifiers(new String[] { "skill compress" });
 		setTypes(new SkillType[] { SkillType.FIRE, SkillType.EARTH, SkillType.BUFF, SkillType.SILENCABLE });
 		Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListener(), plugin);
-		Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListenerPvP(this), plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(new SkillPlayerListenerPvP(), plugin);
 	}
 
 	public ConfigurationSection getDefaultConfig() {
@@ -54,9 +53,6 @@ public class SkillCompress extends ActiveSkill {
 
 	public void init() {
 		super.init();
-		this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT, "%hero%'s tools now exert extreme pressure on anything they contact!").replace("%hero%", "$1");
-		this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT, "%hero%'s tools are no longer exerting pressure!").replace("%hero%", "$1");
-		this.pvpapplyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%hero% bashed %target% into the Ground!").replace("%target%", "$1").replace("%hero%", "$2");
 	}
 
 	public SkillResult use(Hero hero, String[] args) {
@@ -83,14 +79,13 @@ public class SkillCompress extends ActiveSkill {
 
 		public void applyToHero(Hero hero) {
 			super.applyToHero(hero);
-			Player player = hero.getPlayer();
-			broadcast(player.getLocation(), SkillCompress.this.applyText, new Object[] { player.getDisplayName() });
+			broadcast(hero.getPlayer().getLocation(), "$1's tools now exert extreme pressure on anything they contact!", new Object[] {hero.getName()});
 		}
 
 		public void removeFromHero(Hero hero) {
 			super.removeFromHero(hero);
-			Player player = hero.getPlayer();
-			broadcast(player.getLocation(), SkillCompress.this.expireText, new Object[] { player.getDisplayName() });
+	         broadcast(hero.getPlayer().getLocation(), "$1's tools are no longer exerting pressure!", new Object[] {hero.getName()});
+
 		}
 	}
 
@@ -185,9 +180,8 @@ public class SkillCompress extends ActiveSkill {
 	}
 
 	public class SkillPlayerListenerPvP implements Listener {
-		private final Skill skill;
 
-		public SkillPlayerListenerPvP(Skill skill) { this.skill = skill; }
+		public SkillPlayerListenerPvP() { }
 
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void onWeaponDamage(WeaponDamageEvent event) {
@@ -200,11 +194,8 @@ public class SkillCompress extends ActiveSkill {
 			if ((event.getDamager() instanceof Hero)) {
 				Hero hero = (Hero) event.getDamager();
 				if (hero.hasEffect("Compress")) {
-					LivingEntity targetentity = (LivingEntity)event.getEntity();
-					Player player = hero.getPlayer();
-					SlowEffect effect = new SlowEffect(this.skill, 5000L, 3, false, SkillCompress.this.pvpapplyText, "$1 has regained their senses", hero);
-					SkillCompress.this.plugin.getCharacterManager().getCharacter(targetentity).addEffect(effect);
-					SkillCompress.this.broadcast(targetentity.getLocation(), SkillCompress.this.pvpapplyText, new Object[] { Messaging.getLivingEntityName(targetentity), player.getDisplayName() });
+					LivingEntity targetEntity = (LivingEntity)event.getEntity();
+					ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(40,2), targetEntity);
 				}
 				return;
 			}
