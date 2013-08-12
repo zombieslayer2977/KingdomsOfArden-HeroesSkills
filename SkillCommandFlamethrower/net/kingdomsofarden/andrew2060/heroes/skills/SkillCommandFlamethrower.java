@@ -66,7 +66,7 @@ public class SkillCommandFlamethrower extends ActiveSkill implements Listener {
 			while(valid.hasNext()) {
 				LivingEntity next = valid.next();
 				addSpellTarget(next, h);
-				Skill.damageEntity(next, h.getEntity(), 3, DamageCause.CUSTOM, false);
+				Skill.damageEntity(next, h.getEntity(), 3D, DamageCause.CUSTOM, false);
 				if(next.getFireTicks() > 19) {
 				    return;
 				} else {
