@@ -118,53 +118,53 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
                     Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
                     lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
-                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE, false);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE, false);
                     continue;
                 } else {
                     lE.damage(lE.getMaxHealth() * 1.5 * multiplier,event.getEntity());
                     lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
-                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE);
-                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE);
+                    pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE, false);
+                    pEMan.addPotionEffectStacking(PotionEffectType.CONFUSION.createEffect(400, 1), lE, false);
                     continue;
                 }
             }
             a.remove();
 
-            for(int i = 0; i < 32 ; i++) {
-                final int radius = i;
-                (new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-
-                        for(Location loc : circle(hitLoc, radius, 5, true, false, -1)) {
-                            loc.getWorld().createExplosion(loc, 0F, false);
-                        }
-
-                        return;
-
-                    }
-
-                }).runTaskLater(plugin, Math.round(0.25*radius));
-            }
-
-            for(int i = 0; i < 32; i++) {
-                final int height = i;
-                (new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-                        
-                        for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
-                            loc.getWorld().createExplosion(loc, 0F, false);
-                        }
-                        return;
-
-                    }
-
-                }).runTaskLater(plugin, Math.round(0.25*height));
-            }
+//            for(int i = 0; i < 32 ; i++) {
+//                final int radius = i;
+//                (new BukkitRunnable() {
+//
+//                    @Override
+//                    public void run() {
+//
+//                        for(Location loc : circle(hitLoc, radius, 5, true, false, -1)) {
+//                            loc.getWorld().createExplosion(loc, 0F, false);
+//                        }
+//
+//                        return;
+//
+//                    }
+//
+//                }).runTaskLater(plugin, Math.round(0.25*radius));
+//            }
+//
+//            for(int i = 0; i < 32; i++) {
+//                final int height = i;
+//                (new BukkitRunnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        
+//                        for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
+//                            loc.getWorld().createExplosion(loc, 0F, false);
+//                        }
+//                        return;
+//
+//                    }
+//
+//                }).runTaskLater(plugin, Math.round(0.25*height));
+//            }
         }
     }
     public class EntityMeteor extends EntityLargeFireball {
