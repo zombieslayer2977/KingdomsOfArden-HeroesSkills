@@ -39,7 +39,7 @@
 		</copy>
 		<delete dir="${dir.bin}" />
 		<delete dir="${dir.prioritybuild}" />
-		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .*" />
+		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .* /bin/**/*.class" />
 	</target>
 	<target name="build-priority-skills">
 		<foreach target="compile-dirs-priority" param="dir.name">
