@@ -59,7 +59,7 @@
 		<echo message="${dir.name}" />
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
-		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true"/>
+		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7" source="1.7"/>
 		<antcall target="jar-skilldir" />
 	</target>
 	<target name="jar-skilldir">
@@ -83,7 +83,7 @@
 		<echo message="${dir.name}" />
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
-		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true"/>
+		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7" source="1.7"/>
 		<antcall target="jar-skilldir-priority" />
 	</target>
 	<target name="jar-skilldir-priority">
