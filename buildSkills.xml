@@ -56,7 +56,6 @@
 		</foreach>
 	</target>
 	<target name = "compile-dirs">
-		<echo message="${dir.name}" />
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
 		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7" source="1.7"/>
@@ -71,7 +70,6 @@
 	</target>
 	<target name="jar-files">
         <basename file="${files}" suffix=".class" property="basename" />
-        <echo message="${basename}" />
         <echo file="${dir.bin}/${basename}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
         <jar jarfile="${dir.dist}/${dir.dist.skills}/${basename}.jar" basedir="${dir.bin}/${basename}" includes="${dir.bin.skills}/**/*.class skill.info">
         	<manifest>
@@ -80,7 +78,6 @@
         </jar>
     </target>
 	<target name = "compile-dirs-priority">
-		<echo message="${dir.name}" />
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
 		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7" source="1.7"/>
@@ -95,7 +92,6 @@
 	</target>
 	<target name="jar-files-priority">
         <basename file="${files}" suffix=".class" property="basename" />
-        <echo message="${basename}" />
         <echo file="${dir.bin}/${basename}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
         <jar jarfile="${dir.prioritybuild}/${dir.dist.skills}/${basename}.jar" basedir="${dir.bin}/${basename}" includes="${dir.bin.skills}/**/*.class skill.info">
         	<manifest>
