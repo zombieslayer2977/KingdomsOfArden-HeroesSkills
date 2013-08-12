@@ -164,20 +164,27 @@ public class SkillCamouflage extends PassiveSkill {
 		//Implement our listener, in this case I want to listen for player logins so that I can detect if/when they have access to camouflage: if they do add them to 
 		//our HashMap of camouflaged players.
 		public void onPlayerLogin(PlayerLoginEvent event) {
-			Player p = event.getPlayer();
-			Hero h = skill.plugin.getCharacterManager().getHero(p);
-			//Check to see if the player logging in has access to this skill.
-			if(!h.hasEffect("Camouflage")) {
-				//Ok he does not have this effect-> we want to continue/don't want to do anything
-				return;
-				//This will return; our function, and will make anything below it not run.
-			}
-			//The return; won't get called if the h.hasEffect("Camouflage") returns true
-			//As such anything under this WILL be run if the if statement returns true
+			final Player p = event.getPlayer();
+			//Run on a delay due to problems w/ getting a hero prior to login
+			plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+			    @Override
+			    public void run() {
+			        Hero h = skill.plugin.getCharacterManager().getHero(p);
+		            //Check to see if the player logging in has access to this skill.
+		            if(!h.hasEffect("Camouflage")) {
+		                //Ok he does not have this effect-> we want to continue/don't want to do anything
+		                return;
+		                //This will return; our function, and will make anything below it not run.
+		            }
+		            //The return; won't get called if the h.hasEffect("Camouflage") returns true
+		            //As such anything under this WILL be run if the if statement returns true
 
-			//Add the player to our HashMap
-			camouflaged.put(p, false);
-			//We've done all we want to do->return.
+		            //Add the player to our HashMap
+		            camouflaged.put(p, false);
+		            //We've done all we want to do->return.
+			    }
+			});
+			
 			return;
 		}
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) 
