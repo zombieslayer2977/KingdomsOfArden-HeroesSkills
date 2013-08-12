@@ -65,13 +65,13 @@ public class SkillPlague extends ActiveSkill {
 		@Override
 		public void tickHero(Hero h) {
 			Player p = h.getPlayer();
-			damageEntity(h.getEntity(), attacker.getEntity(), (int) (p.getMaxHealth()*0.02), DamageCause.MAGIC, false);
+			damageEntity(h.getEntity(), attacker.getEntity(), p.getMaxHealth()*0.02, DamageCause.MAGIC, false);
 		}
 
 		@Override
 		public void tickMonster(Monster m) {
 			LivingEntity lE = m.getEntity();
-			damageEntity(m.getEntity(), attacker.getEntity(), (int) (lE.getMaxHealth()*0.02), DamageCause.MAGIC, false);
+			damageEntity(m.getEntity(), attacker.getEntity(), lE.getMaxHealth()*0.02, DamageCause.MAGIC, false);
 		}
 
 

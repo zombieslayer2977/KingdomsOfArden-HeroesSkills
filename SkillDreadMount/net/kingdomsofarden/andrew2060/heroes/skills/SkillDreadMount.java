@@ -76,7 +76,7 @@ public class SkillDreadMount extends ActiveSkill {
                 }
                 LivingEntity lE = (LivingEntity)e;
                 if(Skill.damageCheck(passenger, lE)) {
-                    Skill.damageEntity(lE, passenger, 5, DamageCause.ENTITY_ATTACK, false);
+                    Skill.damageEntity(lE, passenger, 5D, DamageCause.ENTITY_ATTACK, false);
                 }
             }
         }
