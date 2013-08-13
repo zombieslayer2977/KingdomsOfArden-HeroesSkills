@@ -274,9 +274,9 @@ public class SkillRepair extends PassiveSkill {
             }
             else pInv.clear(pInv.first(requiredImprove));
             p.updateInventory();
-            double multiplier = 100/fullRepair;
+            double multiplier = 1.00/fullRepair;
             double durabilityRestored = maxDurability*multiplier;
-            short finalDurability = (short)(handItem.getDurability() - durabilityRestored);
+            short finalDurability = (short)((int)(Math.ceil(handItem.getDurability()) - durabilityRestored));
             handItem.setDurability(finalDurability >= 0 ? finalDurability : 0);
             Random randGen = new Random();
             double rand = randGen.nextInt(10000)*0.01;
