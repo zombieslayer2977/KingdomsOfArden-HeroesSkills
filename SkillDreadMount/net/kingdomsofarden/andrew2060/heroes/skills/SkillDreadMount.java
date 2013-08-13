@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Style;
+import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -38,11 +38,10 @@ public class SkillDreadMount extends ActiveSkill {
         Monster m = plugin.getCharacterManager().getMonster(horse);
         m.setMaxHealth(1000D);
         m.addEffect(new DreadMountEffect(this.plugin));
-        horse.setStyle(Style.BLACK_DOTS);
         HorseInventory hInv = horse.getInventory();
-        hInv.setArmor(new ItemStack(Material.DIAMOND_BARDING));
         hInv.setSaddle(new ItemStack(Material.SADDLE));
         horse.setTamed(true);
+        horse.setVariant(Variant.UNDEAD_HORSE);
         horse.setPassenger(hero.getPlayer());      
         
         int summonDuration = SkillConfigManager.getUseSetting(hero, this, "summon-duration", Integer.valueOf(600),false);
