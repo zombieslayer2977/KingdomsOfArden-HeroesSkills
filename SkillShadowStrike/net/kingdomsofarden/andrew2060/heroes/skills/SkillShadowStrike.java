@@ -1,5 +1,7 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +56,7 @@ public class SkillShadowStrike extends TargettedSkill {
 		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(lE);
 		h.getPlayer().teleport(lE.getLocation(), TeleportCause.UNKNOWN);
 		cT.addEffect(new ExpirableEffect(this, plugin, "ShadowStrikeSilence", 4000));
-		lE.addPotionEffect(PotionEffectType.SLOW.createEffect(60, 2));
+		ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(80, 3),lE,false);
 		Skill.damageEntity(lE, h.getEntity(), lE.getMaxHealth()*5*0.01, DamageCause.ENTITY_ATTACK);
 		if(!(lE instanceof Player)) {
 			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),lE.getType().getName()});
