@@ -222,17 +222,17 @@ public class SkillForge extends PassiveSkill {
 				return;
 			}
 			int level = h.getLevel(h.getSecondClass());
-			int threshold = 0;
-			if(level <= 10) {
-				threshold = 20;
-			} else if (level <= 20) {
-				threshold = 40;
-			} else if (level <= 30) {
-				threshold = 60;
-			} else if (level <= 40) {
-				threshold = 80;
-			} else if (level > 40) {
-				threshold = 100;
+			double threshold = 0.00;
+			if(level < 10) {
+				threshold = 20.00;
+			} else if (level < 20) {
+				threshold = 40.00;
+			} else if (level < 30) {
+				threshold = 60.00;
+			} else if (level < 40) {
+				threshold = 80.00;
+			} else if (level >= 40) {
+				threshold = 100.00;
 			}
 			double quality = ImprovementUtil.getQuality(handItem);
 			if(quality >= threshold && threshold != 100) {
@@ -242,7 +242,7 @@ public class SkillForge extends PassiveSkill {
 				p.sendMessage(ChatColor.GRAY + "This item cannot be improved to a higher quality.");
 				return;
 			} else {
-				if(ImprovementUtil.improveQuality(handItem) == -1) {
+				if(ImprovementUtil.improveQuality(handItem,4,threshold) == -1) {
 					p.sendMessage(ChatColor.GRAY + "This item cannot be improved to a higher quality.");
 					return;
 				} else {
