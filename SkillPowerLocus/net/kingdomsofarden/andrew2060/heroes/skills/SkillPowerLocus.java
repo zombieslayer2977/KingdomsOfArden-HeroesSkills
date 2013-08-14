@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.SkillCompleteEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
@@ -20,12 +21,6 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 public class SkillPowerLocus extends ActiveSkill {
 
 	public class PowerLocusListener implements Listener {
-
-		private SkillPowerLocus skill;
-
-		public PowerLocusListener(SkillPowerLocus skill) {
-			this.skill = skill;
-		}
 		
 		@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 		public void onSkillUse(SkillUseEvent event) {
@@ -33,18 +28,20 @@ public class SkillPowerLocus extends ActiveSkill {
 		    if(!h.hasEffect("PowerLocusEffect")) {
 		        return;
 		    }
-		    final String skillName = event.getSkill().getName();
 		    final double multiplier = 0.5 - (event.getHero().getLevel(event.getHero().getHeroClass())*0.005);
-		    event.setManaCost((int) (event.getManaCost()*0.5));
-		    //Must be scheduled due to cooldown being added after this
-		    Bukkit.getScheduler().runTaskLater(skill.plugin,new Runnable() {
-
-                @Override
-                public void run() {
-                    h.setCooldown(skillName, (long) (((h.getCooldown(skillName)-System.currentTimeMillis())*multiplier) + System.currentTimeMillis()));
-                }
-		        
-		    },1L);
+		    event.setManaCost((int) (event.getManaCost()*multiplier));
+		}
+		
+		public void onSkillComplete(SkillCompleteEvent event) {
+		    if(event.getResult() != SkillResult.NORMAL){
+		        return;
+		    }
+		    final Hero h = event.getHero();
+            if(!h.hasEffect("PowerLocusEffect")) {
+                return;
+            }
+            long cd = h.getCooldown(event.getSkill().getName()) - System.currentTimeMillis();
+            h.setCooldown(event.getSkill().getName(), (long) (System.currentTimeMillis() + cd*0.5));
 		}
 		
 	}
@@ -56,7 +53,7 @@ public class SkillPowerLocus extends ActiveSkill {
 		setIdentifiers("skill powerlocus");
 		setUsage("/skill powerlocus");
 		setDescription("Roots User in Place. While power locus is active spells gain massively increased range, cooldown reduction, and cost no mana, but also deal less damage. Exiting power locus grants a 5 second speed boost");
-		Bukkit.getPluginManager().registerEvents(new PowerLocusListener(this), this.plugin);
+		Bukkit.getPluginManager().registerEvents(new PowerLocusListener(), this.plugin);
 	}
 	@Override
 	public SkillResult use(Hero h, String[] arg1) {
