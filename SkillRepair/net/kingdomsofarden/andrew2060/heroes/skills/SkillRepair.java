@@ -256,6 +256,9 @@ public class SkillRepair extends PassiveSkill {
                 case COBBLESTONE:
                     commonName = "cobblestone";
                     break;
+                case STRING:
+                    commonName = "string";
+                    break;
                 default: 
                     commonName = "something broke here, go get andrew2060";
                     break;
