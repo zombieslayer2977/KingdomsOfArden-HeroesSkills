@@ -1,6 +1,10 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +24,7 @@ import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
@@ -47,7 +52,7 @@ public class SkillSurge extends ActiveSkill{
 
 	@Override
 	public SkillResult use(Hero h, String[] args) {
-		h.getPlayer().addPotionEffect(PotionEffectType.SPEED.createEffect(200, 3));
+		ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SPEED.createEffect(200, 3), h.getEntity(), false);
 		h.addEffect(new SurgeEffect(this, plugin, 30000));
 		return SkillResult.NORMAL;
 	}
@@ -93,15 +98,15 @@ public class SkillSurge extends ActiveSkill{
 					return;
 				}
 				event.setDamage(event.getDamage()*1.25);
-				CharacterTemplate ct = SkillSurge.this.plugin.getCharacterManager().getCharacter((LivingEntity)event.getEntity());
+				CharacterTemplate cT = SkillSurge.this.plugin.getCharacterManager().getCharacter((LivingEntity)event.getEntity());
 				if(h.hasEffect("FrostShotEffect")) {
-					ct.addEffect(new SurgeFrostEffect(this.skill, this.skill.plugin, 2000));
+					cT.addEffect(new SurgeFrostEffect(this.skill, this.skill.plugin, 2000));
 				}
 				if(h.hasEffect("PoisonArrowBuff")) {
-					ct.addEffect(new SurgePoisonEffect(this.skill, this.skill.plugin, 5000));
+					cT.addEffect(new SurgePoisonEffect(this.skill, this.skill.plugin, 5000));
 				}
 				if(h.hasEffect("ExplodingArrowBuff")) {
-					ct.addEffect(new SlowEffect(skill, "SurgeExplodingEffect", 2000, 1, false, "", "", h));
+					cT.addEffect(new SlowEffect(skill, "SurgeExplodingEffect", 2000, 1, false, "", "", h));
 				}
 				if(h.hasEffect("SapShotEffect")) {
 					Player p = h.getPlayer();
@@ -113,13 +118,22 @@ public class SkillSurge extends ActiveSkill{
 					h.getPlayer().sendMessage(ChatColor.GRAY + "[Surge]: heal amount doubled!");
 				}
 				if(h.hasEffect("SilverArrows")) {
-					Iterator<PotionEffect> activeEffects = ct.getEntity().getActivePotionEffects().iterator();
+					Iterator<PotionEffect> activeEffects = cT.getEntity().getActivePotionEffects().iterator();
 					while(activeEffects.hasNext()) {
 						PotionEffect next = activeEffects.next();
-						ct.getEntity().removePotionEffect(next.getType());
+						cT.getEntity().removePotionEffect(next.getType());
 					}
-					if(ct.getEntity() instanceof Player) {
-						((Player)ct.getEntity()).sendMessage(ChatColor.GRAY + "Purified by Silver Arrows!"); 
+					Set<Effect> toRemove = new HashSet<Effect>();
+					for(Effect e : cT.getEffects()) {
+					    if(e.isType(EffectType.BENEFICIAL) && e.isType(EffectType.DISPELLABLE)) {
+					        toRemove.add(e);
+					    }
+					}
+					for(Effect e : toRemove) {
+					    cT.removeEffect(e);
+					}
+					if(cT.getEntity() instanceof Player) {
+						((Player)cT.getEntity()).sendMessage(ChatColor.GRAY + "Purified by Silver Arrows!"); 
 					}
 				}
 			}
