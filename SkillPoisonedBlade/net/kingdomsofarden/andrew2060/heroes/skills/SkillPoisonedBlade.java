@@ -9,6 +9,8 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 //Reason for a package is if multiple people were to use the same class name, you want them in
 //Different packages so that they don't conflict.
 
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -24,6 +26,7 @@ import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
+import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
@@ -48,7 +51,7 @@ public class SkillPoisonedBlade extends ActiveSkill {
 		//-The following portion between these two comments is only important int his specific application
 		//Begin Heroes Specific Constructor Arguments
 		super(plugin, "PoisonedBlade");
-		setDescription("Poisons the blade, which applies a $1 second poison on next hit.");
+		setDescription("Poisons the blade, which applies a $1 second poison on next hit. In addition, healing is reduced by 50% for the duration of the poison");
 		setUsage("/skill poisonedblade");
 		setIdentifiers("skill poisonedblade");
 		setArgumentRange(0,0);
@@ -225,10 +228,13 @@ public class SkillPoisonedBlade extends ActiveSkill {
 			//That are defined for it: namely bukkit allows you to add potion effects to a living entity
 			LivingEntity lE = (LivingEntity)event.getEntity();
 			//Get the configuration setting for the duration and convert from milliseconds to ticks (because ticks is what bukkit uses)
-			long duration = (long) (SkillConfigManager.getUseSetting(h, skill, SkillSetting.DURATION.node(), 2000, false)*0.001*40);
+			int duration = (int) (SkillConfigManager.getUseSetting(h, this.skill, SkillSetting.DURATION.node(), 2000, false)*0.001*20);
 			
-			//Add the potion effect
-			lE.addPotionEffect(PotionEffectType.POISON.createEffect((int) duration, 3), true);
+			//Add the potion effect - in this case I don't use Bukkit's methods of adding potions since I want to use a custom potion queueing system I coded in another plugin
+			ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.POISON.createEffect(duration, 3), lE, false);
+			
+			//Add a healing debuff effect
+			h.addEffect(new PoisonHealingDebuffEffect(this.skill, plugin, (long) (duration*0.05*1000)));
 			
 			//Remove the effect from the hero (otherwise the effect would never be removed even after the first hit
 			h.removeEffect(h.getEffect("PoisonedBladeEffect"));
@@ -237,6 +243,17 @@ public class SkillPoisonedBlade extends ActiveSkill {
 			return;
 		}
 		
+	}
+	
+	/*
+	 * A custom effect class that extends ExpireableEffect used to represent and code the healing debuff effect
+	 */
+	public class PoisonHealingDebuffEffect extends ExpirableEffect {
+
+        public PoisonHealingDebuffEffect(Skill skill, Heroes plugin, long duration) {
+            super(skill, plugin, "PoisonHealingDebuff", duration);
+        }
+	    
 	}
 	/*
 	 * So now we have to tell the skill to populate default settings
