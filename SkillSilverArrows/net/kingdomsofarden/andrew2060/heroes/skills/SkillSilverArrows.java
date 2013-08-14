@@ -2,7 +2,6 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -11,9 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
@@ -30,7 +26,7 @@ public class SkillSilverArrows extends ActiveSkill{
 		setUsage("/skill silverarrows");
 		setArgumentRange(0, 0);
 		setIdentifiers(new String[] { "skill silverarrows" });
-		setDescription("Toggle: While active, arrows fired will consume 1 iron ingot per shot, and deal an additional 5% max health true damage on hitting an enemy. Note: Boss monsters are immune to silver arrows!");
+		setDescription("Toggle: While active, arrows fired will deal an additional 5% max health true damage on hitting an enemy. Note: Boss monsters are immune to silver arrows!");
 		Bukkit.getServer().getPluginManager().registerEvents(new SkillListener(), plugin);
 	}
 
@@ -53,7 +49,6 @@ public class SkillSilverArrows extends ActiveSkill{
 	}
 	
 	public class SkillListener implements Listener {
-		@SuppressWarnings("deprecation")
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void handleInventoryDeduction(ProjectileLaunchEvent event) {
 			if(event.isCancelled()) {
@@ -69,20 +64,13 @@ public class SkillSilverArrows extends ActiveSkill{
 			if(!h.hasEffect("SilverArrows")) {
 				return;	
 			}
-			PlayerInventory pInv = ((Player)event.getEntity().getShooter()).getInventory();
-			if(!pInv.contains(Material.IRON_INGOT)) {
-				h.getPlayer().sendMessage(ChatColor.GRAY + "You have run out of iron ingots to create silver arrows with!");
+			if(h.getMana() - 10 <  0) {
+				h.getPlayer().sendMessage(ChatColor.GRAY + "You have run out of mana with which to create silver arrows!");
 				SkillSilverArrows.this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + h.getName() + "'s arrows are no longer tipped with silver!");
 				h.removeEffect(h.getEffect("SilverArrows"));
-				return;
-			}
-			ItemStack stack = pInv.getItem(pInv.first(Material.IRON_INGOT));
-			if(stack.getAmount() > 1) {
-				stack.setAmount(stack.getAmount() - 1);
 			} else {
-				pInv.remove(stack);
+			    h.setMana(h.getMana() - 10);
 			}
-			h.getPlayer().updateInventory();
 			return;
 		}
 		@EventHandler(priority=EventPriority.MONITOR)
