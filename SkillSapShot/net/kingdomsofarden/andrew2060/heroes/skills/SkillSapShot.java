@@ -2,6 +2,7 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.EffectType;
@@ -10,15 +11,20 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wither;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,7 +37,7 @@ public class SkillSapShot extends ActiveSkill {
 		setUsage("/skill sapshot");
 		setArgumentRange(0, 0);
 		setIdentifiers(new String[] { "skill sapshot" });
-		setDescription("On use, arrows fired for the next $1 seconds will have a sapping effect, trapping the life force of any monsters inside an egg if available. Against other players, $2% of damage dealt (ignores armor) is restored in health.");
+		setDescription("On use, arrows fired for the next $1 seconds will have a sapping effect, $2% of damage dealt (ignores armor) is restored in health. If the shot is a killing shot and the target is a monster, the life force of the target will be trapped inside an egg if available.");
 		Bukkit.getServer().getPluginManager().registerEvents(new SkillListener(this), plugin);
 	}
 	public String getDescription(Hero hero) {
@@ -95,40 +101,27 @@ public class SkillSapShot extends ActiveSkill {
 				return;
 			}
 			Hero h = (Hero)event.getDamager();
-			Player p = h.getPlayer();
 			if (!h.hasEffect("SapShotEffect")) {
 				return;
 			}
 			double d = event.getDamage();
-			double health = p.getHealth();
 			int sapPercentage = SkillConfigManager.getUseSetting(h, this.skill, "sapPercentage", 20, false);
-			double modifiedHealth = (health + d * sapPercentage * 0.01D);
-			if (modifiedHealth > p.getMaxHealth()) {
-				h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped to " + ChatColor.AQUA + "max" + ChatColor.GRAY + " health!");
-				p.setHealth(p.getMaxHealth());
-				event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
-				//TODO: Change to use HeroRegainHealthEvent
-				return;
+			double healAmount = (d * sapPercentage * 0.01D);
+			HeroRegainHealthEvent hEvent = new HeroRegainHealthEvent(h, healAmount, skill, h);
+			Bukkit.getPluginManager().callEvent(hEvent);
+			if(!hEvent.isCancelled()) {
+			    h.heal(healAmount);
+	            h.getPlayer().sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] Sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " Health!");
 			}
-			p.setHealth(modifiedHealth);
-			h.getPlayer().sendMessage(ChatColor.GRAY + "Sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " Health!");
-			if ((event.getEntity() instanceof Player)) {
-				((Player)event.getEntity()).sendMessage(ChatColor.GRAY + h.getName() + " sapped " + ChatColor.AQUA + d * sapPercentage * 0.01D + ChatColor.GRAY + " health from you!");
-			}
-			event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.POTION_BREAK, 8);
-			//TODO: Chance to use HeroRegainHealthEvent
 		}
 
 		@SuppressWarnings("deprecation")
-		@EventHandler(priority=EventPriority.HIGHEST)
+		@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 		public void onEntityDamagebyEntity(EntityDamageByEntityEvent event) {
-			if (event.isCancelled()) {
-				return;
-			}
 			if (!(event.getDamager() instanceof Arrow)) {
 				return;
 			}
-			if (!(event.getEntity() instanceof Monster)) {
+			if ((!((event.getEntity() instanceof Monster) || (event.getEntity() instanceof Ghast) || (event.getEntity() instanceof Animals))) || event.getEntity() instanceof Wither) {
 				return;
 			}
 			Arrow arrow = (Arrow)event.getDamager();
@@ -139,6 +132,9 @@ public class SkillSapShot extends ActiveSkill {
 			Hero h = SkillSapShot.this.plugin.getCharacterManager().getHero(p);
 			if (!h.hasEffect("SapShotEffect")) {
 				return;
+			}
+			if(((LivingEntity)event.getEntity()).getHealth()-event.getDamage() > 0) {
+			    return;
 			}
 			if (p.getInventory().contains(Material.EGG, 1)) {
 				p.getWorld().dropItem(p.getLocation(), new ItemStack(Material.MONSTER_EGG, 1, event.getEntityType().getTypeId()));
