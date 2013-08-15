@@ -32,6 +32,7 @@ public class SkillPowerLocus extends ActiveSkill {
 		    event.setManaCost((int) (event.getManaCost()*multiplier));
 		}
 		
+		@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 		public void onSkillComplete(SkillCompleteEvent event) {
 		    if(event.getResult() != SkillResult.NORMAL){
 		        return;
