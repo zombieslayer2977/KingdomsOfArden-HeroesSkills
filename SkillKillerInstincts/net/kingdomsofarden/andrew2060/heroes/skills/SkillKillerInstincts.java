@@ -29,6 +29,7 @@ public class SkillKillerInstincts extends ActiveSkill implements Listener {
         setDescription("The next attack w/in 10 seconds deals a bonus 30% damage and will dispel all positive effects on a target. A player kill reduces the cooldown of this skill by 30 seconds.");
         setUsage("/skill killerinstincts");
         setIdentifiers("skill killerinstincts");
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
