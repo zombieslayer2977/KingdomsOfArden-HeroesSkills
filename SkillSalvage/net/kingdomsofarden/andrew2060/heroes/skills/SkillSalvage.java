@@ -12,7 +12,7 @@ public class SkillSalvage extends PassiveSkill implements Listener {
 
     public SkillSalvage(Heroes plugin) {
         super(plugin, "Salvage");
-        setDescription("Allows for the recovery of up to $1 of the materials used to create a tool/armor piece in a furnace. The amount recovered determines on the durability of the item in question");
+        setDescription("Allows for the recovery of up to $1 of the materials used to create a tool/armor piece. The amount recovered is determined by the durability of the item in question");
     }
 
     @Override
