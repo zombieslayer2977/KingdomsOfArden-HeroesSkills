@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -137,12 +139,11 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
             double dmg = 0;
             if(inPowerLocus) {
                 dmg = 40;
-                lE.addPotionEffect(PotionEffectType.SLOW.createEffect(60, 1));
             } else {
                 dmg = 80;
-                lE.addPotionEffect(PotionEffectType.WITHER.createEffect(100, 5));
             }
             Skill.damageEntity(lE, h.getEntity(), dmg, DamageCause.MAGIC, false);
+            ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(40, inPowerLocus ? 2 : 1), lE, false);
         }
     }
     @Override
