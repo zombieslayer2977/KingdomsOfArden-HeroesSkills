@@ -52,7 +52,7 @@ public class SkillArcaneFrost extends ActiveSkill {
                     return SkillResult.NORMAL;
                 }
             } else {
-                activeDisplayTasks.put(h, new ArcaneFrostTargettingSchedulerTask(h).runTaskTimer(plugin, 0, 10));
+                activeDisplayTasks.put(h, new ArcaneFrostTargettingSchedulerTask(h).runTaskTimer(plugin, 0, 20));
                 h.getPlayer().sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] "
                         + "Activated targetting mode for arcane frost: you have 10 seconds to make a selection"
                         + "before targetting is cancelled.");
@@ -169,7 +169,7 @@ public class SkillArcaneFrost extends ActiveSkill {
         @Override
         public void run() {
             if(h.getPlayer().isOnline()) {
-                if(iterations >= 20) {
+                if(iterations >= 10) {
                     this.cancel();
                     if(activeDisplayTasks.containsKey(h)) {
                         activeDisplayTasks.remove(h);
@@ -177,7 +177,7 @@ public class SkillArcaneFrost extends ActiveSkill {
                                 + "Targetting Mode for Arcane Frost Expired.");
                     }
                 } else {
-                    new ArcaneFrostTargettingDisplayTask(this.h).runTaskLater(plugin, 9L);
+                    new ArcaneFrostTargettingDisplayTask(this.h).runTaskLater(plugin, 19L);
                     iterations++;
                     return;
                 }
@@ -236,36 +236,9 @@ public class SkillArcaneFrost extends ActiveSkill {
         int centerY = center.getBlockY(); 
         for(int x = upperLeftX; x <= lowerRightX; x++) {
             for(int z = upperLeftZ; x <= lowerRightZ; z++) {
-                Location constructLoc = new Location(world,x,centerY,z);
-                if(world.getBlockAt(constructLoc).getType() == Material.AIR) {
-                    int count = 0;
-                    while(world.getBlockAt(constructLoc).getType() == Material.AIR && count <= 3) {
-                        constructLoc.subtract(0, 1, 0);
-                        count++;
-                    }
-                    if(count == 3 && world.getBlockAt(constructLoc).getType() == Material.AIR){
-                        constructLoc.setY(centerY);
-                        count = 0;
-                        while(world.getBlockAt(constructLoc).getType() == Material.AIR && count <= 3) {
-                            constructLoc.add(0, 1, 0);
-                            count++;
-                        }
-                    }
-                } else {
-                    int count = 0;
-                    while(world.getBlockAt(constructLoc).getType() != Material.AIR && count <= 3) {
-                        constructLoc.add(0, 1, 0);
-                        count++;
-                    }
-                    if(world.getBlockAt(constructLoc).getType() == Material.AIR) {
-                        constructLoc.subtract(0,1,0);
-                    }
-                }
-                if(world.getBlockAt(constructLoc).getType() != Material.AIR) {
+                Location constructLoc = world.getHighestBlockAt(x,z).getLocation();
+                if(constructLoc.getBlockY() - centerY <= 3) {
                     locations.add(constructLoc);
-                    continue;
-                } else {
-                    continue;
                 }
             }
         }
