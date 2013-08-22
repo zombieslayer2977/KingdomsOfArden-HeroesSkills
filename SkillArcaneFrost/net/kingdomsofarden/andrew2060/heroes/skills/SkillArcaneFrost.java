@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -227,18 +228,45 @@ public class SkillArcaneFrost extends ActiveSkill {
 
     }
     public List<Location> calculateAffectedArea(Location center, World world) {
-        //Construct a square centered around that location
         List<Location> locations = new LinkedList<Location>();
-        int upperLeftX = center.getBlockX()-6;
-        int upperLeftZ = center.getBlockZ()-6;
-        int lowerRightX = center.getBlockX()+6;
-        int lowerRightZ = center.getBlockZ()+6;
-        int centerY = center.getBlockY(); 
-        for(int x = upperLeftX; x <= lowerRightX; x++) {
-            for(int z = upperLeftZ; x <= lowerRightZ; z++) {
-                Location constructLoc = world.getHighestBlockAt(x,z).getLocation();
-                if(constructLoc.getBlockY() - centerY <= 3) {
+        double upperLeftX = center.getBlockX()-6D;
+        double upperLeftZ = center.getBlockZ()-6D;
+        double lowerRightX = center.getBlockX()+6D;
+        double lowerRightZ = center.getBlockZ()+6D;
+        double lowerY = center.getBlockY()-3D;
+        double upperY = center.getBlockY()+3D; 
+        for(double x = upperLeftX; x <= lowerRightX; x++) {
+            for(double z = upperLeftZ; x <= lowerRightZ; z++) {
+                Location constructLoc = new Location(world,x,lowerY,z);
+                boolean upwardsSearch = false;
+                for(double y = lowerY; y <= upperY; y++) {
+                    constructLoc.setY(y);
+                    if(constructLoc.getBlock().getType() == Material.AIR) {
+                        if(y == lowerY) {
+                            upwardsSearch = true;
+                            continue;
+                        } else {
+                            if(upwardsSearch) {
+                                continue;
+                            } else {
+                                constructLoc.setY(y-1D);
+                                break;
+                            }
+                        }
+                    } else {
+                        if(upwardsSearch) {
+                            upwardsSearch = false;
+                            continue;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+                if(constructLoc.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && constructLoc.getBlock().getType().isSolid()) {
                     locations.add(constructLoc);
+                    continue;
+                } else {
+                    continue;
                 }
             }
         }
