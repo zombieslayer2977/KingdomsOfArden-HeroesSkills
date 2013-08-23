@@ -23,6 +23,8 @@
     <taskdef resource="net/sf/antcontrib/antlib.xml" />
 	
 	<target name="build">
+	    <mkdir dir="${dir.dist}" /> <!-- Clean up Maven -->
+		<delete dir="${dir.dist}" />
 	    <mkdir dir="${dir.dist}" />
         <mkdir dir="${dir.dist}/${dir.dist.skills}" />
         <mkdir dir="${dir.bin}" />
@@ -99,7 +101,7 @@
     </target>
 	<target name="zip">
 		<zip destfile="${dir.dist}/KingdomsOfArden-HeroesSkills.zip">
-		    <fileset dir="${dir.dist}" includes="${dir.dist.skills}/**/Skill*.jar"/>
+		    <fileset dir="${dir.dist}" includes="${dir.dist}/**/*.jar"/>
 		</zip>
    </target>
 </project>
