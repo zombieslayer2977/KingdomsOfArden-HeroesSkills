@@ -32,8 +32,5 @@
 *.iws
 .idea/
 
-# Other Libraries
-*.jar
-
 # Atlassian Stuff
 /atlassian-ide-plugin.xml
