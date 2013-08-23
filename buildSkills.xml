@@ -101,7 +101,7 @@
     </target>
 	<target name="zip">
 		<zip destfile="${dir.dist}/KingdomsOfArden-HeroesSkills.zip">
-		    <fileset dir="${dir.dist}" includes="${dir.dist}/*.jar"/>
+		    <fileset dir="${dir.dist}" includes="**/*.jar"/>
 		</zip>
    </target>
 </project>
