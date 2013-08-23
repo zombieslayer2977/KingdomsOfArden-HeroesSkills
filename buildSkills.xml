@@ -10,7 +10,7 @@
 	<property name="dir.prioritybuild" value="priority" />
     <property name="dir.bin.skills" value="net/kingdomsofarden/andrew2060/heroes/skills" />
     <property name="dir.dist.skills" value="." />
-    <property name="toolhandler" value="../../KingdomsOfArden-ToolHandler/workspace/target" />
+    <property name="toolhandler" value="../../Kingdoms of Arden Tool Handler/workspace/target" />
 	<property name="priorityskills" value="SkillAura SkillTurret" />
 	<property name="unsupportedSkills" value="SkillCauldron" />
 
