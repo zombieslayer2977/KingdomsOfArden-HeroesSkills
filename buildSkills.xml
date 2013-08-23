@@ -10,17 +10,13 @@
 	<property name="dir.prioritybuild" value="priority" />
     <property name="dir.bin.skills" value="net/kingdomsofarden/andrew2060/heroes/skills" />
     <property name="dir.dist.skills" value="." />
-    <property name="heroes" value="../Heroes/target" />
-    <property name="heroeslibs" value="../Heroes/libs" />
     <property name="toolhandler" value="../KingdomsOfArden-ToolHandler/target" />
 	<property name="priorityskills" value="SkillAura SkillTurret" />
 	<property name="unsupportedSkills" value="SkillCauldron" />
 
     <path id="classpath">
-        <fileset dir="${heroes}" includes="**/*.jar" />
-        <fileset dir="${heroeslibs}" includes="**/*.jar" />
         <fileset dir="${toolhandler}" includes="**/*.jar" />
-        <fileset dir="../lib" includes="Factions.jar" />
+        <fileset dir="lib" includes="*.jar" />
     	<fileset dir="${dir.prioritybuild}" />
     </path>
    

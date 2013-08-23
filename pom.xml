@@ -4,8 +4,8 @@
 	<groupId>net.kingdomsofarden.andrew2060</groupId>
 	<artifactId>HeroesSkills</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Swagserv-HeroesSkills</name>
-	<description>Skills for mc.swagserv.net</description>
+	<name>KingdomsOfArden-HeroesSkills</name>
+	<description>Skills for mc.kingdomsofarden.net</description>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
@@ -56,7 +56,11 @@
 			<artifactId>Factions</artifactId>
 			<version>1.8</version>
 			<scope>system</scope>
-			<systemPath>C:\Users\Andrew\Projects\lib\Factions.jar</systemPath>
+			<systemPath>${project.basedir}\lib\Factions.jar</systemPath>
 		</dependency>
 	</dependencies>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>ci.herocraftonline.com</url>
+	</ciManagement>
 </project>
