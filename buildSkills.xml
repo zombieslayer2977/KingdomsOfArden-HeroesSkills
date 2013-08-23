@@ -33,9 +33,11 @@
 		<copy todir="${dir.dist}" >  
 		    <fileset dir="${dir.prioritybuild}" includes="**"/>  
 		</copy>
+		<antcall target="zip" />
 		<delete dir="${dir.bin}" />
 		<delete dir="${dir.prioritybuild}" />
 		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .* /bin/**/*.class" />
+		<delete dir="${dir.dist}" includes="**/*.jar" excludes="**/*.zip" />
 	</target>
 	<target name="build-priority-skills">
 		<foreach target="compile-dirs-priority" param="dir.name">
@@ -95,4 +97,9 @@
             </manifest>
         </jar>
     </target>
+	<target name="zip">
+		<zip destfile="${dir.dist}/KingdomsOfArden-HeroesSkills.zip">
+		    <fileset dir="${dir.dist}" includes="${dir.dist.skills}/**/Skill*.jar"/>
+		</zip>
+   </target>
 </project>
