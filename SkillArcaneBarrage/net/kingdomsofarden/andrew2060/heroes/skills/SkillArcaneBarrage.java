@@ -10,8 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -66,10 +66,36 @@ public class SkillArcaneBarrage extends ActiveSkill{
             return false;
         }
         Vector multiplier = vector.toVector().subtract(origin.toVector()).normalize();
-        World w = origin.getWorld();
+        double originY = origin.getY();
+       
         for(int i = 0; i < 16; i++) {
             origin.add(multiplier);
-            new StrikeTask(w.getHighestBlockAt(origin).getLocation(), hero).runTaskLater(plugin, i*5);
+            boolean upwardsSearch = false;
+            for(double y = originY - 3; i <= originY + 3; i++) {
+                origin.setY(y);
+                if(origin.getBlock().getType() == Material.AIR) {
+                    if(y == originY - 3) {
+                        upwardsSearch = true;
+                        continue;
+                    } else {
+                        if(upwardsSearch) {
+                            continue;
+                        } else {
+                            origin.setY(y-1D);
+                            break;
+                        }
+                    }
+                } else {
+                    if(upwardsSearch) {
+                        upwardsSearch = false;
+                        continue;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+            new StrikeTask(origin, hero).runTaskLater(plugin, i*5);
+            origin.setY(originY);
         }
         return true;
     }
@@ -181,11 +207,37 @@ public class SkillArcaneBarrage extends ActiveSkill{
                 displayEndPoint = displayEndPoint.getWorld().getHighestBlockAt(displayEndPoint).getLocation();
                 Vector multiplier = displayEndPoint.toVector().subtract(displayOrigin.toVector()).setY(0).normalize();
                 List<Location> toDisplay = new LinkedList<Location>();
-                World w = displayEndPoint.getWorld();
                 for(int i = 0; i < 16; i++) {
-                    Location blockLocation = w.getHighestBlockAt(displayOrigin).getLocation();
-                    if(!toDisplay.contains(blockLocation)) {
-                        toDisplay.add(blockLocation);
+                    Location blockLocation = displayOrigin.clone();
+                    double originY = blockLocation.getY();
+                    boolean upwardsSearch = false;
+                    for(double y = originY - 3; i <= originY + 3; i++) {
+                        blockLocation.setY(y);
+                        if(blockLocation.getBlock().getType() == Material.AIR) {
+                            if(y == originY - 3) {
+                                upwardsSearch = true;
+                                continue;
+                            } else {
+                                if(upwardsSearch) {
+                                    continue;
+                                } else {
+                                    blockLocation.setY(y-1D);
+                                    break;
+                                }
+                            }
+                        } else {
+                            if(upwardsSearch) {
+                                upwardsSearch = false;
+                                continue;
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+                    if(blockLocation.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && blockLocation.getBlock().getType().isSolid()) {
+                        if(!toDisplay.contains(blockLocation)) {
+                            toDisplay.add(blockLocation);
+                        }
                     }
                     displayOrigin.add(multiplier);
                 }
