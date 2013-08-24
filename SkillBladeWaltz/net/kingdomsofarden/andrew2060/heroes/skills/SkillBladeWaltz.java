@@ -156,7 +156,8 @@ public class SkillBladeWaltz extends ActiveSkill {
 			if (!Skill.damageCheck(h.getPlayer(), (LivingEntity)event.getDamager())) {
 				return;
 			}
-			Skill.damageEntity((LivingEntity)event.getDamager(), h.getPlayer(), event.getDamage() / 2, DamageCause.ENTITY_ATTACK);
+			addSpellTarget(event.getDamager().getEntity(),h);
+			Skill.damageEntity(event.getDamager().getEntity(), h.getPlayer(), event.getDamage() / 2, DamageCause.ENTITY_ATTACK);
 			if ((event.getDamager() instanceof Player))
 				((Player)event.getDamager()).sendMessage(ChatColor.GRAY + "Parried!");
 		}

@@ -77,6 +77,7 @@ public class SkillAgonysEmbrace extends ActiveSkill{
 				if(!Skill.damageCheck(h.getPlayer(),lE)) {
 					continue;
 				}
+				addSpellTarget(lE,h);
 				Skill.damageEntity(lE, h.getEntity(), damage, DamageCause.ENTITY_ATTACK);
 				HeroRegainHealthEvent healthEvent = new HeroRegainHealthEvent(h, healAmount, skill);
 				Bukkit.getPluginManager().callEvent(healthEvent);

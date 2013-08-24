@@ -116,6 +116,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                     continue;
                 }
                 if(Skill.damageCheck(h.getPlayer(), lE)) {
+                    addSpellTarget(lE,h);
                     Skill.damageEntity(lE, h.getPlayer(), lE.getMaxHealth() * 1.5 * multiplier, DamageCause.ENTITY_ATTACK);
                     lE.setVelocity(lE.getLocation().toVector().subtract(hitLoc.toVector()).normalize().multiply(16D).multiply(multiplier));
                     pEMan.addPotionEffectStacking(PotionEffectType.BLINDNESS.createEffect(800, 1), lE, false);

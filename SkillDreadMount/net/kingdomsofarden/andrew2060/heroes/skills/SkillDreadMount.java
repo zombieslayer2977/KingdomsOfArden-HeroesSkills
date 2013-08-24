@@ -75,6 +75,7 @@ public class SkillDreadMount extends ActiveSkill {
                 }
                 LivingEntity lE = (LivingEntity)e;
                 if(Skill.damageCheck(passenger, lE)) {
+                    addSpellTarget(lE,plugin.getCharacterManager().getHero(passenger));
                     Skill.damageEntity(lE, passenger, 5D, DamageCause.ENTITY_ATTACK, false);
                 }
             }
