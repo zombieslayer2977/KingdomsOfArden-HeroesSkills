@@ -83,8 +83,19 @@ public class SkillCamouflage extends PassiveSkill {
 	@Override
 	public void apply(Hero hero) {
 	    final CamouflageEffect effect = new CamouflageEffect(this.plugin, this, getName(), new EffectType[] {});
-        effect.setPersistent(true);
         hero.addEffect(effect);
+	}
+	
+	@Override
+	public void unapply(Hero hero) {
+	    if(hero.hasEffect(getName())) {
+	        hero.removeEffect(hero.getEffect(getName()));
+	    } else {
+	        System.out.println("Someone lost camouflage without having camouflage passive! Showing just in case");
+	        for(Player p : plugin.getServer().getOnlinePlayers()) {
+                p.showPlayer(hero.getPlayer());
+            }
+	    }
 	}
 	
 	private class CamouflageEffect extends Effect {
@@ -104,6 +115,9 @@ public class SkillCamouflage extends PassiveSkill {
         public void removeFromHero(Hero h) {
             if(camoskill.camouflaged.containsKey(h.getPlayer())) {
                 camoskill.camouflaged.remove(h.getPlayer());
+            }
+            for(Player p : plugin.getServer().getOnlinePlayers()) {
+                p.showPlayer(h.getPlayer());
             }
             super.removeFromHero(h);
         }
