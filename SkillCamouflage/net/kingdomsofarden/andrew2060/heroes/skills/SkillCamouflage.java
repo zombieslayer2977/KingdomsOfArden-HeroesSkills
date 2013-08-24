@@ -333,6 +333,7 @@ public class SkillCamouflage extends PassiveSkill {
 			}
 			cT.removeEffect(cT.getEffect("CamouflageDmg"));
 			int bonusdmg = SkillConfigManager.getUseSetting((Hero)cT, skill, "bonuspercent", 50, false);
+			addSpellTarget(event.getEntity(),(Hero)cT);
 			Skill.damageEntity((LivingEntity)event.getEntity(), cT.getEntity(), bonusdmg*0.01*event.getDamage(), DamageCause.CUSTOM);
 			//And we're done!
 		}

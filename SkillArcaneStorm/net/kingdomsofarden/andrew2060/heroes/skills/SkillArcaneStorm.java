@@ -34,8 +34,8 @@ public class SkillArcaneStorm extends ActiveSkill  {
 	}
 
 	@Override
-	public SkillResult use(final Hero h, String[] arg1) {
-		h.addEffect(new RootEffect(this, 5000L) {
+	public SkillResult use(final Hero hero, String[] arg1) {
+		hero.addEffect(new RootEffect(this, 5000L) {
 			@Override
 			public void applyToHero(Hero h) {
 				super.applyToHero(h);
@@ -73,6 +73,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 							if(!Skill.damageCheck(p, (LivingEntity) e)) {
 								continue;
 							}
+							addSpellTarget(e,hero);
 							Skill.damageEntity((LivingEntity)e, p, 100D, DamageCause.MAGIC);
 							p.getWorld().strikeLightningEffect(e.getLocation());
 						}

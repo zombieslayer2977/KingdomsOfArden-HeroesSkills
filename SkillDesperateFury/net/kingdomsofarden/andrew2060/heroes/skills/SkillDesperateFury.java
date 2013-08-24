@@ -59,6 +59,7 @@ public class SkillDesperateFury extends PassiveSkill {
 				if(!Skill.damageCheck(h.getPlayer(), (LivingEntity) ent)) {
 					return;
 				}
+				addSpellTarget(ent,h);
 				Skill.damageEntity((LivingEntity)ent, h.getEntity(), event.getDamage()*0.2, DamageCause.CUSTOM);
 			}
 			event.setDamage(event.getDamage()*0.75);		

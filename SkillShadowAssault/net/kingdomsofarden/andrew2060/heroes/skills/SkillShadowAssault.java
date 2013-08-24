@@ -64,6 +64,7 @@ public class SkillShadowAssault extends ActiveSkill {
 				p.showPlayer(toShow);
 			}
 			if(!h.isInCombat()) {
+			    addSpellTarget(h.getEntity(),h);
 				Skill.damageEntity(h.getEntity(), h.getEntity(), h.getPlayer().getMaxHealth()*0.5, DamageCause.MAGIC);
 				Messaging.send(h.getPlayer(), "The energy used for this assault turns against you as you have not expended it on a target", new Object[0]);
 			}

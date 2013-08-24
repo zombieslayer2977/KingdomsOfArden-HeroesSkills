@@ -142,6 +142,7 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
             } else {
                 dmg = 80;
             }
+            addSpellTarget(lE, h);
             Skill.damageEntity(lE, h.getEntity(), dmg, DamageCause.MAGIC, false);
             ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(40, inPowerLocus ? 2 : 1), lE, false);
         }

@@ -226,6 +226,9 @@ public class SkillRequiem extends PassiveSkill {
 					Skill.damageEntity((LivingEntity)nearby.get(x), h.getEntity(), dmg, DamageCause.ENTITY_ATTACK);
 				}
 				if(finalDamager != null) {
+				    if(plugin.getCharacterManager().getCharacter(finalDamager) instanceof Hero) {
+				        addSpellTarget(h.getEntity(), plugin.getCharacterManager().getHero((Player) finalDamager));
+				    }
 					Skill.damageEntity(h.getEntity(), finalDamager, 50000D, dmgCause);
 				} else {
 					p.setHealth(0);

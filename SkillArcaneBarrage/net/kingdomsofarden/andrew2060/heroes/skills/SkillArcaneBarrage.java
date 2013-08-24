@@ -128,6 +128,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
                 if(cT.hasEffect("ArcaneBarrageCooldown")) {
                     continue;
                 }
+                addSpellTarget(lE,hero);
                 Skill.damageEntity(lE, hero.getPlayer(), 60.00, DamageCause.MAGIC);
                 ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(100, 2), lE, false);
                 cT.addEffect(new ExpirableEffect(this, plugin, "ArcaneBarrageCooldown", 5000));

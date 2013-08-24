@@ -102,6 +102,7 @@ public class SkillPurify extends TargettedSkill {
 			}
 			continue;
 		}
+		addSpellTarget(p,h);
 		this.damageEntity(p, h.getEntity(), h.getLevel()*0.5);
 		return;
 	}

@@ -95,6 +95,7 @@ public class SkillSilverArrows extends ActiveSkill{
 			if(Skill.damageCheck(h.getPlayer(), le)) {
 				double extradmg = (le.getMaxHealth()*0.05);
 				h.getPlayer().sendMessage(ChatColor.GRAY + "Silver Arrows dealt an additional " + extradmg + " damage!");
+				addSpellTarget(le,h);
 				Skill.damageEntity(le, h.getEntity(), extradmg, DamageCause.MAGIC);
 				return;
 			}

@@ -150,6 +150,7 @@ public class SkillArcaneFrost extends ActiveSkill {
                             ((Player)lE).sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] "
                                     + "Rooted by arcane frost!");
                         }
+                        addSpellTarget(lE, hero);
                         Skill.damageEntity(lE, hero.getPlayer(), 50D, DamageCause.MAGIC);
                     }
                 }
