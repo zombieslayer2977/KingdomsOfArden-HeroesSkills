@@ -66,36 +66,19 @@ public class SkillArcaneBarrage extends ActiveSkill{
             return false;
         }
         Vector multiplier = vector.toVector().subtract(origin.toVector()).normalize();
-        double originY = origin.getY();
+        int originY = (int) origin.getY();
        
         for(int i = 0; i < 16; i++) {
             origin.add(multiplier);
-            boolean upwardsSearch = false;
-            for(double y = originY - 3; i <= originY + 3; i++) {
+            for(int y = originY + 3; i >= originY - 3; i--) {
                 origin.setY(y);
                 if(origin.getBlock().getType() == Material.AIR) {
-                    if(y == originY - 3) {
-                        upwardsSearch = true;
-                        continue;
-                    } else {
-                        if(upwardsSearch) {
-                            continue;
-                        } else {
-                            origin.setY(y-1D);
-                            break;
-                        }
-                    }
+                    continue;
                 } else {
-                    if(upwardsSearch) {
-                        upwardsSearch = false;
-                        continue;
-                    } else {
-                        continue;
-                    }
+                    break;
                 }
             }
             new StrikeTask(origin, hero).runTaskLater(plugin, i*5);
-            origin.setY(originY);
         }
         return true;
     }
@@ -142,12 +125,6 @@ public class SkillArcaneBarrage extends ActiveSkill{
             List<Block> los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
             final Location loc = los.get(los.size()-1).getLocation();
             final BarrageData data = skillData.get(h);
-            Bukkit.getScheduler().runTaskLater(plugin, new BukkitRunnable() {   
-                @Override
-                public void run() {
-                    fire(data.getOrigin(), loc, h);
-                }
-            }, 40L);
             fire(data.getOrigin(),loc,h);
             data.cancelTask();
             skillData.remove(h);
@@ -205,34 +182,17 @@ public class SkillArcaneBarrage extends ActiveSkill{
                     }
                     return;
                 }
-                displayEndPoint = displayEndPoint.getWorld().getHighestBlockAt(displayEndPoint).getLocation();
                 Vector multiplier = displayEndPoint.toVector().subtract(displayOrigin.toVector()).setY(0).normalize();
                 List<Location> toDisplay = new LinkedList<Location>();
+                int originY = (int) displayOrigin.getY();
                 for(int i = 0; i < 16; i++) {
                     Location blockLocation = displayOrigin.clone();
-                    double originY = blockLocation.getY();
-                    boolean upwardsSearch = false;
-                    for(double y = originY - 3; i <= originY + 3; i++) {
+                    for(int y = originY + 3; i >= originY - 3; i--) {
                         blockLocation.setY(y);
                         if(blockLocation.getBlock().getType() == Material.AIR) {
-                            if(y == originY - 3) {
-                                upwardsSearch = true;
-                                continue;
-                            } else {
-                                if(upwardsSearch) {
-                                    continue;
-                                } else {
-                                    blockLocation.setY(y-1D);
-                                    break;
-                                }
-                            }
+                            continue;
                         } else {
-                            if(upwardsSearch) {
-                                upwardsSearch = false;
-                                continue;
-                            } else {
-                                continue;
-                            }
+                            break;
                         }
                     }
                     if(blockLocation.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && blockLocation.getBlock().getType().isSolid()) {
