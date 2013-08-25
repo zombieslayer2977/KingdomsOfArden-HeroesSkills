@@ -26,11 +26,16 @@
 	<!--Populate Maven Dependencies -->
 	<artifact:pom id="skillPom" file="pom.xml" />
 	<artifact:dependencies filesetId="mavenDependencies" pomRefId="skillPom" />
+	<copy todir="${dir.maven}">
+	  	<fileset refid="mavenDependencies" />
+	  	<mapper classpathref="maven-ant-tasks.classpath"
+	          classname="org.apache.maven.artifact.ant.VersionMapper"
+	          from="${dependency.versions}" to="flatten" />
+	</copy>
     <taskdef resource="net/sf/antcontrib/antlib.xml" />
-	
     <path id="classpath">
     	<fileset id="priority" dir="${dir.prioritybuild}" />
-    	<fileset id="mavenDependencies" dir="${dir.maven}" />
+    	<fileset id="maven.dependecies" dir="${dir.maven}" />
     </path>
 	
 	
