@@ -59,7 +59,7 @@ public class SkillEqualize extends ActiveSkill {
 			Hero applyHero = applyHealthIterator.next();
 			Player applyP = applyHero.getPlayer();
 			if(skipRangeCheck || applyHero.getPlayer().getLocation().toVector().distanceSquared(v) < range) {
-				applyP.setHealth((int) (applyP.getMaxHealth()*healthMultiplier));
+				applyP.setHealth(applyP.getMaxHealth()*healthMultiplier);
 				if(applyHero.getName() == h.getName()) {
 					h.getPlayer().sendMessage(ChatColor.GRAY + "You used Equalize!");
 				} else {

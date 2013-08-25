@@ -113,7 +113,7 @@ public class SkillSurge extends ActiveSkill{
 					if((p.getHealth()+event.getDamage()*0.2)>p.getMaxHealth()) {
 						p.setHealth(p.getMaxHealth());
 					} else {
-						p.setHealth((int) (p.getHealth()+event.getDamage()*0.2));
+						p.setHealth(p.getHealth()+event.getDamage()*0.2);
 					}
 					h.getPlayer().sendMessage(ChatColor.GRAY + "[Surge]: heal amount doubled!");
 				}

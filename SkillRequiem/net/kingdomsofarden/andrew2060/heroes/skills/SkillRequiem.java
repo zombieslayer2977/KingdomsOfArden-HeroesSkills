@@ -231,7 +231,7 @@ public class SkillRequiem extends PassiveSkill {
 				    }
 					Skill.damageEntity(h.getEntity(), finalDamager, 50000D, dmgCause);
 				} else {
-					p.setHealth(0);
+					p.setHealth(0D);
 					h.syncExperience();
 				}
 			}
