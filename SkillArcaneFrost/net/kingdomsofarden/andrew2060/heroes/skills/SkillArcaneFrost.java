@@ -1,7 +1,5 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
@@ -9,9 +7,7 @@ import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,8 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
@@ -30,41 +24,21 @@ import com.herocraftonline.heroes.characters.skill.SkillType;
 
 public class SkillArcaneFrost extends ActiveSkill {
 
-    private HashMap<Hero,BukkitTask> activeDisplayTasks;
     public SkillArcaneFrost(Heroes plugin) {
         super(plugin, "ArcaneFrost");
         setDescription("Summon a blast of arcane energy to slow everyone in an area for 5 seconds. People still within the radius of the slow after the 5 seconds are rooted in place and dealt 50 magic damage.");
         setUsage("/skill arcanefrost");
         setArgumentRange(0,0);
         setIdentifiers("skill arcanefrost");
-        setTypes(SkillType.SILENCABLE, SkillType.ICE, SkillType.DAMAGING);
-        activeDisplayTasks = new HashMap<Hero,BukkitTask>();
+        setTypes(SkillType.SILENCABLE, SkillType.DAMAGING);
     }
 
     @Override
     public SkillResult use(Hero h, String[] args) {
         if(h.hasEffect("PowerLocusEffect")) {
-            if(activeDisplayTasks.containsKey(h)) {
-                if(!applyEffects(h, true)) {
-                    return SkillResult.INVALID_TARGET_NO_MSG;
-                } else{
-                    activeDisplayTasks.get(h).cancel();
-                    activeDisplayTasks.remove(h);
-                    return SkillResult.NORMAL;
-                }
-            } else {
-                activeDisplayTasks.put(h, new ArcaneFrostTargettingSchedulerTask(h).runTaskTimer(plugin, 0, 20));
-                h.getPlayer().sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] "
-                        + "Activated targetting mode for arcane frost: you have 10 seconds to make a selection"
-                        + "before targetting is cancelled.");
-                return SkillResult.INVALID_TARGET_NO_MSG;
-            }
+            applyEffects(h,true);
         } else {
-            if(activeDisplayTasks.containsKey(h)) {
-                activeDisplayTasks.get(h).cancel();
-                activeDisplayTasks.remove(h);
-            }
-            applyEffects(h, false);
+            applyEffects(h,false);
         }
         return SkillResult.NORMAL;
     }
@@ -81,7 +55,6 @@ public class SkillArcaneFrost extends ActiveSkill {
             loc = h.getPlayer().getLocation();
         }
         Arrow a = loc.getWorld().spawn(loc, Arrow.class);
-        List<Location> affected = calculateAffectedArea(loc, loc.getWorld());
         for(Entity e : a.getNearbyEntities(6, 3, 6)) {
             if(!(e instanceof LivingEntity)) {
                 continue;
@@ -93,12 +66,6 @@ public class SkillArcaneFrost extends ActiveSkill {
             }
         }
         a.remove();
-        for(Player p : plugin.getServer().getOnlinePlayers()) {
-            if(p.getLocation().getWorld() == loc.getWorld() && p.getLocation().distanceSquared(loc) <= 10000) {
-                new ArcaneFrostDisplayTask(p,affected).runTaskLater(plugin, 100);
-            }
-            continue;
-        }
         return true;
     }
 
@@ -160,101 +127,4 @@ public class SkillArcaneFrost extends ActiveSkill {
 
     }
 
-    public class ArcaneFrostTargettingSchedulerTask extends BukkitRunnable {
-
-        private Hero h;
-        private int iterations;
-        public ArcaneFrostTargettingSchedulerTask(Hero h) {
-            this.h = h;
-            this.iterations = 0;
-        }
-        @Override
-        public void run() {
-            if(h.getPlayer().isOnline()) {
-                if(iterations >= 10) {
-                    this.cancel();
-                    if(activeDisplayTasks.containsKey(h)) {
-                        activeDisplayTasks.remove(h);
-                        h.getPlayer().sendMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] "
-                                + "Targetting Mode for Arcane Frost Expired.");
-                    }
-                } else {
-                    new ArcaneFrostTargettingDisplayTask(this.h).runTaskLater(plugin, 19L);
-                    iterations++;
-                    return;
-                }
-            } else {
-                this.cancel();
-                if(activeDisplayTasks.containsKey(h)) {
-                    activeDisplayTasks.remove(h);
-                }
-            }
-        }
-
-    }
-    public class ArcaneFrostTargettingDisplayTask extends BukkitRunnable {
-        private Hero h;
-        private World world;
-        private boolean outOfRange;
-        private List<Location> display;
-        public ArcaneFrostTargettingDisplayTask(Hero user) {
-            outOfRange = false;
-            h = user;
-            List<Block> los = h.getPlayer().getLastTwoTargetBlocks(null, 100);
-            Location center = los.get(los.size()-1).getLocation();
-            if(los.get(los.size()-1).getType() == Material.AIR) {
-                this.outOfRange = true;
-                return;
-            }
-            world = center.getWorld();
-            display = calculateAffectedArea(center, world);
-            Player p = h.getPlayer();
-            for(Location loc : display) {
-                p.sendBlockChange(loc, Material.GLOWSTONE, (byte)0);
-            }
-        }
-
-        @Override
-        public void run() {
-            if(outOfRange) {
-                return;
-            }
-            Player p = h.getPlayer();
-            if(p.isOnline()) {
-                for(Location loc : display) {
-                    p.sendBlockChange(loc, world.getBlockAt(loc).getType(), world.getBlockAt(loc).getData());
-                }
-            }
-        }
-
-    }
-    public List<Location> calculateAffectedArea(Location center, World world) {
-        List<Location> locations = new LinkedList<Location>();
-        int upperLeftX = (int) (center.getBlockX()-6D);
-        int upperLeftZ = (int) (center.getBlockZ()-6D);
-        int lowerRightX = (int) (center.getBlockX()+6D);
-        int lowerRightZ = (int) (center.getBlockZ()+6D);
-        int lowerY = (int) (center.getBlockY()-3D);
-        int upperY = (int) (center.getBlockY()+3D); 
-        for(double x = upperLeftX; x <= lowerRightX; x++) {
-            for(double z = upperLeftZ; x <= lowerRightZ; z++) {
-                Location constructLoc = new Location(world,x,lowerY,z);
-                for(int y = upperY; y >= lowerY; y--) {
-                    constructLoc.setY(y);
-                    if(constructLoc.getBlock().getType() == Material.AIR) {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
-                if(constructLoc.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && constructLoc.getBlock().getType().isSolid()) {
-                    locations.add(constructLoc);
-                    continue;
-                } else {
-                    continue;
-                }
-            }
-        }
-        return locations;
-    }
 }
