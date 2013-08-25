@@ -20,18 +20,7 @@
 	<property name="unsupportedSkills" value="SkillCauldron" />
 	<property name="dir.maven" value="maven" />
 	
-	<!--Create Maven Dependencies Storage Folder-->
-	<mkdir dir="${dir.maven}" />
 	
-	<!--Populate Maven Dependencies -->
-	<artifact:pom id="skillPom" file="pom.xml" />
-	<artifact:dependencies filesetId="mavenDependencies" pomRefId="skillPom" />
-	<copy todir="${dir.maven}">
-	  	<fileset refid="mavenDependencies" />
-	  	<mapper classpathref="maven-ant-tasks.classpath"
-	          classname="org.apache.maven.artifact.ant.VersionMapper"
-	          from="${dependency.versions}" to="flatten" />
-	</copy>
     <taskdef resource="net/sf/antcontrib/antlib.xml" />
     <path id="classpath">
     	<fileset id="priority" dir="${dir.prioritybuild}" />
@@ -41,8 +30,18 @@
 	
 	
 	<target name="build">
-	    <mkdir dir="${dir.dist}" /> <!-- Clean up Maven -->
-		<delete dir="${dir.dist}" />
+		<!--Create Maven Dependencies Storage Folder-->
+		<mkdir dir="${dir.maven}" />
+		
+		<!--Populate Maven Dependencies -->
+		<artifact:pom id="skillPom" file="pom.xml" />
+		<artifact:dependencies filesetId="mavenDependencies" pomRefId="skillPom" />
+		<copy todir="${dir.maven}">
+		  	<fileset refid="mavenDependencies" />
+		  	<mapper classpathref="maven-ant-tasks.classpath"
+		          classname="org.apache.maven.artifact.ant.VersionMapper"
+		          from="${dependency.versions}" to="flatten" />
+		</copy>
 	    <mkdir dir="${dir.dist}" />
         <mkdir dir="${dir.dist}/${dir.dist.skills}" />
         <mkdir dir="${dir.bin}" />
@@ -58,6 +57,7 @@
 		<delete dir="${dir.prioritybuild}" />
 		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .* /bin/**/*.class" />
 		<delete dir="${dir.dist}" includes="**/*.jar" excludes="**/*.zip" />
+		<delete dir="${dir.maven}" />
 	</target>
 	<target name="build-priority-skills">
 		<foreach target="compile-dirs-priority" param="dir.name">
