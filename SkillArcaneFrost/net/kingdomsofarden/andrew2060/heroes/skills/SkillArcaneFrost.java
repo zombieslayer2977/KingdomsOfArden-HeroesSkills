@@ -234,33 +234,17 @@ public class SkillArcaneFrost extends ActiveSkill {
         double upperLeftZ = center.getBlockZ()-6D;
         double lowerRightX = center.getBlockX()+6D;
         double lowerRightZ = center.getBlockZ()+6D;
-        double lowerY = center.getBlockY()-3D;
-        double upperY = center.getBlockY()+3D; 
+        int lowerY = (int) (center.getBlockY()-3D);
+        int upperY = (int) (center.getBlockY()+3D); 
         for(double x = upperLeftX; x <= lowerRightX; x++) {
             for(double z = upperLeftZ; x <= lowerRightZ; z++) {
                 Location constructLoc = new Location(world,x,lowerY,z);
-                boolean upwardsSearch = false;
-                for(double y = lowerY; y <= upperY; y++) {
+                for(int y = upperY; y >= lowerY; y--) {
                     constructLoc.setY(y);
                     if(constructLoc.getBlock().getType() == Material.AIR) {
-                        if(y == lowerY) {
-                            upwardsSearch = true;
-                            continue;
-                        } else {
-                            if(upwardsSearch) {
-                                continue;
-                            } else {
-                                constructLoc.setY(y-1D);
-                                break;
-                            }
-                        }
+                        continue;
                     } else {
-                        if(upwardsSearch) {
-                            upwardsSearch = false;
-                            continue;
-                        } else {
-                            continue;
-                        }
+                        break;
                     }
                 }
                 if(constructLoc.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && constructLoc.getBlock().getType().isSolid()) {
