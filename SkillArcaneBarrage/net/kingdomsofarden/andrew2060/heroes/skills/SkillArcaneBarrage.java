@@ -200,21 +200,11 @@ public class SkillArcaneBarrage extends ActiveSkill{
         int originY = (int) origin.getY();
         for(int i = 0; i < 16; i++) {
             Location blockLocation = origin.clone();
-            for(int y = originY + 3; y >= originY - 3; y--) {
-                blockLocation.setY(y);
+            for(int downwardsY = originY + 3; downwardsY >= originY - 3; downwardsY--) {
+                blockLocation.setY(downwardsY);
                 if(blockLocation.getBlock().getType() == Material.AIR) {
                     continue;
                 } else {
-                    if(blockLocation.getY() == originY) {
-                        for(int upwardsY = originY; upwardsY <= originY + 3; y++) {
-                            blockLocation.setY(upwardsY); 
-                            if(blockLocation.getBlock().getType() != Material.AIR) {
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
                     break;
                 }
             }
