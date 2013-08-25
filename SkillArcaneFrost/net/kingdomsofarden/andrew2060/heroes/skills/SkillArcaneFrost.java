@@ -230,10 +230,10 @@ public class SkillArcaneFrost extends ActiveSkill {
     }
     public List<Location> calculateAffectedArea(Location center, World world) {
         List<Location> locations = new LinkedList<Location>();
-        double upperLeftX = center.getBlockX()-6D;
-        double upperLeftZ = center.getBlockZ()-6D;
-        double lowerRightX = center.getBlockX()+6D;
-        double lowerRightZ = center.getBlockZ()+6D;
+        int upperLeftX = (int) (center.getBlockX()-6D);
+        int upperLeftZ = (int) (center.getBlockZ()-6D);
+        int lowerRightX = (int) (center.getBlockX()+6D);
+        int lowerRightZ = (int) (center.getBlockZ()+6D);
         int lowerY = (int) (center.getBlockY()-3D);
         int upperY = (int) (center.getBlockY()+3D); 
         for(double x = upperLeftX; x <= lowerRightX; x++) {
