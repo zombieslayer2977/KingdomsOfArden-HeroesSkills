@@ -67,20 +67,19 @@ public class SkillArcaneBarrage extends ActiveSkill{
         }
         final List<Location> targets = getAffectedLocations(origin,vector,false);
         for(int i = 0; i < targets.size(); i++) {
-            Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+            final int runtime = i;
+            Bukkit.getScheduler().runTaskLater(plugin, new BukkitRunnable() {
 
                 @Override
                 public void run() {
-                    if(targets.isEmpty()) {
-                        cancel();
-                    } else {
-                        Location loc = targets.remove(0);
-                        loc.getWorld().strikeLightningEffect(loc);
-                        applyDamage(loc,hero);
-                    }
+                    Location loc = targets.get(runtime);
+                    loc.getWorld().strikeLightningEffect(loc);
+                    applyDamage(loc,hero);
                 }
+
                 
-            }, 0, 5);
+                
+            }, 10*i);
         }
         return true;
     }
