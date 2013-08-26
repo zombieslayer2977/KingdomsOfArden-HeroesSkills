@@ -21,7 +21,11 @@
 	<property name="dir.maven" value="maven" />
 	
 	
-    <taskdef resource="net/sf/antcontrib/antlib.xml" />
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+      <classpath>
+        <pathelement location="/ant/ant-contrib-1.0b3.jar"/>
+      </classpath>
+    </taskdef>
     <path id="classpath">
     	<fileset id="priority" dir="${dir.prioritybuild}" />
     	<fileset id="maven.dependecies" dir="${dir.maven}" />
