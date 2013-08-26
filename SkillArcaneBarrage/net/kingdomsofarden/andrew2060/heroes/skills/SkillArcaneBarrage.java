@@ -195,9 +195,9 @@ public class SkillArcaneBarrage extends ActiveSkill{
         return getDescription();
     }
     private List<Location> getAffectedLocations(Location origin, Location vector, boolean validBlockCheck) {
-        Vector multiplier = vector.toVector().subtract(origin.toVector()).setY(0).normalize();
+        Vector multiplier = vector.toVector().subtract(origin.toVector()).setY(0.00).normalize();
         List<Location> toDisplay = new LinkedList<Location>();
-        int originY = (int) origin.getY();
+        int originY = origin.getBlockY();
         for(int i = 0; i < 16; i++) {
             Location blockLocation = origin.clone();
             for(int downwardsY = originY + 3; downwardsY >= originY - 3; downwardsY--) {
