@@ -61,32 +61,28 @@ public class SkillArcaneBarrage extends ActiveSkill{
             guiTask.cancel();
         }
     }
-    private boolean fire(Location origin, Location vector, Hero hero) {
+    private boolean fire(final Location origin, final Location vector, final Hero hero) {
         if(!origin.getWorld().equals(vector.getWorld())) {
             return false;
         }
-       
-        for(int i = 0; i < 16; i++) {
-            for(Location loc: getAffectedLocations(origin,vector, false)) {
-                new StrikeTask(loc, hero).runTaskLater(plugin, i*5);
-            }
+        final List<Location> targets = getAffectedLocations(origin,vector,false);
+        for(int i = 0; i < targets.size(); i++) {
+            Bukkit.getScheduler().runTaskTimer(plugin, new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    if(targets.isEmpty()) {
+                        cancel();
+                    } else {
+                        Location loc = targets.remove(0);
+                        loc.getWorld().strikeLightningEffect(loc);
+                        applyDamage(loc,hero);
+                    }
+                }
+                
+            }, 0, 5);
         }
         return true;
-    }
-    private class StrikeTask extends BukkitRunnable {
-        private Location hitLoc;
-        private Hero hero;
-
-        public StrikeTask(Location loc, Hero h) {
-            this.hitLoc = loc;
-            this.hero = h;
-        }
-
-        @Override
-        public void run() {
-            hitLoc.getWorld().strikeLightningEffect(hitLoc);
-            applyDamage(hitLoc, hero);
-        }
     }
     private void applyDamage(Location origin, Hero hero) {
         Arrow a = origin.getWorld().spawn(origin, Arrow.class);
@@ -197,11 +193,11 @@ public class SkillArcaneBarrage extends ActiveSkill{
     private List<Location> getAffectedLocations(Location origin, Location vector, boolean validBlockCheck) {
         Vector multiplier = vector.toVector().subtract(origin.toVector()).setY(0.00).normalize();
         List<Location> toDisplay = new LinkedList<Location>();
-        int originY = origin.getBlockY();
+        int originY = origin.getBlockY()+3;
         for(int i = 0; i < 16; i++) {
             Location blockLocation = origin.clone();
-            for(int downwardsY = originY + 3; downwardsY >= originY - 3; downwardsY--) {
-                blockLocation.setY(downwardsY);
+            for(int y = originY; y >= originY - 6; y--) {
+                blockLocation.setY(y);
                 if(blockLocation.getBlock().getType() == Material.AIR) {
                     continue;
                 } else {
@@ -209,8 +205,8 @@ public class SkillArcaneBarrage extends ActiveSkill{
                 }
             }
             if(!validBlockCheck ||(blockLocation.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR && blockLocation.getBlock().getType().isSolid())) {
-                if(!toDisplay.contains(blockLocation)) {
-                    toDisplay.add(blockLocation);
+                if(!toDisplay.contains(blockLocation.getBlock().getLocation())) {
+                    toDisplay.add(blockLocation.getBlock().getLocation());
                 }
             }
             origin.add(multiplier);
