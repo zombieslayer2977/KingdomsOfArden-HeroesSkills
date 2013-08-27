@@ -3,12 +3,20 @@
         Heroes Skills Ant File Compiler
     </description>
 	
+	<!-- Define ant plugins used by this build --> 
 	<path id="maven-ant-tasks.classpath" path="ant/maven-ant-tasks-2.1.3.jar" />
     <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
 	       uri="antlib:org.apache.maven.artifact.ant"
 	       classpathref="maven-ant-tasks.classpath" />
 	
-    <!-- set global properties for this build -->
+	<path id="ant-contrib.classpath" path="ant/ant-contrib-1.0b3.jar" />
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="ant/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+	
+    <!-- Set global properties for this build -->
     <property environment="env"/>
     <property name="build.compiler" value="extJavac" />
     <property name="dir.bin" value="temp" />
@@ -20,20 +28,13 @@
 	<property name="unsupportedSkills" value="SkillCauldron" />
 	<property name="dir.maven" value="maven" />
 	
-	
-    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-      <classpath>
-        <pathelement location="/ant/ant-contrib-1.0b3.jar"/>
-      </classpath>
-    </taskdef>
     <path id="classpath">
     	<fileset id="priority" dir="${dir.prioritybuild}" />
     	<fileset id="maven.dependecies" dir="${dir.maven}" />
     	<fileset id="factions" dir="lib" />
     </path>
 	
-	
-	
+	<!-- Commence Build -->
 	<target name="build">
 		<!--Create Maven Dependencies Storage Folder-->
 		<mkdir dir="${dir.maven}" />
@@ -47,23 +48,28 @@
 		          classname="org.apache.maven.artifact.ant.VersionMapper"
 		          from="${dependency.versions}" to="flatten" />
 		</copy>
+		
+		<!-- Create directories required for build -->
 	    <mkdir dir="${dir.dist}" />
         <mkdir dir="${dir.dist}/${dir.dist.skills}" />
         <mkdir dir="${dir.bin}" />
   	    <mkdir dir="${dir.bin}/${dir.dist.skills}" />
 		<mkdir dir="${dir.prioritybuild}" />
-		<antcall target="build-priority-skills" />
-		<antcall target="build-main-skills" />
+		<antcall target="build-priority-skills" /> <!-- Build skills that are extended/depended on by other skills -->
+		<antcall target="build-main-skills" /> <!-- Build main skills -->
 		<copy todir="${dir.dist}" >  
 		    <fileset dir="${dir.prioritybuild}" includes="**"/>  
 		</copy>
 		<antcall target="zip" />
+		
+		<!-- Cleanup -->
 		<delete dir="${dir.bin}" />
 		<delete dir="${dir.prioritybuild}" />
 		<delete dir="${basedir}" includes="**/*.class" excludes="**/*.java **/*.xml **/*.jar .* /bin/**/*.class" />
 		<delete dir="${dir.dist}" includes="**/*.jar" excludes="**/*.zip" />
 		<delete dir="${dir.maven}" />
 	</target>
+	
 	<target name="build-priority-skills">
 		<foreach target="compile-dirs-priority" param="dir.name">
 			<path>
@@ -71,6 +77,7 @@
 			</path>
 		</foreach>
 	</target>
+	
 	<target name="build-main-skills">
 		<foreach target="compile-dirs" param="dir.name">
 			<path>
@@ -78,12 +85,14 @@
 			</path>
 		</foreach>
 	</target>
+	
 	<target name = "compile-dirs">
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
 		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7"/>
 		<antcall target="jar-skilldir" />
 	</target>
+	
 	<target name="jar-skilldir">
 	    <foreach target="jar-files" param="files">
 	    	<fileset dir="${dir.bin}/${skillBuildDir}/${dir.bin.skills}" includes="**/Skill*.class" excludes="Skill*$*.class" />
@@ -100,19 +109,21 @@
             </manifest>
         </jar>
     </target>
+	
 	<target name = "compile-dirs-priority">
 		<basename file="${dir.name}" property="skillBuildDir" />
 		<mkdir dir="${dir.bin}/${skillBuildDir}" />
 		<javac srcdir="${dir.name}" debug = "on" destdir="${dir.bin}/${skillBuildDir}" classpathref="classpath" includeantruntime="true" target="1.7" source="1.7"/>
 		<antcall target="jar-skilldir-priority" />
 	</target>
+	
 	<target name="jar-skilldir-priority">
 	    <foreach target="jar-files-priority" param="files">
 	    	<fileset dir="${dir.bin}/${skillBuildDir}/${dir.bin.skills}" includes="**/Skill*.class" excludes="Skill*$*.class" />
 	    </foreach>
 	    <delete file="${dir.bin}/${dir.bin.skills}/skill.info" />
-		
 	</target>
+	
 	<target name="jar-files-priority">
         <basename file="${files}" suffix=".class" property="basename" />
         <echo file="${dir.bin}/${basename}/skill.info" message="main-class: net.kingdomsofarden.andrew2060.heroes.skills.${basename}" />
@@ -122,9 +133,10 @@
             </manifest>
         </jar>
     </target>
+	
 	<target name="zip">
 		<zip destfile="${dir.dist}/KingdomsOfArden-HeroesSkills.zip">
 		    <fileset dir="${dir.dist}" includes="**/*.jar"/>
 		</zip>
-   </target>
+    </target>
 </project>
