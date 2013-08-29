@@ -1,5 +1,7 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -35,7 +37,8 @@ public class SkillSiphoningStrike extends ActiveSkill{
 
 	@Override
 	public String getDescription(Hero h) {
-		return getDescription().replace("$1", h.getLevel()+"");
+	    DecimalFormat dF = new DecimalFormat("##.##");
+		return getDescription().replace("$1", dF.format(h.getLevel()/5.0 + 25) +"");
 	}
 	public class SiphoningEffect extends Effect {
 
@@ -70,7 +73,7 @@ public class SkillSiphoningStrike extends ActiveSkill{
 			double cur = p.getHealth();
 			double dmg = event.getDamage();
 			int level = h.getLevel();
-			double healthregain = (dmg*level*0.01);
+			double healthregain = (dmg*(level/5.0D + 25)*0.01);
 			
 			//TODO: Change to use HeroRegainHealthEvent
 
