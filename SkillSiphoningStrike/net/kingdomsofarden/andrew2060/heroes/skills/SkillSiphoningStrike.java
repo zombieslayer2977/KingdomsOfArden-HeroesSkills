@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.HeroRegainHealthEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.Effect;
@@ -52,8 +53,10 @@ public class SkillSiphoningStrike extends ActiveSkill{
 	public class SkillListener implements Listener {
 		
 		Skill skill;
+        DecimalFormat dF;
 		public SkillListener(Skill skill) {
 			this.skill = skill;
+			this.dF =  new DecimalFormat("##.##");
 		}
 		@EventHandler(priority=EventPriority.MONITOR)
 		public void onWeaponDamage(WeaponDamageEvent event) {
@@ -69,22 +72,21 @@ public class SkillSiphoningStrike extends ActiveSkill{
 			}
 			h.removeEffect(h.getEffect("SiphoningEffect"));
 			Player p = h.getPlayer();
-			double max = p.getMaxHealth();
 			double cur = p.getHealth();
 			double dmg = event.getDamage();
 			int level = h.getLevel();
 			double healthregain = (dmg*(level/5.0D + 25)*0.01);
 			
-			//TODO: Change to use HeroRegainHealthEvent
-
-			h.getPlayer().sendMessage(ChatColor.GRAY + "Siphoned " + ChatColor.GREEN + healthregain + ChatColor.GRAY + " health!");
-			
-			if(cur+healthregain > max) {
-				p.setHealth(p.getMaxHealth());
-				return;
+			HeroRegainHealthEvent hEvent = new HeroRegainHealthEvent(h, healthregain, skill);
+			Bukkit.getPluginManager().callEvent(hEvent);
+			if(!hEvent.isCancelled()) {
+		         h.getPlayer().sendMessage(ChatColor.GRAY + "Siphoned " + ChatColor.GREEN + dF.format(healthregain) + ChatColor.GRAY + " health!");
+		         double newHealth = cur + hEvent.getAmount();
+		         p.setHealth(newHealth > p.getMaxHealth() ? p.getMaxHealth() : newHealth);
 			}
-			p.setHealth(cur+healthregain);
+			
 			return;
+			
 		}
 		
 		
