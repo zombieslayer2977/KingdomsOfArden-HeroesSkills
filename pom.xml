@@ -18,7 +18,7 @@
 		</repository>
 		<repository>
 			<id>koa-repo</id>
-			<url>http://ci.kingdomsofarden.net/plugin/repository/everything/</url>
+			<url>http://ci.kingdomsofarden.net/nexus/content/repositories/dev/</url>
 		</repository>
 	</repositories>
 	<url>www.kingdomsofarden.net</url>
