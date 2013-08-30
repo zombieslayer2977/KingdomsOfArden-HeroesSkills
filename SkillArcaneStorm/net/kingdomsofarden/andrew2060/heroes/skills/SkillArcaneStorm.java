@@ -9,6 +9,8 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,13 +37,20 @@ public class SkillArcaneStorm extends ActiveSkill  {
 
 	@Override
 	public SkillResult use(final Hero hero, String[] arg1) {
+	    final Location targetLoc;
+	    if(hero.hasEffect("PowerLocusEffect")) {
+	        List<Block> los = hero.getPlayer().getLastTwoTargetBlocks(null, 100);
+            targetLoc = los.get(los.size()-1).getLocation();
+	    } else {
+	        targetLoc = hero.getPlayer().getLocation();
+	    }
 		hero.addEffect(new RootEffect(this, 5000L) {
 			@Override
 			public void applyToHero(Hero h) {
 				super.applyToHero(h);
 			    final Player p = h.getPlayer();
 			    broadcast(h.getEntity().getLocation(), "§7[§2Skill§7] $1 has begun channeling an arcane storm!", new Object[] {h.getPlayer().getName()});
-			    List<Location> fireworkLocations = circle(h.getPlayer().getLocation(),10,1,false,false,15);
+			    List<Location> fireworkLocations = circle(targetLoc,10,1,false,false,15);
 			    long ticksPerFirework = (int) (100.00/((double)fireworkLocations.size()));
 			    final VisualEffect fireworkUtil = new VisualEffect();
 			    for(int i = 0; i < fireworkLocations.size(); i++) {
@@ -64,7 +73,8 @@ public class SkillArcaneStorm extends ActiveSkill  {
 
 					@Override
 					public void run() {
-						Iterator<Entity> nearby = p.getNearbyEntities(16, 5, 16).iterator();
+					    Arrow a = targetLoc.getWorld().spawn(targetLoc, Arrow.class);
+						Iterator<Entity> nearby = a.getNearbyEntities(16, 5, 16).iterator();
 						while(nearby.hasNext()) {
 							Entity e = nearby.next();
 							if(!(e instanceof LivingEntity)) {
@@ -77,6 +87,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 							Skill.damageEntity((LivingEntity)e, p, 100D, DamageCause.MAGIC);
 							p.getWorld().strikeLightningEffect(e.getLocation());
 						}
+						a.remove();
 					}
 		    		
 		    	}, 100);
