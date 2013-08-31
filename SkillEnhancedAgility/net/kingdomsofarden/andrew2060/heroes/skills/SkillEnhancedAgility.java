@@ -23,10 +23,7 @@ public class SkillEnhancedAgility extends ActiveSkill {
 
     @Override
     public SkillResult use(Hero hero, String[] args) {
-        ArrayList<PotionEffect> toApply = new ArrayList<PotionEffect>(2);
-        toApply.add(0, PotionEffectType.JUMP.createEffect((int) (hero.getLevel()*0.5*20), 2));
-        toApply.add(1, PotionEffectType.SPEED.createEffect((int) (hero.getLevel()*0.5*20), 1));
-        ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(toApply, hero.getEntity(), false);
+        ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.JUMP.createEffect((int) (hero.getLevel()*0.5*20), 2), hero.getEntity(), false);
         return SkillResult.NORMAL;
     }
 
