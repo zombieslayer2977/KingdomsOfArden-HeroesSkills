@@ -109,7 +109,7 @@ public class SkillArcaneFrost extends ActiveSkill {
             }
             Vector v = monster.getEntity().getLocation().toVector().subtract(center.toVector());
             v.setY(0);
-            if(v.lengthSquared() >= 36) {
+            if(v.lengthSquared() >= 100) {
                 monster.removeEffect(this);
             } else {
                 ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(20, iterations), monster.getEntity(), false);
@@ -135,7 +135,7 @@ public class SkillArcaneFrost extends ActiveSkill {
             }
             Vector v = hero.getPlayer().getLocation().toVector().subtract(center.toVector());
             v.setY(0);
-            if(v.lengthSquared() >= 36) {
+            if(v.lengthSquared() >= 100) {
                 hero.removeEffect(this);
             } else {
                 ToolHandlerPlugin.instance.getPotionEffectHandler().addPotionEffectStacking(PotionEffectType.SLOW.createEffect(20, iterations), hero.getEntity(), false);
