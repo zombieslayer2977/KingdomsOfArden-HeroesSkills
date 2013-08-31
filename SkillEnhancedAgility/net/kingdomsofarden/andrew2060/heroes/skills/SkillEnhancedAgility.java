@@ -1,9 +1,6 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
@@ -17,7 +14,7 @@ public class SkillEnhancedAgility extends ActiveSkill {
 
     public SkillEnhancedAgility(Heroes plugin) {
         super(plugin, "EnhancedAgility");
-        setDescription("Magically enhances the user's agility, boosting jump height by 40% and speed by 20% for $1 seconds.");
+        setDescription("Magically enhances the user's agility, boosting jump height by 40% for $1 seconds.");
         setIdentifiers("skill enhancedagility");
     }
 
