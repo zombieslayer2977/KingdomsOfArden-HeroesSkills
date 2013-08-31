@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="SkillAgonysEmbrace"/>
 	<classpathentry kind="src" path="SkillArcaneBarrage"/>
 	<classpathentry kind="src" path="SkillArcaneFrost"/>
+	<classpathentry kind="src" path="SkillArcaneMultibolt"/>
 	<classpathentry kind="src" path="SkillArcaneStorm"/>
 	<classpathentry kind="src" path="SkillArcanoBlast"/>
 	<classpathentry kind="src" path="SkillAura"/>
