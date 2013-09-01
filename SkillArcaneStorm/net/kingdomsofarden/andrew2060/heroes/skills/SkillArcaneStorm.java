@@ -22,6 +22,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.common.RootEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
+import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.VisualEffect;
 
 public class SkillArcaneStorm extends ActiveSkill  {
@@ -33,6 +34,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 		setArgumentRange(0,0);
 		setDescription("On use, user is rooted into place for 5 seconds. " +
 				"After the 5 seconds, the user unleashes a devastating magical storm in the surrounding area");
+		setTypes(SkillType.DAMAGING, SkillType.SILENCABLE, SkillType.HARMFUL, SkillType.LIGHTNING);
 	}
 
 	@Override

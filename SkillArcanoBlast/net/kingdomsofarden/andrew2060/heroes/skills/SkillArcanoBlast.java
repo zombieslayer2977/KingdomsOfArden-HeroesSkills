@@ -32,6 +32,7 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
+import com.herocraftonline.heroes.characters.skill.SkillType;
 
 public class SkillArcanoBlast extends ActiveSkill implements Listener {
     private ConcurrentHashMap<WitherSkull,Long> trackedSkulls;
@@ -40,6 +41,7 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         setDescription("Normal Use: Fires a withering projectile in a straight line on use. In Power Locus: Calls down magical artillery that strikes target location after 1 second");
         setIdentifiers("skill arcanoblast");
         setUsage("/skill arcanoblast");
+        setTypes(SkillType.DAMAGING, SkillType.SILENCABLE, SkillType.HARMFUL);
         this.trackedSkulls = new ConcurrentHashMap<WitherSkull,Long>();
         //Auto-Despawn skulls after 30 seconds
         Bukkit.getScheduler().runTaskTimer(plugin, new Runnable(){

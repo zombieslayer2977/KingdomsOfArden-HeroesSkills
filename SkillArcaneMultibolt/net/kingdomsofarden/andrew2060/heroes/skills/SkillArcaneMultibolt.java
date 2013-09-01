@@ -33,7 +33,7 @@ public class SkillArcaneMultibolt extends TargettedSkill {
                 + "dealing $4% damage on bounce. "
                 + "Every successive hit will decrease the caster's cooldown of this skill by $5 seconds.");
         setIdentifiers("skill arcanemultibolt");
-        
+        this.setTypes(SkillType.DAMAGING, SkillType.LIGHTNING, SkillType.SILENCABLE);
     }
     @Override
     public SkillResult use(Hero hero, String[] args) {

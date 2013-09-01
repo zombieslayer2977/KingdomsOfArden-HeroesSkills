@@ -29,6 +29,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
+import com.herocraftonline.heroes.characters.skill.SkillType;
 
 public class SkillArcaneBarrage extends ActiveSkill{
 
@@ -42,6 +43,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
                 + "While outside of power locus, user can define direction with start point being the user's location. "
                 + "Artillery strikes also apply a 40% 5 second slow.");
         this.skillData = new ConcurrentHashMap<Hero,BarrageData>();
+        this.setTypes(SkillType.DAMAGING, SkillType.HARMFUL, SkillType.LIGHTNING, SkillType.SILENCABLE);
     }
     private class BarrageData {
         private Location origin;

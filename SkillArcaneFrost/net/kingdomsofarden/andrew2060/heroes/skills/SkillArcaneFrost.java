@@ -35,7 +35,7 @@ public class SkillArcaneFrost extends ActiveSkill {
         setUsage("/skill arcanefrost");
         setArgumentRange(0,0);
         setIdentifiers("skill arcanefrost");
-        setTypes(SkillType.SILENCABLE, SkillType.DAMAGING);
+        setTypes(SkillType.SILENCABLE, SkillType.DAMAGING, SkillType.HARMFUL, SkillType.ICE);
     }
 
     @Override
