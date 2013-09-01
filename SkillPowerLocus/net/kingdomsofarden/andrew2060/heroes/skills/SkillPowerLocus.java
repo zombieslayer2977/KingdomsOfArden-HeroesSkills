@@ -4,13 +4,16 @@ import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
 import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillCompleteEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
@@ -43,6 +46,16 @@ public class SkillPowerLocus extends ActiveSkill {
             }
             long cd = h.getCooldown(event.getSkill().getName()) - System.currentTimeMillis();
             h.setCooldown(event.getSkill().getName(), (long) (System.currentTimeMillis() + cd*0.5));
+		}
+		
+		@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST) 
+		public void onCharacterDamage(CharacterDamageEvent event) {
+		    if(event.getEntity() instanceof LivingEntity) {
+		          if(event.getCause() == DamageCause.FALL && plugin.getCharacterManager().getCharacter((LivingEntity) event.getEntity()).hasEffect("PowerLocusEffect")) {
+		              event.setCancelled(true);
+		          }
+
+		    }
 		}
 		
 	}
