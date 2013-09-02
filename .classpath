@@ -49,6 +49,7 @@
 	<classpathentry kind="src" path="SkillRepair"/>
 	<classpathentry kind="src" path="SkillRequiem"/>
 	<classpathentry kind="src" path="SkillRiftWalk"/>
+	<classpathentry kind="src" path="SkillRighteousFury"/>
 	<classpathentry kind="src" path="SkillRisingSpellForce"/>
 	<classpathentry kind="src" path="SkillSalvage"/>
 	<classpathentry kind="src" path="SkillSapShot"/>
