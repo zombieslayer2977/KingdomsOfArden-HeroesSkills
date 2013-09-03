@@ -22,6 +22,7 @@
 	<classpathentry kind="src" path="SkillDeathMark"/>
 	<classpathentry kind="src" path="SkillDesperateFury"/>
 	<classpathentry kind="src" path="SkillDisenchant"/>
+	<classpathentry kind="src" path="SkillDivineReckoning"/>
 	<classpathentry kind="src" path="SkillDreadMount"/>
 	<classpathentry kind="src" path="SkillEarthenArmor"/>
 	<classpathentry kind="src" path="SkillEarthquake"/>
