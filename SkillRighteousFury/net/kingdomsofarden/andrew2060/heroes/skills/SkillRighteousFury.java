@@ -29,7 +29,7 @@ public class SkillRighteousFury extends PassiveSkill implements Listener {
         long seconds = SkillConfigManager.getUseSetting(hero, this, "tickSeconds", 5000, false);
         double damagePerTickSecond = SkillConfigManager.getUseSetting(hero, this, "damagePerTickSecond", Double.valueOf(1), false);
         double maxDamageAdd = SkillConfigManager.getUseSetting(hero, this, "maxDamageAdd", 10, false);
-        return getDescription().replace("$1", seconds != 1000L ? dF.format(seconds/1000) + "seconds": "1 second")
+        return getDescription().replace("$1", seconds != 1000L ? dF.format(seconds/1000) + " seconds": "1 second")
                 .replace("$2", dF.format(damagePerTickSecond))
                 .replace("$3", dF.format(maxDamageAdd));
     }
