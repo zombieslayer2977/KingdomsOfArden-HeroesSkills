@@ -148,7 +148,7 @@ public class SkillArcaneMultibolt extends TargettedSkill {
         long cdr = (long) (SkillConfigManager.getUseSetting(hero, this, "bounceCooldownReduction", 1000, false) * 0.001);
         CharacterTemplate cT = plugin.getCharacterManager().getCharacter(target);
         cT.addEffect(new MultiboltEffect(this,plugin,bounceTime,damage,hero,damageReductionPercent,bounceRadius,cdr));
-        broadcast(hero.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] " + hero.getName() + "used ArcaneMultibolt!");
+        broadcast(hero.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] " + hero.getName() + " used ArcaneMultibolt!");
         return SkillResult.NORMAL;
     }
 
