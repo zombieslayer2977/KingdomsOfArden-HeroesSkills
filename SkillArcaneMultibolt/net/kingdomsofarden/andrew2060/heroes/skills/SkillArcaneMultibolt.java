@@ -175,9 +175,11 @@ public class SkillArcaneMultibolt extends TargettedSkill {
         private int bounceRadius;
         private long cdr;
         private long bounceTime;
-
         public MultiboltEffect(Skill skill, Heroes plugin, long duration, double damage, Hero caster, double bouncePercent, int bounceRadius, long cdr) {
-            super(skill, plugin, "MultiboltEffect", duration);
+            this(skill, "MultiboltEffect" + System.currentTimeMillis(), plugin , duration, damage, caster, bouncePercent, bounceRadius, cdr);
+        }
+        public MultiboltEffect(Skill skill, String name, Heroes plugin, long duration, double damage, Hero caster, double bouncePercent, int bounceRadius, long cdr) {
+            super(skill, plugin, name, duration);
             this.damage = damage;
             this.caster = caster;
             this.bouncePercent = bouncePercent;
