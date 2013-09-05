@@ -33,6 +33,7 @@
 	<classpathentry kind="src" path="SkillExecutioner"/>
 	<classpathentry kind="src" path="SkillForge"/>
 	<classpathentry kind="src" path="SkillHardenedSkin"/>
+	<classpathentry kind="src" path="SkillHolyFervor"/>
 	<classpathentry kind="src" path="SkillKillerInstincts"/>
 	<classpathentry kind="src" path="SkillManaShield"/>
 	<classpathentry kind="src" path="SkillMarksman"/>
@@ -65,7 +66,6 @@
 	<classpathentry kind="src" path="SkillTargettedJustice"/>
 	<classpathentry kind="src" path="SkillTurret"/>
 	<classpathentry kind="src" path="SkillVolley"/>
-	<classpathentry kind="src" path="SkillFervor"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
