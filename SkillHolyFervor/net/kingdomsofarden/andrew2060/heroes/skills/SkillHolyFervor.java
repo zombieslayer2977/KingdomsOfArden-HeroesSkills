@@ -37,7 +37,7 @@ public class SkillHolyFervor extends ActiveSkill {
         PeriodicHealEffect effect = new PeriodicHealEffect(plugin, "HolyFervorEffect", 1000, duration, healTick, hero.getPlayer());
         effect.types.add(EffectType.DISPELLABLE);
         hero.addEffect(effect);
-        return null;
+        return SkillResult.NORMAL;
     }
 
 }
