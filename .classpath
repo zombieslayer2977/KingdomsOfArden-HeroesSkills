@@ -62,6 +62,7 @@
 	<classpathentry kind="src" path="SkillSiphoningStrike"/>
 	<classpathentry kind="src" path="SkillSoulSap"/>
 	<classpathentry kind="src" path="SkillSurge"/>
+	<classpathentry kind="src" path="SkillTargettedJustice"/>
 	<classpathentry kind="src" path="SkillTurret"/>
 	<classpathentry kind="src" path="SkillVolley"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
