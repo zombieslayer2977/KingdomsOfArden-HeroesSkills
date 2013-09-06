@@ -142,10 +142,10 @@ public class SkillArcaneMultibolt extends TargettedSkill {
             return SkillResult.INVALID_TARGET_NO_MSG;
         }
         double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 100, false);
-        long bounceTime = (long) (SkillConfigManager.getUseSetting(hero, this, "bounceTime", 2000, false) * 0.001);
+        long bounceTime = (long) (SkillConfigManager.getUseSetting(hero, this, "bounceTime", 2000, false));
         int bounceRadius = (int) SkillConfigManager.getUseSetting(hero, this, "bounceRadius", 5, false);
         double damageReductionPercent = SkillConfigManager.getUseSetting(hero, this, "bounceDamageMultiplier", 0.75, false);
-        long cdr = (long) (SkillConfigManager.getUseSetting(hero, this, "bounceCooldownReduction", 1000, false) * 0.001);
+        long cdr = (long) (SkillConfigManager.getUseSetting(hero, this, "bounceCooldownReduction", 1000, false));
         CharacterTemplate cT = plugin.getCharacterManager().getCharacter(target);
         cT.addEffect(new MultiboltEffect(this,plugin,bounceTime,damage,hero,damageReductionPercent,bounceRadius,cdr));
         broadcast(hero.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] " + hero.getName() + " used ArcaneMultibolt!");
