@@ -208,6 +208,9 @@ public class SkillArcaneMultibolt extends TargettedSkill {
             List<Entity> nearby = cT.getEntity().getNearbyEntities(bounceRadius, bounceRadius, bounceRadius);
             for(Entity e : nearby) {
                 if(e instanceof Player) {
+                    if((LivingEntity)e == cT.getEntity()) {
+                        continue;
+                    }
                     if(Skill.damageCheck(caster.getPlayer(), (LivingEntity)e)) {
                         target = (Player)e;
                         break;
@@ -217,6 +220,9 @@ public class SkillArcaneMultibolt extends TargettedSkill {
             if(target == null) {
                 for(Entity e : nearby) {
                     if(e instanceof LivingEntity) {
+                        if((LivingEntity)e == cT.getEntity()) {
+                            continue;
+                        }
                         if(Skill.damageCheck(caster.getPlayer(), (LivingEntity)e)) {
                             target = (LivingEntity)e;
                         }
