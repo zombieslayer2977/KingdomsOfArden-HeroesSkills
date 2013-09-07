@@ -2,11 +2,13 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import java.util.Iterator;
 
+import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -17,13 +19,14 @@ import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.EffectType;
+import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
 
 public class SkillPurify extends TargettedSkill {
 
 	public SkillPurify(Heroes plugin) {
 		super(plugin, "Purify");
-		setDescription("On use, draws upon the properties of water to purify a target, removing all negative effects and healing the target for $1 health on friendly targets, and removing all positive effects and damaging the target for $2 health on enemy targets.");
+		setDescription("On use, purifies a target or self, removing all negative effects and healing the target for $1 health on friendly targets, and removing all positive effects and damaging the target for $2 health on enemy targets.");
 		setArgumentRange(0,1);
 		setIdentifiers("skill purify");
 		setUsage("/skill purify");
@@ -32,61 +35,31 @@ public class SkillPurify extends TargettedSkill {
 	@Override
 	public SkillResult use(Hero h, LivingEntity entity, String[] arg1) {
 		if(entity != null) {
-			if(!(entity instanceof Player)) {
-				h.getPlayer().sendMessage("This is not a hero and cannot be purified!");
-				return SkillResult.INVALID_TARGET_NO_MSG;
-			}
-			Location loc1 = h.getPlayer().getLocation();
-			Location loc2 = entity.getLocation();
-			if(loc1.distanceSquared(loc2) > 169) {
-				h.getPlayer().sendMessage("Target out of range!");
-				return SkillResult.INVALID_TARGET_NO_MSG;
-			}
-			boolean mode = damageCheck(h.getPlayer(), entity);
+			boolean mode = damageCheck(h.getPlayer(), entity) && !h.getEntity().equals(entity);
 			if(!mode) {
-				ExecuteSkillPurifyFriendly((Player)entity,h);
+				executeSkillPurifyFriendly((Player)entity,h);
 				return SkillResult.NORMAL;
 			} else {
-				ExecuteSkillPurifyHostile((Player)entity,h);
+				executeSkillPurifyHostile((Player)entity,h);
 				return SkillResult.NORMAL;
 			}
 		} else {
-			if(arg1.length > 0) {
-				try {
-					Player p = Bukkit.getServer().getPlayer(arg1[0]);
-					Location loc1 = h.getPlayer().getLocation();
-					Location loc2 = p.getLocation();
-					if(loc1.distanceSquared(loc2) > 169) {
-						h.getPlayer().sendMessage("Target out of range!");
-						return SkillResult.INVALID_TARGET_NO_MSG;
-					}
-					boolean mode = damageCheck(h.getPlayer(), entity);
-					if(mode) {
-						ExecuteSkillPurifyFriendly(p,h);
-					} else {
-						ExecuteSkillPurifyHostile(p,h);
-					}
-				} catch (NullPointerException e) {
-					h.getPlayer().sendMessage("This player could not be found!");
-					return SkillResult.INVALID_TARGET_NO_MSG;
-				}
-			}
+			return SkillResult.INVALID_TARGET;
 		}
-		return SkillResult.NORMAL;
 	}
 
 
-	private void ExecuteSkillPurifyHostile(Player p, Hero h) {
-		CharacterTemplate ct = this.plugin.getCharacterManager().getCharacter(p);
-		Iterator<Effect> activeEffects = ct.getEffects().iterator();
+	private void executeSkillPurifyHostile(Player p, Hero h) {
+		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(p);
+		Iterator<Effect> activeEffects = cT.getEffects().iterator();
 		while(activeEffects.hasNext()) {
 			Effect eff = activeEffects.next();
 			if(eff.isType(EffectType.BENEFICIAL) && eff.isType(EffectType.DISPELLABLE)) {
-				ct.removeEffect(eff);
+				cT.removeEffect(eff);
 			}
 			continue;
 		}
-		Iterator<PotionEffect> potions = ct.getEntity().getActivePotionEffects().iterator();
+		Iterator<PotionEffect> potions = cT.getEntity().getActivePotionEffects().iterator();
 		while(potions.hasNext()) {
 			PotionEffectType next = potions.next().getType();
 			if(next.equals(PotionEffectType.FAST_DIGGING) 
@@ -98,48 +71,48 @@ public class SkillPurify extends TargettedSkill {
 					|| next.equals(PotionEffectType.SPEED) 
 					|| next.equals(PotionEffectType.WATER_BREATHING) 
 					|| next.equals(PotionEffectType.JUMP)) {
-				ct.getEntity().removePotionEffect(next);
+			    ToolHandlerPlugin.instance.getPotionEffectHandler().removePotionEffect(next, cT.getEntity());
 			}
 			continue;
 		}
 		addSpellTarget(p,h);
-		this.damageEntity(p, h.getEntity(), h.getLevel()*0.5);
+		Skill.damageEntity(p, h.getEntity(), h.getLevel()*0.5, DamageCause.MAGIC);
 		return;
 	}
 
-	private void ExecuteSkillPurifyFriendly(Player p, Hero h) {
-		CharacterTemplate ct = this.plugin.getCharacterManager().getCharacter(p);
-		Iterator<Effect> activeEffects = ct.getEffects().iterator();
+	private void executeSkillPurifyFriendly(Player p, Hero h) {
+		CharacterTemplate cT = this.plugin.getCharacterManager().getCharacter(p);
+		Iterator<Effect> activeEffects = cT.getEffects().iterator();
 		while(activeEffects.hasNext()) {
 			Effect eff = activeEffects.next();
 			if(eff.isType(EffectType.DISPELLABLE) && eff.isType(EffectType.HARMFUL)) {
-				ct.removeEffect(eff);
+				cT.removeEffect(eff);
 			} 
 			continue;
 		}
-		Iterator<PotionEffect> potions = ct.getEntity().getActivePotionEffects().iterator();
+		Iterator<PotionEffect> potions = cT.getEntity().getActivePotionEffects().iterator();
 		while(potions.hasNext()) {
 			PotionEffectType next = potions.next().getType();
 			if(next.equals(PotionEffectType.BLINDNESS) 
 					|| next.equals(PotionEffectType.CONFUSION) 
 					|| next.equals(PotionEffectType.POISON) 
-					|| next.equals(PotionEffectType.SLOW_DIGGING)) {
-				ct.getEntity().removePotionEffect(next);
+					|| next.equals(PotionEffectType.SLOW_DIGGING)
+					|| next.equals(PotionEffectType.HUNGER)
+					|| next.equals(PotionEffectType.SLOW)
+					|| next.equals(PotionEffectType.WEAKNESS)
+					|| next.equals(PotionEffectType.WITHER)) {
+				ToolHandlerPlugin.instance.getPotionEffectHandler().removePotionEffect(next, cT.getEntity());
 			}
 			continue;
 		}
-		ct.getEntity().setFireTicks(0);
-		if(ct instanceof Hero) {
-			((Hero)ct).getPlayer().sendMessage(ChatColor.GRAY + "Purified by " + h.getName() + "!");
+		cT.getEntity().setFireTicks(0);
+		if(cT instanceof Hero) {
+			((Hero)cT).getPlayer().sendMessage(ChatColor.GRAY + "Purified by " + h.getName() + "!");
 		}
-		LivingEntity lE = ct.getEntity();
-		HeroRegainHealthEvent event = new HeroRegainHealthEvent((Hero)ct, h.getLevel()*1.0D, this, h);
+		LivingEntity lE = cT.getEntity();
+		HeroRegainHealthEvent event = new HeroRegainHealthEvent((Hero)cT, h.getLevel()*1.0D, this, h);
 		Bukkit.getPluginManager().callEvent(event);
-		double finalAmount = lE.getHealth()+event.getAmount();
-		if(finalAmount > lE.getMaxHealth()) {
-			finalAmount = lE.getMaxHealth();
-		}
-		lE.setHealth(finalAmount);
+		lE.setHealth(lE.getHealth() + event.getAmount() > lE.getMaxHealth() ? lE.getMaxHealth() : lE.getHealth() + event.getAmount());
 		return;
 	}
 
