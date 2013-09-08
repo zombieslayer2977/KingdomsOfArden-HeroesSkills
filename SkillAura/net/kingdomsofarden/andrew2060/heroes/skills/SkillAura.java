@@ -15,6 +15,8 @@ public class SkillAura extends ActiveSkill {
 	public SkillAura(Heroes plugin) {
 		super(plugin, "Aura");
 		setDescription("Passive: this hero carries an aura that provides bonuses to allies in the party. Active: displays the currently active aura");
+		setIdentifiers("skill aura", "skill activeaura");
+		setUsage("/skill Aura");
 	}
 
 	@Override
