@@ -1,5 +1,7 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +13,9 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 
 public class SkillPvPSpecialization extends PassiveSkill {
-
+    
+    private HashMap<String,HashMap<String,KillData>> killData;
+    
 	public SkillPvPSpecialization(Heroes plugin) {
 		super(plugin, "PvPSpecialization");
 		setDescription("This Specialization is a PvP based specialization and gains EXP from PvPing");
@@ -28,11 +32,14 @@ public class SkillPvPSpecialization extends PassiveSkill {
 			if(!(event.getDefender() instanceof Hero)) {
 				return;
 			}
+			
 			Hero h2 = (Hero)event.getDefender();
+			
 			int level = h2.getLevel(h2.getHeroClass());
 			if(h2.getName().equals(h.getName())) {
 				return;
 			}
+			
 			boolean spec = true;
 			if(h2.getHeroClass().hasNoParents()) {
 				spec = false;
@@ -71,12 +78,32 @@ public class SkillPvPSpecialization extends PassiveSkill {
 				exp = exp + 6400;
 			}
 			if(h.getPlayer().getLocation().getWorld().getName().toLowerCase().contains("arena")) {
-				exp = (int) (exp*0.5);
+				exp = exp-6400;
 				if(h2.getHeroClass().hasNoParents()) {
 		            h.getPlayer().sendMessage("§7You gain no exp for killing a " + h2.getHeroClass().getName() + " in the arena: specializations only gain EXP in arena from other specializations!");
 		            return;
 				}
 			}
+			KillData data = null;
+            if(killData.containsKey(h.getName())) {
+                data = killData.get(h.getName()).get(h2.getName());
+                if(data != null) {
+                    data.add();
+                    if(!data.checkSize()) {
+                        h.getPlayer().sendMessage("§7You can only get exp for killing the same person a maximum of 5 times per hour!");
+                        return;
+                    }
+                } else {
+                    KillData kData = new KillData();
+                    kData.add();
+                    killData.get(h.getName()).put(h2.getName(), kData);
+                }
+            } else {
+                killData.put(h.getName(), new HashMap<String,KillData>());
+                KillData kData = new KillData();
+                kData.add();
+                killData.get(h.getName()).put(h2.getName(), kData);
+            }
 			h.getPlayer().sendMessage("§7You were awarded " + exp + " exp for killing a " + rank + " " + h2.getHeroClass().getName() + "!");
 			h.addExp(exp, h.getHeroClass(), h.getPlayer().getLocation());
 			
