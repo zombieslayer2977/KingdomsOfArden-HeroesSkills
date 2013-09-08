@@ -8,7 +8,7 @@ import com.herocraftonline.heroes.characters.effects.PeriodicEffect;
 public class AuraEffect extends PeriodicEffect {
 	public AuraWrapper fWrapper;
 	public AuraEffect(Heroes plugin, AuraWrapper funcWrapper) {
-		super(plugin, "AuraEffect", 20L);
+		super(plugin, "AuraEffect", 40L);
 		fWrapper = funcWrapper;
 	}
 	
