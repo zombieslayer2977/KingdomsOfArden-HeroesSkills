@@ -20,6 +20,7 @@ public class SkillPvPSpecialization extends PassiveSkill {
 		super(plugin, "PvPSpecialization");
 		setDescription("This Specialization is a PvP based specialization and gains EXP from PvPing");
 		Bukkit.getServer().getPluginManager().registerEvents(new SkillEXPListener(), this.plugin);
+		this.killData = new HashMap<String,HashMap<String,KillData>>();
 	}
 	
 	public class SkillEXPListener implements Listener {
