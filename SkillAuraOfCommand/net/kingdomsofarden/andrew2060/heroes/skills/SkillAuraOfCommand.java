@@ -32,8 +32,13 @@ public class SkillAuraOfCommand extends ActiveSkill implements Listener {
 
     @Override
     public SkillResult use(Hero hero, String[] args) {
-        hero.addEffect(new AuraEffect(plugin, new CommandAuraWrapper()));
-        return SkillResult.NORMAL;
+        AuraEffect eff = (AuraEffect) hero.getEffect("AuraEffect");
+        if(eff == null) {
+            hero.addEffect(new AuraEffect(plugin, new CommandAuraWrapper()));
+            return SkillResult.NORMAL;
+        } else {
+            return eff.setFWrapper(new CommandAuraWrapper(),hero);
+        }
     }
 
     @Override
