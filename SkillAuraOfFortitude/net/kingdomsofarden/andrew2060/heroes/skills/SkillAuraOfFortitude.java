@@ -101,9 +101,8 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 			} else {
 				HeroRegainHealthEvent allyHealEvent = new HeroRegainHealthEvent(closest, 5D, SkillAuraOfFortitude.this, h);
 				Bukkit.getPluginManager().callEvent(allyHealEvent);
-				closest.getPlayer().setHealth(closest.getPlayer().getHealth()+selfHealEvent.getAmount());
 				if(closest.getPlayer().getHealth() > closest.getPlayer().getMaxHealth()) {
-					closest.getPlayer().setHealth(closest.getPlayer().getMaxHealth());
+					closest.getPlayer().setHealth(closest.getPlayer().getHealth()+selfHealEvent.getAmount() > closest.getPlayer().getMaxHealth() ? closest.getPlayer().getMaxHealth() : closest.getPlayer().getHealth()+selfHealEvent.getAmount());
 				}
 			}
 		}
