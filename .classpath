@@ -7,6 +7,7 @@
 	<classpathentry kind="src" path="SkillArcaneStorm"/>
 	<classpathentry kind="src" path="SkillArcanoBlast"/>
 	<classpathentry kind="src" path="SkillAura"/>
+	<classpathentry kind="src" path="SkillAuraOfCommand"/>
 	<classpathentry kind="src" path="SkillAuraOfFortitude"/>
 	<classpathentry kind="src" path="SkillBladeWaltz"/>
 	<classpathentry kind="src" path="SkillBulwarkOfJustice"/>
