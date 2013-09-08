@@ -36,6 +36,7 @@
 	<classpathentry kind="src" path="SkillForge"/>
 	<classpathentry kind="src" path="SkillHardenedSkin"/>
 	<classpathentry kind="src" path="SkillHolyFervor"/>
+	<classpathentry kind="src" path="SkillIntervention"/>
 	<classpathentry kind="src" path="SkillJudgment"/>
 	<classpathentry kind="src" path="SkillKillerInstincts"/>
 	<classpathentry kind="src" path="SkillManaShield"/>
