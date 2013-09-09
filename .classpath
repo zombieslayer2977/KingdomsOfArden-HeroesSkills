@@ -10,6 +10,7 @@
 	<classpathentry kind="src" path="SkillAuraOfCommand"/>
 	<classpathentry kind="src" path="SkillAuraOfFortitude"/>
 	<classpathentry kind="src" path="SkillBladeWaltz"/>
+	<classpathentry kind="src" path="SkillBloodWell"/>
 	<classpathentry kind="src" path="SkillBulwarkOfJustice"/>
 	<classpathentry kind="src" path="SkillCamouflage"/>
 	<classpathentry kind="src" path="SkillCauldron"/>
