@@ -34,8 +34,12 @@ public class SkillBloodWell extends PassiveSkill implements Listener {
     public void onSkillUse(SkillUseEvent event) {
         if(event.getHero().hasEffect("BloodWell")) {
             Hero h = event.getHero();
-            double cost = SkillConfigManager.getUseSetting(h,this,SkillSetting.HEALTH_COST,20,false);
-            event.setHealthCost((int) (event.getHealthCost() + cost));
+            if(event.getHealthCost() == 0) {
+                double cost = SkillConfigManager.getUseSetting(h,this,SkillSetting.HEALTH_COST,20,false);
+                event.setHealthCost((int) (event.getHealthCost() + cost));
+            } else {
+                return;
+            }
         }
     }
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -45,7 +49,11 @@ public class SkillBloodWell extends PassiveSkill implements Listener {
         }
         if(event.getDamager().hasEffect("BloodWell")) {
             Hero h = (Hero) event.getDamager();
+            double cost = SkillConfigManager.getUseSetting(h,event.getSkill(),SkillSetting.HEALTH_COST,0.00D,false);
             double heal = SkillConfigManager.getUseSetting(h,this,SkillSetting.HEALTH,40,false);
+            if(cost != 0.00D) {
+                heal = cost*2;
+            }
             HeroRegainHealthEvent hEvent = new HeroRegainHealthEvent(h, heal, this);
             plugin.getServer().getPluginManager().callEvent(hEvent);
             if(!hEvent.isCancelled()) {
