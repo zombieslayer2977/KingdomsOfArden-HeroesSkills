@@ -226,7 +226,7 @@ public class SkillArcaneMultibolt extends TargettedSkill {
                         if(((LivingEntity)e).equals(cT.getEntity())) {
                             continue;
                         }
-                        if(((Player)e).equals(caster.getEntity())) {
+                        if(((LivingEntity)e).equals(caster.getEntity())) {
                             continue;
                         }
                         if(Skill.damageCheck(caster.getPlayer(), (LivingEntity)e)) {
