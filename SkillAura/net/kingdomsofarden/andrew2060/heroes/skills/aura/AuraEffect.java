@@ -18,9 +18,6 @@ public class AuraEffect extends PeriodicEffect {
 	public void applyToHero(Hero h) {
 	    h.addEffect(new ExpirableEffect(null, plugin, "AuraChangeCooldown",10000));
 		fWrapper.onApply(h);
-		if(fWrapper != null && !fWrapper.auraName.equalsIgnoreCase("none")) {
-		    broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has activated the aura $2", new Object[] {h.getName(),fWrapper == null ? "none" : fWrapper.auraName});
-		}
 	}
 	
 	@Override
@@ -30,9 +27,6 @@ public class AuraEffect extends PeriodicEffect {
 	@Override
 	public void removeFromHero(Hero h) {
 		fWrapper.onEnd(h);
-		if(fWrapper != null && !fWrapper.auraName.equalsIgnoreCase("none") && h != null) {
-            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has stopped using the aura $2", new Object[] {h.getName(), fWrapper.auraName});
-        }
 	}
 
     public SkillResult setFWrapper(AuraWrapper wrapper, Hero h) {
