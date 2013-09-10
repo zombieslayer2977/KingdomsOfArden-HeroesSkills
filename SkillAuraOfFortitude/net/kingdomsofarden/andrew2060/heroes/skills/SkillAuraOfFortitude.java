@@ -8,6 +8,7 @@ import net.kingdomsofarden.andrew2060.heroes.skills.aura.AuraWrapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -44,7 +45,7 @@ public class SkillAuraOfFortitude extends ActiveSkill {
     }
     public SkillAuraOfFortitude(Heroes plugin) {
         super(plugin, "AuraOfFortitude");
-        setDescription("Aura: Reduces damage taken by all party members within 10 blocks by 10%. Activation: Upon switching to this aura, the caster and the closest party member within 10 blocks is healed for 5 health.");
+        setDescription("Aura: Reduces damage taken by all party members within 10 blocks by 10%. Activation: Upon switching to this aura, the caster and the closest party member within 10 blocks is healed for 40 health.");
         setIdentifiers("skill auraoffortitude");
         setUsage("/skill auraoffortitude");
         setArgumentRange(0,0);
@@ -74,12 +75,9 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 
         @Override
         public void onApply(Hero h) {
-            HeroRegainHealthEvent selfHealEvent = new HeroRegainHealthEvent(h, 5D, SkillAuraOfFortitude.this, h);
+            HeroRegainHealthEvent selfHealEvent = new HeroRegainHealthEvent(h, 40D, SkillAuraOfFortitude.this, h);
             Bukkit.getPluginManager().callEvent(selfHealEvent);
-            h.getPlayer().setHealth(h.getPlayer().getHealth()+selfHealEvent.getAmount());
-            if(h.getPlayer().getHealth() > h.getPlayer().getMaxHealth()) {
-                h.getPlayer().setHealth(h.getPlayer().getMaxHealth());
-            }
+            h.heal(selfHealEvent.getAmount());
             HeroParty hP = h.getParty();
             Set<Hero> members = hP.getMembers();
             members.remove(h);
@@ -104,11 +102,10 @@ public class SkillAuraOfFortitude extends ActiveSkill {
             if(closest == null) {
                 return;
             } else {
-                HeroRegainHealthEvent allyHealEvent = new HeroRegainHealthEvent(closest, 5D, SkillAuraOfFortitude.this, h);
+                HeroRegainHealthEvent allyHealEvent = new HeroRegainHealthEvent(closest, 40D, SkillAuraOfFortitude.this, h);
                 Bukkit.getPluginManager().callEvent(allyHealEvent);
-                if(closest.getPlayer().getHealth() > closest.getPlayer().getMaxHealth()) {
-                    closest.getPlayer().setHealth(closest.getPlayer().getHealth()+selfHealEvent.getAmount() > closest.getPlayer().getMaxHealth() ? closest.getPlayer().getMaxHealth() : closest.getPlayer().getHealth()+selfHealEvent.getAmount());
-                }
+                Player p = closest.getPlayer();
+                p.setHealth(p.getHealth() + allyHealEvent.getAmount() > p.getMaxHealth() ? p.getMaxHealth() : p.getHealth() + allyHealEvent.getAmount());
             }
         }
 
