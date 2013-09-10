@@ -30,8 +30,8 @@ public class AuraEffect extends PeriodicEffect {
 	@Override
 	public void removeFromHero(Hero h) {
 		fWrapper.onEnd(h);
-		if(fWrapper != null && !fWrapper.auraName.equalsIgnoreCase("none")) {
-            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has stopped using the aura $2", new Object[] {h.getName(),fWrapper == null ? "none" : fWrapper.auraName});
+		if(fWrapper != null && !fWrapper.auraName.equalsIgnoreCase("none") && h != null) {
+            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has stopped using the aura $2", new Object[] {h.getName(), fWrapper.auraName});
         }
 	}
 
@@ -39,7 +39,7 @@ public class AuraEffect extends PeriodicEffect {
         if(!h.hasEffect("AuraChangeCooldown")) {
             broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has stopped using the aura $2", new Object[] {h.getName(),fWrapper == null ? "none" : fWrapper.auraName});
             this.fWrapper = wrapper;
-            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has activated the aura $2", new Object[] {h.getName(),fWrapper == null ? "none" : fWrapper.auraName});
+            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has activated the aura $2", new Object[] {h.getName(), fWrapper.auraName});
             return SkillResult.NORMAL;
         } else {
             h.getPlayer().sendMessage("§7[§2Skill§7]$1 Too soon to change auras again!");
