@@ -107,7 +107,7 @@ public class SkillTargettedJustice extends TargettedSkill implements Listener {
         if(event.getEntity() instanceof LivingEntity) {
             CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)event.getEntity());
             if(cT.hasEffect("TargettedJusticeEffect")) {
-                event.setDamage((int) (event.getDamage() * (1 + (((TargettedJusticeEffect) cT.getEffect("TargettedJusticeEffect")).getAmplifier()))));
+                event.setDamage((event.getDamage() * (1 + (((TargettedJusticeEffect) cT.getEffect("TargettedJusticeEffect")).getAmplifier()))));
             }
         }
     }
