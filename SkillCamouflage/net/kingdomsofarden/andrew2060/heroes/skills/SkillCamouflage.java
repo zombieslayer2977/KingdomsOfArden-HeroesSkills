@@ -104,6 +104,7 @@ public class SkillCamouflage extends PassiveSkill {
         public CamouflageEffect(Heroes plugin, SkillCamouflage skill, String name, EffectType[] types) {
             super(plugin, skill, name, types);
             this.camoskill = skill;
+            this.setPersistent(true);
         }
         
         @Override
