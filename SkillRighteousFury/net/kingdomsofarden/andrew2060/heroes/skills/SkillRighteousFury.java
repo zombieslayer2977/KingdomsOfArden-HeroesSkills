@@ -9,8 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.api.events.HeroEnterCombatEvent;
+import com.herocraftonline.heroes.api.events.HeroLeaveCombatEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
@@ -43,7 +46,10 @@ public class SkillRighteousFury extends PassiveSkill implements Listener {
             return;
         }
         Hero h = (Hero) event.getDamager();
-        long combatDuration = System.currentTimeMillis() - h.getCombatEffect().getApplyTime();
+        if(!h.hasEffect("RighteousFury")) {
+            return;
+        }
+        long combatDuration = System.currentTimeMillis() - h.getEffect("RighteousFury").getApplyTime();
         long seconds = SkillConfigManager.getUseSetting(h, this, "tickSeconds", 5000, false);
         int secondsInCombat = (int) Math.floor(combatDuration/seconds);
         double damagePerTickSecond = SkillConfigManager.getUseSetting(h, this, "damagePerTickSecond", Double.valueOf(1), false);
@@ -55,5 +61,20 @@ public class SkillRighteousFury extends PassiveSkill implements Listener {
         LivingEntity target = (LivingEntity) event.getEntity();
         addSpellTarget(target,h);
         Skill.damageEntity(target, h.getEntity(), damageAdd, DamageCause.CUSTOM);
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) 
+    public void onHeroEnterCombat(HeroEnterCombatEvent event) {
+        if(!event.getHero().hasEffect("RighteousFury")) {
+            event.getHero().addEffect(new Effect(this,"RighteousFury"));
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) 
+    public void onHeroLeaveCombat(HeroLeaveCombatEvent event) {
+        Hero h = event.getHero();
+        if(h != null && h.hasEffect("RighteousFury")) {
+            h.removeEffect(h.getEffect("RighteousFury"));
+        }
     }
 }
