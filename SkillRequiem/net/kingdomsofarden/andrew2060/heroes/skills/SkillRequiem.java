@@ -141,7 +141,7 @@ public class SkillRequiem extends PassiveSkill {
 				return;
 			}
 			DamageCause cause = event.getCause();
-			event.setDamage(0);
+			event.setDamage(0.00);
 			this.skill.broadcast(p.getLocation(), ChatColor.RED + p.getName() + "is charging up to self-destruct!", new Object[0]);
 			SkillRequiem.RequiemEffect reqEffect = new SkillRequiem.RequiemEffect(SkillRequiem.this);
 			h.addEffect(reqEffect);
