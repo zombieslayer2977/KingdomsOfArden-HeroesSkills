@@ -45,11 +45,13 @@
 	<classpathentry kind="src" path="SkillMeteorStrike"/>
 	<classpathentry kind="src" path="SkillMirage"/>
 	<classpathentry kind="src" path="SkillMortarStrike"/>
+	<classpathentry kind="src" path="SkillNecromancy"/>
 	<classpathentry kind="src" path="SkillNetherSteel"/>
 	<classpathentry kind="src" path="SkillParanoia"/>
 	<classpathentry kind="src" path="SkillPlague"/>
 	<classpathentry kind="src" path="SkillPoisonedBlade"/>
 	<classpathentry kind="src" path="SkillPowerLocus"/>
+	<classpathentry kind="src" path="SkillPrey"/>
 	<classpathentry kind="src" path="SkillPurify"/>
 	<classpathentry kind="src" path="SkillPvPSpecialization"/>
 	<classpathentry kind="src" path="SkillRejuvinate"/>
