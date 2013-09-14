@@ -32,6 +32,10 @@ public class NecromancyTargetManager extends Effect {
             this.target = null;
             return null;
         }
+        if(this.target.getLocation().distanceSquared(hero.getPlayer().getLocation()) > 1024) {
+            this.target = null;
+            return null;
+        }
         return this.target;
     }
     
