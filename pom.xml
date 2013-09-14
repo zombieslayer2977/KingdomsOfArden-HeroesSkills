@@ -10,15 +10,11 @@
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
-			<url>http://repo.md-5.net/content/repositories/snapshots/</url>
+			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
 		<repository>
 			<id>koa-repo</id>
-			<url>http://ci.kingdomsofarden.net/nexus/content/repositories/thirdparty/</url>
-		</repository>
-		<repository>
-			<id>koa-repo</id>
-			<url>http://ci.kingdomsofarden.net/nexus/content/repositories/snapshots/</url>
+			<url>http://ci.kingdomsofarden.net/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<url>www.kingdomsofarden.net</url>
