@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import net.kingdomsofarden.andrew2060.heroes.skills.api.necromancy.events.SummonedDeathEvent;
 
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,18 +32,27 @@ public class NecromancyMobManager extends Effect implements Listener {
         return;
     }
 
-    public boolean isTrackedEntity(LivingEntity entity) {
+    public boolean isTrackedEntity(Creature entity) {
         return activeEntities.contains(entity.getUniqueId());
     }
     
-    public void addTrackedEntity(LivingEntity entity) {
+    public void addTrackedEntity(Creature entity) {
         activeEntities.add(entity.getUniqueId());
         return;
     }
-    
+    public void updateTargets(LivingEntity lE) {
+        for(Entity e : summoner.getPlayer().getWorld().getEntities()) {
+            if(activeEntities.contains(e.getUniqueId())) {
+                ((Creature)e).setTarget(lE);
+            }
+        }
+    }
     @EventHandler(ignoreCancelled = true, priority=EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent event) {
-        if(isTrackedEntity(event.getEntity())) {
+        if(!(event.getEntity() instanceof Creature)) {
+            return;
+        }
+        if(isTrackedEntity((Creature) event.getEntity())) {
             this.activeEntities.remove(event.getEntity().getUniqueId());
             SummonedDeathEvent dEvent = new SummonedDeathEvent(event.getEntity(),summoner);
             plugin.getServer().getPluginManager().callEvent(dEvent);
@@ -51,10 +62,10 @@ public class NecromancyMobManager extends Effect implements Listener {
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST) 
     public void onEntityTarget(EntityTargetEvent event) {
-        if(!(event.getEntity() instanceof LivingEntity)) {
+        if(!(event.getEntity() instanceof Creature)) {
             return;
         }
-        if(isTrackedEntity((LivingEntity) event.getEntity())) {
+        if(isTrackedEntity((Creature) event.getEntity())) {
             event.setCancelled(true);   //Requires some further refinement
             return;
         }

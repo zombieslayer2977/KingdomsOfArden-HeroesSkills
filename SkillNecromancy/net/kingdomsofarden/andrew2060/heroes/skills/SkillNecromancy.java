@@ -28,8 +28,9 @@ public class SkillNecromancy extends PassiveSkill {
 
     @Override
     public void apply(Hero hero) {
-        hero.addEffect(new NecromancyMobManager(plugin,hero));
-        hero.addEffect(new NecromancyTargetManager(this,hero.getPlayer()));
+        NecromancyMobManager mobMan = new NecromancyMobManager(plugin,hero);
+        hero.addEffect(mobMan);
+        hero.addEffect(new NecromancyTargetManager(this,mobMan));
     }
 
     @Override
