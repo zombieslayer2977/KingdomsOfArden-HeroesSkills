@@ -24,7 +24,7 @@
 	<property name="dir.prioritybuild" value="priority" />
     <property name="dir.bin.skills" value="net/kingdomsofarden/andrew2060/heroes/skills" />
     <property name="dir.dist.skills" value="." />
-	<property name="priorityskills" value="SkillAura SkillTurret" />
+	<property name="priorityskills" value="SkillAura SkillTurret SkillNecromancy" />
 	<property name="unsupportedSkills" value="SkillCauldron" />
 	<property name="dir.maven" value="maven" />
 	
