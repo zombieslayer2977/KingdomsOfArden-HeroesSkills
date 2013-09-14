@@ -16,7 +16,9 @@ public class SkillPrey extends TargettedSkill {
 
     @Override
     public SkillResult use(Hero hero, LivingEntity target, String[] args) {
-        // TODO Auto-generated method stub
+        if(hero.hasEffect("NecromancyTargetManager")) {
+            
+        }
         return null;
     }
 

@@ -61,8 +61,6 @@
 			<groupId>com.massivecraft</groupId>
 			<artifactId>Factions</artifactId>
 			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}\lib\Factions.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>
