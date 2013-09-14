@@ -28,14 +28,17 @@ public class NecromancyTargetManager extends Effect {
     }
 
     public LivingEntity getTarget(Creature creature) {
-        if(this.target.getLocation().distanceSquared(creature.getLocation()) > 1024) {
-            this.target = null;
-            return null;
+        if(this.target != null) {
+            if(this.target.getLocation().distanceSquared(creature.getLocation()) > 1024) {
+                this.target = null;
+                return null;
+            }
+            if(this.target.getLocation().distanceSquared(hero.getPlayer().getLocation()) > 1024) {
+                this.target = null;
+                return null;
+            }
         }
-        if(this.target.getLocation().distanceSquared(hero.getPlayer().getLocation()) > 1024) {
-            this.target = null;
-            return null;
-        }
+        
         return this.target;
     }
     
