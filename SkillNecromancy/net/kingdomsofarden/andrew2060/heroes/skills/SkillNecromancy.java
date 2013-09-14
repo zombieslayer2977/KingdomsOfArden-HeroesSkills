@@ -3,6 +3,7 @@ package net.kingdomsofarden.andrew2060.heroes.skills;
 import java.text.DecimalFormat;
 
 import net.kingdomsofarden.andrew2060.heroes.skills.api.necromancy.NecromancyMobManager;
+import net.kingdomsofarden.andrew2060.heroes.skills.api.necromancy.NecromancyTargetManager;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
@@ -28,6 +29,18 @@ public class SkillNecromancy extends PassiveSkill {
     @Override
     public void apply(Hero hero) {
         hero.addEffect(new NecromancyMobManager(plugin,hero));
+        hero.addEffect(new NecromancyTargetManager(this,hero.getPlayer()));
     }
-    
+
+    @Override
+    public void unapply(Hero hero) {
+        if(hero.hasEffect("NecromancyMobManager")) {
+            hero.removeEffect(hero.getEffect("NecromancyMobManager"));
+        }
+        if(hero.hasEffect("NecromancyTargetManager")) {
+            hero.removeEffect(hero.getEffect("NecromancyTargetManager"));
+        }
+
+    }
+
 }
