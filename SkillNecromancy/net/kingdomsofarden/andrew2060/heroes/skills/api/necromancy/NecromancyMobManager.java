@@ -22,6 +22,7 @@ public class NecromancyMobManager extends Effect implements Listener {
 
     private ArrayList<UUID> activeEntities;
     private Hero summoner;
+    private NecromancyTargetManager targetMan;
     
     public NecromancyMobManager(Heroes plugin, Hero summoner) {
         super(plugin, null, "NecromancyMobManager");
@@ -29,9 +30,14 @@ public class NecromancyMobManager extends Effect implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.summoner = summoner;
         this.setPersistent(true);
+        this.targetMan = null;
         return;
     }
 
+    public void setTargetManager(NecromancyTargetManager targetMan) {
+        this.targetMan = targetMan;
+    }
+    
     public boolean isTrackedEntity(Creature entity) {
         return activeEntities.contains(entity.getUniqueId());
     }
@@ -66,6 +72,7 @@ public class NecromancyMobManager extends Effect implements Listener {
             return;
         }
         if(isTrackedEntity((Creature) event.getEntity())) {
+            event.setTarget(targetMan.getTarget());
             event.setCancelled(true);   //Requires some further refinement
             return;
         }
