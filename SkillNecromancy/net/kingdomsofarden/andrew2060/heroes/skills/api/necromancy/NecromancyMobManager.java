@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.Effect;
+import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class NecromancyMobManager extends Effect implements Listener {
 
@@ -24,8 +25,8 @@ public class NecromancyMobManager extends Effect implements Listener {
     private Hero summoner;
     private NecromancyTargetManager targetMan;
     
-    public NecromancyMobManager(Heroes plugin, Hero summoner) {
-        super(plugin, null, "NecromancyMobManager");
+    public NecromancyMobManager(Skill skill, Heroes plugin, Hero summoner) {
+        super(plugin, skill, "NecromancyMobManager");
         this.activeEntities = new ArrayList<UUID>();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.summoner = summoner;
@@ -72,7 +73,7 @@ public class NecromancyMobManager extends Effect implements Listener {
             return;
         }
         if(isTrackedEntity((Creature) event.getEntity())) {
-            event.setTarget(targetMan.getTarget());
+            event.setTarget(targetMan.getTarget((Creature)event.getEntity()));
             event.setCancelled(true);   //Requires some further refinement
             return;
         }
