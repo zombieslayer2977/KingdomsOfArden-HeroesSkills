@@ -30,7 +30,7 @@
 	
     <path id="classpath">
     	<fileset id="priority" dir="${dir.prioritybuild}" />
-    	<fileset id="maven.dependecies" dir="${dir.maven}" />
+    	<fileset id="maven.dependencies" dir="${dir.maven}" />
     </path>
 	
 	<!-- Commence Build -->
