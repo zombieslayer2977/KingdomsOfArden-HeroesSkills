@@ -78,7 +78,7 @@
 	</target>
 	
 	<target name="build-main-skills">
-		<foreach target="compile-dirs" param="dir.name" parallel="true" maxThreads="20" >
+		<foreach target="compile-dirs" param="dir.name" parallel="true" maxThreads="2" >
 			<path>
 				<dirset dir="${basedir}" includes="Skill*" excludes="${unsupportedSkills} ${priorityskills}"/>
 			</path>
@@ -93,7 +93,7 @@
 	</target>
 	
 	<target name="jar-skilldir">
-	    <foreach target="jar-files" param="files" parallel="true" maxThreads="20">
+	    <foreach target="jar-files" param="files" parallel="true" maxThreads="2">
 	    	<fileset dir="${dir.bin}/${skillBuildDir}/${dir.bin.skills}" includes="**/Skill*.class" excludes="Skill*$*.class" />
 	    </foreach>
 	    <delete file="${dir.bin}/${dir.bin.skills}/skill.info" />
@@ -117,7 +117,7 @@
 	</target>
 	
 	<target name="jar-skilldir-priority">
-	    <foreach target="jar-files-priority" param="files" parallel="true" maxThreads="20">
+	    <foreach target="jar-files-priority" param="files" parallel="true" maxThreads="2">
 	    	<fileset dir="${dir.bin}/${skillBuildDir}/${dir.bin.skills}" includes="**/Skill*.class" excludes="Skill*$*.class" />
 	    </foreach>
 	    <delete file="${dir.bin}/${dir.bin.skills}/skill.info" />
