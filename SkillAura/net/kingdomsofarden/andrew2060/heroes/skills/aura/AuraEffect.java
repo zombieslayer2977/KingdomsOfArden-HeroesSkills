@@ -31,7 +31,6 @@ public class AuraEffect extends PeriodicEffect {
 
     public SkillResult setFWrapper(AuraWrapper wrapper, Hero h) {
         if(!h.hasEffect("AuraChangeCooldown")) {
-            broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has stopped using the aura $2", new Object[] {h.getName(), fWrapper.auraName});
             this.fWrapper = wrapper;
             broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 has activated the aura $2", new Object[] {h.getName(), fWrapper.auraName});
             return SkillResult.NORMAL;
