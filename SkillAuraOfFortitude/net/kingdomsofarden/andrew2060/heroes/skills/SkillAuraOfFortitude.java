@@ -111,18 +111,20 @@ public class SkillAuraOfFortitude extends ActiveSkill {
 
         @Override
         public void onTick(Hero h) {
-            Iterator<Hero> hPIt = h.getParty().getMembers().iterator();
-            while(hPIt.hasNext()) {
-                Hero next = hPIt.next();
-                if(next == h) {
-                    next.addEffect(new ExpirableEffect(null, "FortitudeEffect", 2000));
+            if(h.hasParty()) {
+                for(Hero next : h.getParty().getMembers()) {
+                    if(next == h) {
+                        next.addEffect(new ExpirableEffect(null, "FortitudeEffect", 2000));
+                        continue;
+                    }
+                    if(next.getPlayer().getLocation().distanceSquared(h.getPlayer().getLocation()) <= 100) {
+                        next.addEffect(new ExpirableEffect(null, "FortitudeEffect", 2000));
+                        continue;
+                    }
                     continue;
                 }
-                if(next.getPlayer().getLocation().distanceSquared(h.getPlayer().getLocation()) <= 100) {
-                    next.addEffect(new ExpirableEffect(null, "FortitudeEffect", 2000));
-                    continue;
-                }
-                continue;
+            } else {
+                h.addEffect(new ExpirableEffect(null, "FortitudeEffect", 2000));
             }
             return;
         }
