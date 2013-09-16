@@ -69,16 +69,20 @@ public class SkillAuraOfCommand extends ActiveSkill implements Listener {
 
         @Override
         public void onTick(Hero h) {
-            for(Hero member : h.getParty().getMembers()) {
-                if(member == h) {
-                    member.addEffect(new ExpirableEffect(null, "CommandAuraEffect", 2000));
+            if(h.hasParty()) {
+                for(Hero member : h.getParty().getMembers()) {
+                    if(member == h) {
+                        member.addEffect(new ExpirableEffect(null, "CommandAuraEffect", 2000));
+                        continue;
+                    }
+                    if(member.getPlayer().getLocation().distanceSquared(h.getPlayer().getLocation()) <= 100) {
+                        member.addEffect(new ExpirableEffect(null, "CommandAuraEffect", 2000));
+                        continue;
+                    }
                     continue;
                 }
-                if(member.getPlayer().getLocation().distanceSquared(h.getPlayer().getLocation()) <= 100) {
-                    member.addEffect(new ExpirableEffect(null, "CommandAuraEffect", 2000));
-                    continue;
-                }
-                continue;
+            } else {
+                h.addEffect(new ExpirableEffect(null, "CommandAuraEffect", 2000));
             }
             return;
         }
