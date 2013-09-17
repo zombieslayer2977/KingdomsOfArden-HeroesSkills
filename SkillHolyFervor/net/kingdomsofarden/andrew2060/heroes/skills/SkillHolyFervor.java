@@ -17,6 +17,8 @@ public class SkillHolyFervor extends ActiveSkill {
     public SkillHolyFervor(Heroes plugin) {
         super(plugin, "HolyFervor");
         setDescription("Heals self for $1% of missing health over $2 seconds.");
+        setIdentifiers("skill holyfervor","skill hfervor");
+        setUsage("/skill holyfervor");
     }
 
     @Override
