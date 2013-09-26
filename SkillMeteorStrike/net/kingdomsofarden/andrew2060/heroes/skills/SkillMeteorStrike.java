@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R2.entity.AbstractProjectile;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,12 +24,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_6_R2.DamageSource;
-import net.minecraft.server.v1_6_R2.EntityLargeFireball;
-import net.minecraft.server.v1_6_R2.EntityTypes;
-import net.minecraft.server.v1_6_R2.MovingObjectPosition;
-import net.minecraft.server.v1_6_R2.World;
-import net.minecraft.server.v1_6_R2.WorldServer;
+import net.minecraft.server.v1_6_R3.DamageSource;
+import net.minecraft.server.v1_6_R3.EntityLargeFireball;
+import net.minecraft.server.v1_6_R3.EntityTypes;
+import net.minecraft.server.v1_6_R3.MovingObjectPosition;
+import net.minecraft.server.v1_6_R3.World;
+import net.minecraft.server.v1_6_R3.WorldServer;
 import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
 import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
 
@@ -203,7 +203,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 }
 
                 // CraftBukkit start
-                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity.getEntity(this.world.getServer(), this));
+                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity.getEntity(this.world.getServer(), this));
                 this.world.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {

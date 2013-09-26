@@ -7,9 +7,9 @@ import org.bukkit.entity.LivingEntity;
 import com.herocraftonline.heroes.characters.Hero;
 
 import net.kingdomsofarden.andrew2060.heroes.skills.api.necromancy.NecromancyTargetManager;
-import net.minecraft.server.v1_6_R2.DamageSource;
-import net.minecraft.server.v1_6_R2.EntityCreature;
-import net.minecraft.server.v1_6_R2.PathfinderGoalTarget;
+import net.minecraft.server.v1_6_R3.DamageSource;
+import net.minecraft.server.v1_6_R3.EntityCreature;
+import net.minecraft.server.v1_6_R3.PathfinderGoalTarget;
 
 public class PathfinderGoalNecromancyTarget extends PathfinderGoalTarget {
     
