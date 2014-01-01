@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.AbstractProjectile;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.AbstractProjectile;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,12 +24,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_6_R3.DamageSource;
-import net.minecraft.server.v1_6_R3.EntityLargeFireball;
-import net.minecraft.server.v1_6_R3.EntityTypes;
-import net.minecraft.server.v1_6_R3.MovingObjectPosition;
-import net.minecraft.server.v1_6_R3.World;
-import net.minecraft.server.v1_6_R3.WorldServer;
+import net.minecraft.server.v1_7_R1.DamageSource;
+import net.minecraft.server.v1_7_R1.EntityLargeFireball;
+import net.minecraft.server.v1_7_R1.EntityTypes;
+import net.minecraft.server.v1_7_R1.MovingObjectPosition;
+import net.minecraft.server.v1_7_R1.World;
+import net.minecraft.server.v1_7_R1.WorldServer;
 import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
 import net.kingdomsofarden.andrew2060.toolhandler.potions.PotionEffectManager;
 
@@ -70,6 +70,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public SkillResult use(final Hero h, String[] args) {
         this.broadcast(h.getPlayer().getLocation(), ChatColor.GRAY + "[" + ChatColor.GREEN + "Skill" + ChatColor.GRAY + "] $1 used MeteorStrike!", new Object[] {h.getName()});
@@ -184,7 +185,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
         }
 
         @Override
-        public void l_() {
+        public void h() {
 
             this.world.createExplosion(this, this.locX, this.locY, this.locZ, trailPower, false, false);
 
@@ -192,7 +193,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             motY *= velMultiplier;
             motZ *= velMultiplier;
 
-            super.l_();
+            super.h();
         }
 
         @Override
@@ -203,7 +204,7 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
                 }
 
                 // CraftBukkit start
-                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity.getEntity(this.world.getServer(), this));
+                ExplosionPrimeEvent event = new ExplosionPrimeEvent((org.bukkit.entity.Explosive) org.bukkit.craftbukkit.v1_7_R1.entity.CraftEntity.getEntity(this.world.getServer(), this));
                 this.world.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
