@@ -1,8 +1,9 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,14 +44,42 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
 
     PotionEffectManager pEMan;
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public SkillMeteorStrike(Heroes plugin) {
         super(plugin, "MeteorStrike");
         try {
-            Method a = EntityTypes.class.getDeclaredMethod("a", new Class<?>[] {Class.class, String.class, int.class});
-            a.setAccessible(true);
-            a.invoke(a, EntityMeteor.class, "Fireball", 12);
+            Field c = EntityTypes.class.getDeclaredField("c");
+            Field d = EntityTypes.class.getDeclaredField("d");
+            Field e = EntityTypes.class.getDeclaredField("e");
+            Field f = EntityTypes.class.getDeclaredField("f");
+            Field g = EntityTypes.class.getDeclaredField("g");
+
+            c.setAccessible(true);
+            d.setAccessible(true);
+            e.setAccessible(true);
+            f.setAccessible(true);
+            g.setAccessible(true);
+
+            Map cMap = (Map) c.get(null);
+            Map dMap = (Map) d.get(null);
+            Map eMap = (Map) e.get(null);
+            Map fMap = (Map) f.get(null);
+            Map gMap = (Map) g.get(null);
+
+            cMap.put("Fireball", EntityMeteor.class);
+            dMap.put(EntityMeteor.class, "Fireball");
+            eMap.put(12, EntityMeteor.class);
+            fMap.put(EntityMeteor.class, 12);
+            gMap.put("Fireball", 12);
+
+            c.set(null, cMap);
+            d.set(null, dMap);
+            e.set(null, eMap);
+            f.set(null, fMap);
+            g.set(null, gMap);
+
         } catch (Exception e) {
-            System.out.println("There was an error creating a meteor with custom entity class version 1_6 : It could not be registered with the NMS EntityType handler!");
+            System.out.println("There was an error creating a meteor with custom entity class version 1_7 : It could not be registered with the NMS EntityType handler!");
             e.printStackTrace();
             plugin.getSkillManager().removeSkill(this);
             return;
@@ -133,40 +162,40 @@ public class SkillMeteorStrike extends ActiveSkill implements Listener {
             }
             a.remove();
 
-//            for(int i = 0; i < 32 ; i++) {
-//                final int radius = i;
-//                (new BukkitRunnable() {
-//
-//                    @Override
-//                    public void run() {
-//
-//                        for(Location loc : circle(hitLoc, radius, 5, true, false, -1)) {
-//                            loc.getWorld().createExplosion(loc, 0F, false);
-//                        }
-//
-//                        return;
-//
-//                    }
-//
-//                }).runTaskLater(plugin, Math.round(0.25*radius));
-//            }
-//
-//            for(int i = 0; i < 32; i++) {
-//                final int height = i;
-//                (new BukkitRunnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        
-//                        for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
-//                            loc.getWorld().createExplosion(loc, 0F, false);
-//                        }
-//                        return;
-//
-//                    }
-//
-//                }).runTaskLater(plugin, Math.round(0.25*height));
-//            }
+            //            for(int i = 0; i < 32 ; i++) {
+            //                final int radius = i;
+            //                (new BukkitRunnable() {
+            //
+            //                    @Override
+            //                    public void run() {
+            //
+            //                        for(Location loc : circle(hitLoc, radius, 5, true, false, -1)) {
+            //                            loc.getWorld().createExplosion(loc, 0F, false);
+            //                        }
+            //
+            //                        return;
+            //
+            //                    }
+            //
+            //                }).runTaskLater(plugin, Math.round(0.25*radius));
+            //            }
+            //
+            //            for(int i = 0; i < 32; i++) {
+            //                final int height = i;
+            //                (new BukkitRunnable() {
+            //
+            //                    @Override
+            //                    public void run() {
+            //                        
+            //                        for(Location loc : circle(hitLoc, height > 20 ? (20-(height-20)) : 5, 5, true, false, height)) {
+            //                            loc.getWorld().createExplosion(loc, 0F, false);
+            //                        }
+            //                        return;
+            //
+            //                    }
+            //
+            //                }).runTaskLater(plugin, Math.round(0.25*height));
+            //            }
         }
     }
     public class EntityMeteor extends EntityLargeFireball {
