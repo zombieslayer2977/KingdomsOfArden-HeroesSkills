@@ -31,9 +31,8 @@ import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.struct.Rel;
+import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.entity.UPlayer;
 
 public class SkillCommandSentry extends ActiveSkill {
 
@@ -86,7 +85,7 @@ public class SkillCommandSentry extends ActiveSkill {
 			p.sendMessage(head);
 			int bosses = 0;
 			int monsters = 0;
-			FPlayer fP = FPlayers.i.get(p);
+			UPlayer fP = UPlayer.get(p);
 			while(nearby.hasNext()) {
 				Entity next = nearby.next();
 				if(!(next instanceof LivingEntity)) {
@@ -122,7 +121,7 @@ public class SkillCommandSentry extends ActiveSkill {
 					}
 				}
 				final Player nextP = (Player)next;
-				FPlayer nextfP = FPlayers.i.get(nextP);
+				UPlayer nextfP = UPlayer.get(nextP);
 				if((fP.getRelationTo(nextfP).equals(Rel.ENEMY) || fP.getRelationTo(nextfP).equals(Rel.ALLY)) && (LivingEntity)next != h.getEntity()) {
 					Hero nextH = SkillCommandSentry.this.plugin.getCharacterManager().getHero(nextP);
 					if(nextP.hasPermission("essentials.vanish")) {
