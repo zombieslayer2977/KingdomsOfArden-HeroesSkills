@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,7 +39,7 @@ public class SkillCamouflage extends PassiveSkill {
 	 * HashMap<Player movingPlayer, List<Player> camouflagedPlayers>
 	 * We then schedule a timed task to check this every 5 seconds and rehide if necessary
 	 */
-	public HashMap<Player, Set<Player>> tempSee;
+	public HashMap<Player, HashSet<Player>> tempSee;
 	private final SkillCamouflage skill;
 	//SkillCamouflage's Constructor: Note the lack of a return type! a constructor is called when a new instance of an object is created using the new keyword
 	public SkillCamouflage(Heroes plugin) {
@@ -50,7 +48,7 @@ public class SkillCamouflage extends PassiveSkill {
 		//Note the new className(this): this means I am calling upon the CONSTRUCTOR of an object (a special type of function with no return type)
 		Bukkit.getPluginManager().registerEvents(new CamouflageListener(this), this.plugin);
 		this.camouflaged = new HashMap<Player,Boolean>();
-		this.tempSee = new HashMap<Player,Set<Player>>();
+		this.tempSee = new HashMap<Player,HashSet<Player>>();
 		//Schedule a repeating task every 3 seconds to check if a player is camouflaged again in the tempSee list
 		this.skill = this;
 		Bukkit.getScheduler().runTaskTimer(this.plugin, new Runnable() {
@@ -60,7 +58,7 @@ public class SkillCamouflage extends PassiveSkill {
 				Iterator<Player> entrySet = skill.tempSee.keySet().iterator();
 				while(entrySet.hasNext()) {
 					Player next = entrySet.next();
-					Set<Player> toShow = skill.tempSee.get(next);
+					HashSet<Player> toShow = skill.tempSee.get(next);
 					Iterator<Player> showIt = toShow.iterator();
 					while(showIt.hasNext()) {
 						Player check = showIt.next();
@@ -299,7 +297,7 @@ public class SkillCamouflage extends PassiveSkill {
 				Player check = checkIt.next();
 				if(camouflaged.containsKey(check) && camouflaged.get(check)) {
 					if(tempSee.containsKey(p)) {
-						Set<Player> players = tempSee.get(p);
+						HashSet<Player> players = tempSee.get(p);
 						if(players.contains(check)) {
 							continue;
 						} else {
@@ -315,7 +313,7 @@ public class SkillCamouflage extends PassiveSkill {
 						}
 					} else {
 						tempSee.put(p, new HashSet<Player>());
-						Set<Player> players = tempSee.get(p);
+						HashSet<Player> players = tempSee.get(p);
 						if(!check.hasPermission("essentials.vanish")) {
 							Hero h = skill.plugin.getCharacterManager().getHero(check);
 							if(h.hasEffect("ShadowAssaultEffect")) {
