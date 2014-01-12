@@ -74,6 +74,7 @@
 	<classpathentry kind="src" path="SkillTurret"/>
 	<classpathentry kind="src" path="SkillVolley"/>
 	<classpathentry kind="src" path="SkillHeroicBeacon"/>
+	<classpathentry kind="src" path="SkillHeroicBridge"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
