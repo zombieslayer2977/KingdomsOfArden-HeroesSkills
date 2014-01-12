@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -35,7 +37,7 @@ public class SkillCommandStaticField extends ActiveSkill {
 			h.getPlayer().sendMessage("You must wait 10 seconds between using different command skills!");
 			return SkillResult.NORMAL;
 		}
-		broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 activated static field on his turrets", new Object[] {h.getName()});
+		broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7] $1 activated static field on his turrets", new Object[] {h.getName()});
 		h.addEffect(new ExpirableEffect(this,this.plugin,"TurretEffectCooldown",10000));
 		TurretEffect tE;
 		if(!h.hasEffect("TurretEffect")) {
@@ -62,6 +64,9 @@ public class SkillCommandStaticField extends ActiveSkill {
 			Iterator<LivingEntity> nearby = validTargets.iterator();
 			while(nearby.hasNext()) {
 				LivingEntity next = nearby.next();
+				if(next instanceof Ocelot) {
+				    continue;
+				}
 				addSpellTarget(next,h);
 				Skill.damageEntity((LivingEntity)next, h.getEntity(), 40D, DamageCause.ENTITY_ATTACK);
 				CharacterTemplate cT = plugin.getCharacterManager().getCharacter((LivingEntity)next);
