@@ -1,7 +1,7 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretEffect;
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretFireWrapper;
 
@@ -23,14 +24,14 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillCommandFlamethrower extends ActiveSkill implements Listener {
 
-	public List<LivingEntity> exemptFire;
+	public HashSet<LivingEntity> exemptFire;
     public SkillCommandFlamethrower(Heroes plugin) {
 		super(plugin, "CommandFlamethrower");
 		setDescription("Command: Flamethrower: Puts all active turrets in flamethrower state - Turrets will set all enemies in range on fire");
 		setUsage("/skill commandflamethrower");
 		setArgumentRange(0,0);
 		setIdentifiers("skill commandflamethrower");
-		this.exemptFire = new ArrayList<LivingEntity>();
+		this.exemptFire = new HashSet<LivingEntity>();
 	}
 
 	@Override
