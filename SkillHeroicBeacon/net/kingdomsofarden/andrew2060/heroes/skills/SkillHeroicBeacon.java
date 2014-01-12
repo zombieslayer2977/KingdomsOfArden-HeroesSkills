@@ -1,6 +1,7 @@
 package net.kingdomsofarden.andrew2060.heroes.skills;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -92,14 +93,27 @@ public class SkillHeroicBeacon extends ActiveSkill implements Listener {
         this.setDescription("Broadcasts a beacon to all party members, allowing them to teleport to the user's location regardless of factional status. While the beacon is active, the user is immobilized and gains a 50% defensive bonus but cannot attack. Consumes 5 Mana per Second");
         this.setArgumentRange(0, 0);
         this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
+        setIdentifiers("skill heroicbeacon","beacon");
     }
 
     @Override
     public SkillResult use(Hero h, String[] arg1) {
+        
         if(h.hasEffect("HeroicBeaconEffect")) {
             h.removeEffect(h.getEffect("HeroicBeaconEffect"));
         } else {
+            if(!h.hasParty()) {
+                h.getPlayer().sendMessage(ChatColor.GRAY + "You must be in a Party to use this skill!");
+                return SkillResult.INVALID_TARGET_NO_MSG;
+            }
+            for(Hero target : h.getParty().getMembers()) {
+                if(target.hasEffect("HeroicBeaconEffect")) {
+                    h.getPlayer().sendMessage(ChatColor.GRAY + "There is already an active beacon in your party!");
+                    return SkillResult.INVALID_TARGET_NO_MSG;
+                }
+            }
             h.addEffect(new HeroicBeaconEffect(this));
+            h.getPlayer().getLocation().getWorld().playSound(h.getPlayer().getLocation(), Sound.PORTAL_TRAVEL, 10, 1);
         }
         return SkillResult.NORMAL;
     }
