@@ -10,7 +10,7 @@
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
-			<url>http://repo.md-5.net/content/repositories/snapshots/</url>
+			<url>http://repo.md-5.net/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>koa-repo</id>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.7.2-R0.3-SNAPSHOT</version>
+			<version>1.7.2-R0.4-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
@@ -46,12 +46,12 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.7.2-R0.3-SNAPSHOT</version>
+			<version>1.7.2-R0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.kingdomsofarden</groupId>
 			<artifactId>ToolHandler</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.massivecraft</groupId>
