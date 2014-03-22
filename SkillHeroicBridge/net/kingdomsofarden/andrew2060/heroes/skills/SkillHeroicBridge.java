@@ -38,6 +38,7 @@ public class SkillHeroicBridge extends ActiveSkill {
                 Location to = h.getPlayer().getLocation().add(rand.nextInt() - 1, 0 , rand.nextInt() - 1);
                 hero.getPlayer().teleport(to, TeleportCause.PLUGIN);
                 to.getWorld().playSound(to, Sound.ENDERMAN_TELEPORT, 10, 1);
+                to.getWorld().spigot().strikeLightningEffect(to,true);
                 return SkillResult.NORMAL;
             }
         }

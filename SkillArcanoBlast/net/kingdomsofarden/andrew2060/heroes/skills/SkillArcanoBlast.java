@@ -64,7 +64,8 @@ public class SkillArcanoBlast extends ActiveSkill implements Listener {
         //Register Events
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
+    
+    @SuppressWarnings("deprecation")
     @Override 
     public SkillResult use(final Hero h, String[] args) {
         List<Block> los = null;

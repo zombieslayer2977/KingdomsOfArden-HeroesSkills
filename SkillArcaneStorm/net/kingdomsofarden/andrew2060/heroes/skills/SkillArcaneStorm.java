@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.kingdomsofarden.andrew2060.toolhandler.clienteffects.ClientEffectSender;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -41,7 +43,8 @@ public class SkillArcaneStorm extends ActiveSkill  {
 	public SkillResult use(final Hero hero, String[] arg1) {
 	    final Location targetLoc;
 	    if(hero.hasEffect("PowerLocusEffect")) {
-	        List<Block> los = hero.getPlayer().getLastTwoTargetBlocks(null, 100);
+	        @SuppressWarnings("deprecation")
+            List<Block> los = hero.getPlayer().getLastTwoTargetBlocks(null, 100);
             targetLoc = los.get(los.size()-1).getLocation();
 	    } else {
 	        targetLoc = hero.getPlayer().getLocation();
@@ -87,7 +90,7 @@ public class SkillArcaneStorm extends ActiveSkill  {
 							}
 							addSpellTarget(e,hero);
 							Skill.damageEntity((LivingEntity)e, p, 100D, DamageCause.MAGIC);
-							p.getWorld().strikeLightningEffect(e.getLocation());
+							ClientEffectSender.strikeLightningNonGlobal(e.getLocation(),100);
 						}
 						a.remove();
 					}

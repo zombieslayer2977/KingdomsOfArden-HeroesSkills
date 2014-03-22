@@ -9,6 +9,8 @@ import com.herocraftonline.heroes.characters.skill.SkillSetting;
 
 import java.util.List;
 
+import net.kingdomsofarden.andrew2060.toolhandler.clienteffects.ClientEffectSender;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -69,8 +71,7 @@ public class SkillRiftWalk extends ActiveSkill {
 
 		p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 1);
 		p.teleport(finalLocation);
-        p.getWorld().playEffect(p.getLocation(), Effect.BLAZE_SHOOT, 1);
-		p.getWorld().spigot().strikeLightningEffect(finalLocation, true);
+        ClientEffectSender.strikeLightningNonGlobal(finalLocation,32);
 		List<Entity> nearby = p.getNearbyEntities(5.0D, 5.0D, 5.0D);
 		boolean repeat = false;
 		for (int x = 0; x < nearby.size(); x++) {

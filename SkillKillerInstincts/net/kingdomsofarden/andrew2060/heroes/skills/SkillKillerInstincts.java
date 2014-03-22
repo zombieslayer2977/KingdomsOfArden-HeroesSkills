@@ -58,6 +58,7 @@ public class SkillKillerInstincts extends ActiveSkill implements Listener {
         return getDescription();
     }
     
+    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWeaponDamage(WeaponDamageEvent event) {
         if(!(event.getEntity() instanceof LivingEntity)) {

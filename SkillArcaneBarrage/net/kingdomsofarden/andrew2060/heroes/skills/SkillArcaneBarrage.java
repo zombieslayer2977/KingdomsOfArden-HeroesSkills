@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.kingdomsofarden.andrew2060.toolhandler.ToolHandlerPlugin;
+import net.kingdomsofarden.andrew2060.toolhandler.clienteffects.ClientEffectSender;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,7 +76,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
                 @Override
                 public void run() {
                     Location loc = targets.get(runtime);
-                    loc.getWorld().strikeLightningEffect(loc);
+                    ClientEffectSender.strikeLightningNonGlobal(loc, 48);
                     applyDamage(loc,hero);
                 }
 
@@ -107,6 +108,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
         }
         a.remove();
     }
+    @SuppressWarnings("deprecation")
     @Override
     public SkillResult use(final Hero h, String[] args) {
         if(skillData.containsKey(h)) {
@@ -153,6 +155,7 @@ public class SkillArcaneBarrage extends ActiveSkill{
         public DisplayStrikeTask(Hero h) {
             this.hero = h;
         }
+        @SuppressWarnings("deprecation")
         @Override
         public void run() {
             if(skillData.containsKey(hero)) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 
+
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.Turret;
 import net.kingdomsofarden.andrew2060.heroes.skills.turretModules.TurretEffect;
 
@@ -108,7 +109,8 @@ public class SkillTurret extends ActiveSkill {
 			number = 4;
 		}
 		//First we get the location where the user is looking (up to 10 blocks away)
-		Location loc = h.getPlayer().getTargetBlock(null, 10).getRelative(BlockFace.UP).getLocation();
+		@SuppressWarnings("deprecation")
+        Location loc = h.getPlayer().getTargetBlock(null, 10).getRelative(BlockFace.UP).getLocation();
 		//We determine how long this guy's turret lasts
 		long duration = SkillConfigManager.getUseSetting(h, this, "base-duration", 60000, false) + SkillConfigManager.getUseSetting(h, this, "duration-per-level", 1000, false) * h.getLevel();
 		double range = SkillConfigManager.getUseSetting(h, this, "range", 5, false) + SkillConfigManager.getUseSetting(h, this, "range-increase-per-level", 0.1, false) * h.getLevel();
