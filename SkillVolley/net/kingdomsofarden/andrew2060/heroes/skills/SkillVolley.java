@@ -20,6 +20,9 @@ public class SkillVolley extends ActiveSkill implements Listener {
 
     public SkillVolley(Heroes plugin) {
         super(plugin, "Volley");
+        setIdentifiers("skill volley");
+        setUsage("/skill volley");
+        setArgumentRange(0,0);
         setDescription("On use, next shot within 5 seconds will fire 6 arrows in an arc.");
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
