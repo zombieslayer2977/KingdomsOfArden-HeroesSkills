@@ -6,7 +6,9 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
+
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -65,9 +67,10 @@ public class SkillRiftWalk extends ActiveSkill {
 			}
 		}
 
-		p.playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 1);
+		p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 1);
 		p.teleport(finalLocation);
-		p.getWorld().strikeLightningEffect(finalLocation);
+        p.getWorld().playEffect(p.getLocation(), Effect.BLAZE_SHOOT, 1);
+		p.getWorld().spigot().strikeLightningEffect(finalLocation, true);
 		List<Entity> nearby = p.getNearbyEntities(5.0D, 5.0D, 5.0D);
 		boolean repeat = false;
 		for (int x = 0; x < nearby.size(); x++) {
@@ -104,9 +107,10 @@ public class SkillRiftWalk extends ActiveSkill {
 
 					}
 
-					pDelayed.playEffect(pDelayed.getLocation(), Effect.GHAST_SHRIEK, 1);
+					pDelayed.getWorld().playEffect(pDelayed.getLocation(), Effect.GHAST_SHRIEK, 1);
 					pDelayed.teleport(delayedLoc, TeleportCause.NETHER_PORTAL);
-					pDelayed.getWorld().strikeLightningEffect(delayedLoc);
+					pDelayed.getWorld().spigot().strikeLightningEffect(delayedLoc,true);
+                    pDelayed.getWorld().playEffect(pDelayed.getLocation(), Effect.BLAZE_SHOOT, 1);
 					List<Entity> nearbyDel = pDelayed.getNearbyEntities(5.0D, 5.0D, 5.0D);
 					for (int x = 0; x < nearbyDel.size(); x++) {
 						if ((nearbyDel.get(x) instanceof LivingEntity)) {
