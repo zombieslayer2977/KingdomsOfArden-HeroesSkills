@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>net.kingdomsofarden</groupId>
 			<artifactId>ToolHandler</artifactId>
-			<version>2.5-SNAPSHOT</version>
+			<version>2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.massivecraft</groupId>
