@@ -34,13 +34,13 @@ public class SkillManaShield extends PassiveSkill {
 			if(stacks > 0) {
 				switch(stacks) {
 				case 3:
-					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,1);
+					h.getPlayer().getWorld().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,1);
 					break;
 				case 2:
-					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,3);
+					h.getPlayer().getWorld().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,3);
 					break;
 				case 1:
-					h.getPlayer().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,2);
+					h.getPlayer().getWorld().playEffect(h.getPlayer().getLocation(),Effect.POTION_BREAK,2);
 					break;
 				}
 				stacks--;
