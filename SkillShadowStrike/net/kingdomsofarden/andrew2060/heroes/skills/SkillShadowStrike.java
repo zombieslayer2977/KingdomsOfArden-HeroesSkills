@@ -60,9 +60,10 @@ public class SkillShadowStrike extends TargettedSkill {
 		addSpellTarget(lE,h);
 		Skill.damageEntity(lE, h.getEntity(), lE.getMaxHealth()*5*0.01, DamageCause.ENTITY_ATTACK);
 		if(!(lE instanceof Player)) {
-			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),lE.getType().getName()});
+		    String name = lE.getCustomName();
+			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7] $1 struck $2 from the shadows.", new Object[] {h.getName(), name == null ? lE.getType().toString().toLowerCase() : name});
 		} else {
-			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7]$1 struck $2 from the shadows.", new Object[] {h.getName(),((Player)lE).getName()});
+			broadcast(h.getPlayer().getLocation(), "§7[§2Skill§7] $1 struck $2 from the shadows.", new Object[] {h.getName(),((Player)lE).getName()});
 		}
 		return SkillResult.NORMAL;
 	}
