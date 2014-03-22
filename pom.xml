@@ -41,7 +41,21 @@
 		<dependency>
 			<groupId>com.herocraftonline.heroes</groupId>
 			<artifactId>Heroes</artifactId>
-			<version>1.5.5</version>
+			<version>1.5.5.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bukkit</artifactId>
+					<groupId>org.bukkit</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>HeroChat</artifactId>
+					<groupId>com.dthielke.herochat</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scrollingmenusign</artifactId>
+					<groupId>me.desht</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
