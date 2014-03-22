@@ -95,7 +95,7 @@
         <mkdir dir="${dir.workspace}/${skillname}" />
         
         <!-- Compile Sources -->
-        <javac srcdir="${dir.skillname}" debug = "on" destdir="${dir.workspace}/${skillname}" encoding="UTF-8" classpathref="classpath" includeantruntime="true" target="1.7"/>
+        <javac srcdir="${dir.skillname}" debug = "on" destdir="${dir.workspace}/${skillname}" encoding="ISO-8859-1" classpathref="classpath" includeantruntime="true" target="1.7"/>
         
         <!-- Generate skill.info -->
         <foreach target="create-skill-info" param="dir.pathtofile" parallel="true" maxThreads="2">
