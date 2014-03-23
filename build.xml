@@ -119,8 +119,10 @@
     <!-- Generate skill.info -->
     <target name="create-skill-info">
         <echo file="${dir.workspace}/${skillname}/skill.info" message="main-class: ${dir.pathtofile}" />
+        <replace file="${dir.workspace}/${skillname}/skill.info" token="${basedir}/${dir.workspace}/${skillname}/" value=""/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token="${basedir}\${dir.workspace}\${skillname}\" value=""/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token="\" value="."/>
+        <replace file="${dir.workspace}/${skillname}/skill.info" token="/" value="."/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token=".class" value=""/>
     </target>
     
