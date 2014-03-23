@@ -23,6 +23,7 @@
     <property name="dir.maven" value="maven" />
     <property name="dir.prioritybuild" value="priority" />
     <property name="priorityskills" value="SkillAura SkillTurret SkillNecromancy" />
+    <property name="ignoreSkills" value="SkillCauldron" />
     
     <!-- Define Classpath Used for Compiled Jars -->
     <path id="classpath">
@@ -65,6 +66,7 @@
                 <dirset dir="${basedir}">
                     <include name="Skill*" />
                     <exclude name="${priorityskills}" />
+                    <exclude name="${ignoreSkills}" />
                 </dirset>
             </path>
         </foreach>
@@ -121,8 +123,8 @@
         <echo file="${dir.workspace}/${skillname}/skill.info" message="main-class: ${dir.pathtofile}" />
         <replace file="${dir.workspace}/${skillname}/skill.info" token="${basedir}/${dir.workspace}/${skillname}/" value=""/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token="${basedir}\${dir.workspace}\${skillname}\" value=""/>
-        <replace file="${dir.workspace}/${skillname}/skill.info" token="\" value="."/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token="/" value="."/>
+        <replace file="${dir.workspace}/${skillname}/skill.info" token="\" value="."/>
         <replace file="${dir.workspace}/${skillname}/skill.info" token=".class" value=""/>
     </target>
     
